@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  projekt_id: 1
+  tasktype: MyString
+  tag: MyString
+  wichtig: MyString
+  titel: MyString
+  kommentar: MyString
+  autor: 1
+  autor2: MyString
+  assigned_to: 1
+  priority: MyString
+  status: MyString
+
+two:
+  projekt_id: 1
+  tasktype: MyString
+  tag: MyString
+  wichtig: MyString
+  titel: MyString
+  kommentar: MyString
+  autor: 1
+  autor2: MyString
+  assigned_to: 1
+  priority: MyString
+  status: MyString

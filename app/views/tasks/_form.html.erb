@@ -1,0 +1,85 @@
+<%= form_for(@task, :html => { :class => 'form form-horizontal'}) do |f| %>
+  <% if @task.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@task.errors.count, "error") %> prohibited this task from being saved:</h2>
+
+      <ul>
+      <% @task.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  
+  
+  
+  <br>
+  <div class="field">
+    <%= f.label :titel %>
+     <%= f.text_field :titel, :style=>"width:45%" %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :Details %>
+    <%= f.text_area :kommentar, :style=>"width:45%; height:150px" %>
+  </div>
+  
+ 
+  <div class="field">
+    <%= f.label :tags %>
+    <%= f.text_field :tag, :style=>"width:45% " %>
+  </div>
+ 
+ 
+ <br>
+  <div class="actions">
+    <%= f.submit %>
+    <%= link_to 'Back', tasks_path %>
+  </div>
+ <br>
+  
+   <div class="control-group">
+    <%= f.label :priority, :class=>"control-label" %>
+    <div class="controls"><%= f.number_field :priority %></div>
+  </div>
+ 
+ 
+ <br>
+   <div class="control-group">
+    <%= f.label :projekt_id, :class=>"control-label"%>
+    <div class="controls"><%= f.number_field :projekt_id %></div>
+  </div>
+  <div class="control-group">
+    <%= f.label :tasktype, :class=>"control-label"%>
+    <div class="controls"><%= f.text_field :tasktype %></div>
+  </div>
+
+   <div class="control-group">
+    <%= f.label :status, :class=>"control-label" %>
+    <div class="controls"><%= f.text_field :status %></div>
+  </div>
+  
+
+ 
+ 
+ 
+   <div class="control-group">
+    <%= f.label :wichtig, :class=>"control-label" %>
+    <div class="controls"><%= f.text_field :wichtig %></div>
+  </div>
+ 
+  <div class="control-group">
+    <%= f.label :autor, :class=>"control-label" %>
+    <div class="controls"><%= f.number_field :autor %></div>
+  </div>
+   <div class="control-group">
+    <%= f.label :autor2, :class=>"control-label" %>
+    <div class="controls"><%= f.text_field :autor2 %></div>
+  </div>
+   <div class="control-group">
+    <%= f.label :assigned_to, :class=>"control-label" %>
+    <div class="controls"><%= f.number_field :assigned_to %></div>
+  </div>
+   </div>
+  <% end %>

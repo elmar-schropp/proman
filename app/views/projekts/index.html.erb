@@ -1,0 +1,25 @@
+<h1>Listing projekts</h1>
+
+<table class="table">
+  <tr>
+    <th>Name</th>
+    <th>Kommentar</th>
+    <th>Icon</th>
+    <th>Aktion</th>
+  </tr>
+
+<% @projekts.each do |projekt| %>
+  <tr>
+    <td><%= projekt.name %></td>
+    <td><%= projekt.kommentar %></td>
+    <td><%= projekt.icon %></td>
+    <td><%= link_to 'Show', projekt %>
+      <%= link_to 'Edit', edit_projekt_path(projekt) %>
+      <%= link_to 'Destroy', projekt, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Projekt', new_projekt_path %>

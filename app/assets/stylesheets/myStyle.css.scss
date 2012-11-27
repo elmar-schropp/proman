@@ -1,0 +1,27 @@
+@import "bootstrap";
+/*@import "bootstrap-responsive";*/
+
+#editor { position:fixed;top:30px; }
+.touch-only { display: none; }
+.is-touch {
+	.notouch-only { display: none; }
+	.touch-only { display: inherit; }
+	.container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container { width: auto!important; }
+	.span4, .span5, .span6, .span7, .span8, .span9, .span10, .span11 {
+		width: auto!important;
+	}
+	#editor { position:inherit; }
+	.navbar .nav-collapse {display:none}
+	.navbar.touch-only { 
+		.navbar-inner { padding: 0; }
+		ul.nav li a { padding: 10px 5px; }
+	}
+}
+
+$btnPinkBackground:              #70009d;
+$btnPinkBackgroundHighlight:     adjust-hue($btnPinkBackground, 20%) !default;
+.btn-pink {
+  @include buttonBackground($btnPinkBackgroundHighlight, $btnPinkBackground);
+}
+
+

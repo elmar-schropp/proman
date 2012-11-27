@@ -1,0 +1,135 @@
+
+<style>
+  
+  .tasks .miniheader { background: #333; color: #ccc; font-size: 7pt;  }
+  .tasks tr.minitask:nth-child(odd) { background: #eee; }
+  .tasks tr.minitask td { font-size: 11px; }
+  .tasks tr.minitask td.prio, .tasks tr.minitask td.titel { font-size: 14px; }
+  
+  .tasks .head.neu { border-top: 1px solid #01c45c; border-bottom: 2px solid #01c45c;  }
+  .tasks .head { border-top: 1px solid #82a292; border-bottom: 2px solid #82a292; background: white; padding: 4px; font-weight: bold; }
+  .tasks tr.maxitask, .tasks tr.maxitask td { padding: 0; }
+  .tasks tr.task.selected, .tasks .selected div { background: #84c0fc; }
+  .tasks .selected .head { background: #84c0fc; color: #1e49ac; border-color: #6d9ed0; }
+  .tasks .comment { font-size: 9pt; padding: 4px; background-color:#fafafa; }
+  .tasks .tags { font-size: 7pt; padding: 4px; background-color:#fafafa; }
+  .tasks .tags i { vertical-align: middle }
+  .form-actions { margin: 10px -20px -20px; background: #fafafa; }
+  #editor { overflow: hidden; }
+  
+  .maxitask strong { color: #488b6a; font-size: 13px; }
+  
+</style>
+<br>
+  
+  
+    <!-- <h1>Listing tasks</h1>     //!-->
+
+<div class="navbar navbar touch-only">
+  <div class="navbar-inner">
+    <ul class="nav">
+      <li><a href="/"><i class="icon-home"></i> Home</a></li>
+      <li class="current"><a href="<%= tasks_path %>"><i class="icon-list"></i> Tasks</a></li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projekte <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="<%= projekts_path %>">Projekte verwalten...</a></li>
+          <li class="divider"></li>
+          <% @my_fav_projekts.each do |p| %>
+          <li><a href="#" onclick="setTaskProjektFilter('<%= p.id %>')"><%= p.name %></a></li>
+          <% end %>
+        </ul>
+      </li>
+      <li><a href="/">Optionen</a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="row">
+  <div class="span7">
+    <table class="tasks">
+  
+    </table>
+    <br />
+  </div>
+  
+  
+  
+  <div class="span5 hidden-phone" style=""  >
+    <div class="well" id="editor">
+
+      <div class="input-prepend">
+          <span class="add-on"><i class="icon-text-width"></i></span>
+          <input type="text" id="inputTitle" class="input-xlarge" style="width:368px">
+      </div>
+      
+      <textarea type="text" id="inputComment" style="width:395px" rows=10></textarea>
+      
+
+      <div class="form-actions">
+        <button class="btn star"><i class=" icon-bell "></i> Neu</button>
+        <button class="btn star"><i class=" icon-flag "></i> Wichtig</button>
+        <button class="btn star"><i class="icon-thumbs-down "></i> Bug</button>
+        <button class="btn star  pull-right"><i class="icon-star "></i> STAR</button>
+      </div>
+      
+      
+      <div class="input-prepend">
+          <span class="add-on"><i class="icon-tags"></i></span>
+          <input type="text" id="inputTags" class="input-xlarge" style="width:368px">
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary save"><i class="icon-ok icon-white"></i> Save</button>
+        <button class="btn btn-primary nextbutton"><i class="icon-ok icon-white"></i> Next...</button>
+        <button class="btn btn-danger pull-right gotrash"><i class="icon-white icon-trash"></i></button>
+        <button class="btn btn-warning  pull-right cancelbutton"><i class="icon-arrow-left icon-white" style="display:none"></i> Abbruch</button>
+      </div>
+ 
+      <br>
+        
+        
+    <div class="row-fluid">
+      <div class="span6">
+        
+        <div class = "control-label"> Prioritaet </div>
+        <div class="controls"><input type="text" id="inputPriority" class="input-medium"></div>
+       
+        <div class = "control-label"> Projekt </div>
+        <div class="controls"><input type="text" id="inputProjekt_id" class="input-medium"></div>
+      
+       <div class = "control-label"> Autor </div>
+       <div class="controls"><input type="text" id="inputAutor" class="input-medium"></div>
+      
+      <div class = "control-label"> Autor2 </div>
+      <div class="controls"><input type="text" id="inputAutor2" class="input-medium"></div>
+      
+      </div>
+      <div class="span6">
+ 
+        <div class = "control-label"> Status </div>
+        <div class="controls"><input type="text" id="inputStatus" class="input-medium"></div>
+      
+        <div class = "control-label"> Task-Type </div>
+        <div class="controls"><input type="text" id="inputTasktype" class="input-medium"></div>
+
+        <div class = "control-label"> Wichtig </div>
+        <div class="controls"><input type="text" id="inputWichtig" class="input-medium"></div>
+      
+        <div class = "control-label"> Assigned_to </div>
+        <div class="controls"><input type="text" id="inputAssigned_to" class="input-medium"></div>
+  
+      </div>
+     </div> 
+        
+       
+
+      
+        
+    </div>
+  </div>
+</div>
+    <!-- <%= link_to 'New Task', new_task_path %> //!-->
+
+<br>
+<br>
+
