@@ -54,7 +54,7 @@ initTasks = ->
     $('#editor .gotrash').click ->
         alert("ab in den papierkorb - coming soon")
     if (isTouchDevice)
-        #$('body').css('background', '#ffeeff');
+        #$('body').css('background', '#ffffee');
         $('html').off('click.dropdown').off('touchstart.dropdown');
         $('#editor').hide();
         $('#editor .cancelbutton').show().click ->
