@@ -8,19 +8,33 @@
   
   .tasks .head.neu { border-top: 1px solid #01c45c; border-bottom: 2px solid #01c45c;  }
   .tasks .head { border-top: 1px solid #82a292; border-bottom: 2px solid #82a292; background: white; padding: 4px; font-weight: bold; }
+  
   .tasks tr.maxitask, .tasks tr.maxitask td { padding: 0; }
   .tasks tr.task.selected, .tasks .selected div { background: #84c0fc; }
   .tasks .selected .head { background: #84c0fc; color: #1e49ac; border-color: #6d9ed0; }
   .tasks .comment { font-size: 9pt; padding: 4px; background-color:#fafafa; }
   .tasks .tags { font-size: 7pt; padding: 4px; background-color:#fafafa; }
   .tasks .tags i { vertical-align: middle }
+  
+  .tasks tr.miditask, .tasks tr.miditask td { padding: 0;}
+  .miditask.selected, .tasks .selected div { background: 8f4c0fc;}
+  .miditask.selected .head { background: #84c0fc; color: #1e49ac; border-color: #6d9ed0; }
+  
+  .tasks .comment { font-size: 9pt; padding: 4px; background-color:#fafafa; }
+  .tasks .tags { font-size: 7pt; padding: 4px; background-color:#fafafa; }
+  .tasks .tags i { vertical-align: middle }
+  
+  tr.miditask .comment,  tr.miditask  .tags,  tr.miditask +tr.details,  tr.miditask +tr.details +.extraspace  { display:none; }
+  tr.selected .comment,  tr.selected  .tags,  tr.selected +tr.details,  tr.selected +tr.details +.extraspace  { display:block; }
+  tr.selected   { border-top: 4px solid transparent; }
+  
   .form-actions { margin: 10px -20px -20px; background: #fafafa; }
   #editor { overflow: hidden; }
   
   .maxitask strong { color: #488b6a; font-size: 13px; }
   
 </style>
-<br>
+
   
   
     <!-- <h1>Listing tasks</h1>     //!-->
@@ -40,13 +54,15 @@
           <% end %>
         </ul>
       </li>
-      <li><a href="/">Optionen</a></li>
+      <li><a href="/options">Optionen</a></li>
     </ul>
   </div>
 </div>
 
 <div class="row">
-  <div class="span7">
+  <div class="span6">
+    <br>
+      
     <table class="tasks">
   
     </table>
@@ -55,37 +71,44 @@
   
   
   
-  <div class="span5 hidden-phone" style=""  >
+  <div class="span6 hidden-phone" style=""  >
     <div class="well" id="editor">
+      
+        <button class="btn star"><i class=" icon-plus "></i> Breite</button>
+        <button class="btn star"><i class=" icon-minus "></i> </button>
+      
+        <button class="btn star pull-right"><i class=" icon-minus "></i> </button>
+        <button class="btn star pull-right"><i class=" icon-plus "></i> Hoehe </button>
 
       <div class="input-prepend">
           <span class="add-on"><i class="icon-text-width"></i></span>
-          <input type="text" id="inputTitle" class="input-xlarge" style="width:368px">
+          <input type="text" id="inputTitle" class="input-xlarge" style="width:320px">
       </div>
       
-      <textarea type="text" id="inputComment" style="width:395px" rows=10></textarea>
+      <textarea type="text" id="inputComment" style="width:350px" rows=8></textarea>
+     
       
+     <div class="form-actions">
+        <button class="btn btn-primary save"><i class="icon-ok icon-white"></i> Save</button>
+        <button class="btn btn-primary nextbutton"><i class="icon-ok icon-white"></i> Next...</button>
+        <button class="btn btn-danger pull-right gotrash"><i class="icon-white icon-trash"></i></button>
+        <button class="btn btn-warning  pull-right cancelbutton"><i class="icon-arrow-left icon-white" style="display:none"></i> Abbruch</button>
+     <br>
+      Tags:     
+      <div class="input-prepend">
+          <span class="add-on"><i class="icon-tags"></i></span>
+          <input type="text" id="inputTags" class="input-xlarge" style="width:320px">
+      </div>
 
-      <div class="form-actions">
         <button class="btn star"><i class=" icon-bell "></i> Neu</button>
         <button class="btn star"><i class=" icon-flag "></i> Wichtig</button>
         <button class="btn star"><i class="icon-thumbs-down "></i> Bug</button>
         <button class="btn star  pull-right"><i class="icon-star "></i> STAR</button>
       </div>
-      
-      
-      <div class="input-prepend">
-          <span class="add-on"><i class="icon-tags"></i></span>
-          <input type="text" id="inputTags" class="input-xlarge" style="width:368px">
-      </div>
-      <div class="form-actions">
-        <button class="btn btn-primary save"><i class="icon-ok icon-white"></i> Save</button>
-        <button class="btn btn-primary nextbutton"><i class="icon-ok icon-white"></i> Next...</button>
-        <button class="btn btn-danger pull-right gotrash"><i class="icon-white icon-trash"></i></button>
-        <button class="btn btn-warning  pull-right cancelbutton"><i class="icon-arrow-left icon-white" style="display:none"></i> Abbruch</button>
-      </div>
- 
-      <br>
+
+  <br>
+  <br>
+
         
         
     <div class="row-fluid">
@@ -121,7 +144,7 @@
       </div>
      </div> 
         
-       
+       <br>
 
       
         

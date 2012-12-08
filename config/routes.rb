@@ -8,12 +8,15 @@ Proman::Application.routes.draw do
   resources :users
 
 
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
+
+match 'options/' => 'users#options'
 
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
@@ -55,10 +58,10 @@ Proman::Application.routes.draw do
   #     resources :products
   #   end
 
+
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
   root :to => 'users#welcome'
-
   # See how all your routes lay out with "rake routes"
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.

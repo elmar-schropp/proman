@@ -18,6 +18,8 @@
 	}
 }
 
+.task li { margin-left: 15px; }
+
 $btnPinkBackground:              #70009d;
 $btnPinkBackgroundHighlight:     adjust-hue($btnPinkBackground, 20%) !default;
 .btn-pink {

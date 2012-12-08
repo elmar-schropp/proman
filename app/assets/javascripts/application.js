@@ -13,5 +13,8 @@
 //= require underscore
 //= require jquery
 //= require jquery_ujs
-//= require_tree .
+//= require jquery_cookie
+//= require_tree
 //= require bootstrap
+
+

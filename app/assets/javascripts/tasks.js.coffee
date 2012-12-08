@@ -9,8 +9,54 @@ taskId = null
 window.isTouchDevice = 'ontouchstart' of document.documentElement;
 # window.isTouchDevice = true
 
-$ ->
 
+# alert("OK ???")
+# $.cookie("viewMode", 11);
+# alert($.cookie('viewMode'))
+
+
+initTasks = ->
+    $('#editor .nextbutton').click ->
+        alert("brainstorm-modus --- coming soon")
+    $('#editor .gotrash').click ->
+        alert("ab in den papierkorb - coming soon")
+    if (isTouchDevice)
+        #$('body').css('background', '#ffffee');
+        
+        $('html').off('click.dropdown').off('touchstart.dropdown');
+        
+        # $('#editor').hide();
+        editor_hide()
+        $('#editor .cancelbutton').show().click ->
+            editor_hide()
+        $('body').addClass("is-touch");
+
+$(window).on 'load', -> setTimeout initTasks, 1000
+
+
+refreshTaskItem = (taskId)->
+    id="#taskitem"+taskId
+    # alert ("refreshTaskItem: "+id)
+    # $(id).replaceWith("...ich werde mal der aktualisierte Inhalt ")
+    
+
+editor_show = ->
+    #alert "show editor"
+  
+    $("#editor").show();
+    $tasks.hide();
+    if (isTouchDevice)
+        $(".touch-only").hide();
+
+editor_hide = ->
+    # alert "HIDE editor"
+    $("#editor").hide();
+    $tasks.show();
+    if (isTouchDevice)
+        $(".touch-only").show();
+
+
+$ ->
     $("#editor .save").click ->
         if ! taskId  then return
         $("#inputComment").css("backgroundColor", "#8cd36d")
@@ -32,11 +78,13 @@ $ ->
                 }
             }
             success: (data) ->
+                refreshTaskItem taskId 
                 $("#inputComment").css("backgroundColor", "#ffffff")
                 if (isTouchDevice)
-                    $("#editor").hide(); $tasks.show();
+                    editor_hide()
+                    # $("#editor").hide(); $tasks.show();
                     $('body').addClass("is-touch");
-                # alert("OK")
+                    # alert("OK")
             dataType: "json"
             type: "PUT"
         }
@@ -48,20 +96,16 @@ $ ->
             displayTasks()
         , "json"
 
-initTasks = ->
-    $('#editor .nextbutton').click ->
-        alert("brainstorm-modus --- coming soon")
-    $('#editor .gotrash').click ->
-        alert("ab in den papierkorb - coming soon")
-    if (isTouchDevice)
-        #$('body').css('background', '#ffffee');
-        $('html').off('click.dropdown').off('touchstart.dropdown');
-        $('#editor').hide();
-        $('#editor .cancelbutton').show().click ->
-            $("#editor").hide(); $tasks.show();
-        $('body').addClass("is-touch");
 
-$(window).on 'load', -> setTimeout initTasks, 1000
+
+
+
+
+
+
+
+
+
 
 
 window.displayTasks = ->
@@ -70,12 +114,21 @@ window.displayTasks = ->
     $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in myTasks
     
     $("table.tasks .task").click (e)->
-        if !e.ctrlKey
-            $(".tasks .task.selected").removeClass "selected"
+        isSelected= $(this).hasClass "selected"
+        # if !e.ctrlKey
+            # $(".tasks .task.selected").removeClass "selected"
         
         if isTouchDevice
-            $("#editor").show(); $tasks.hide();
+            if isSelected
+                # alert "isSelected=true"
+                editor_show()
+            else
+                # alert "add class Selected"
+                $(".tasks .task.selected").removeClass "selected"
+                $(this).addClass "selected"
+
         else
+            $(".tasks .task.selected").removeClass "selected"
             $(this).addClass "selected"
         
         taskId = $(this).attr "data-taskid"
@@ -94,6 +147,7 @@ window.displayTasks = ->
             $("#inputAssigned_to").val data.assigned_to   
             
         , "json")
+        
     .dblclick (e) ->
         window.location = "/tasks/" + $(this).attr("data-taskid") + "/edit"
 
@@ -131,14 +185,23 @@ viewHelpers = {
 
 }
 
+
+
+
+
 template = {
 maxi : {
     Header : ''
     Template : _.template('
-  <tr class="maxitask task" data-taskid="<%= id %>">
+  <tr class="maxitask task" data-taskid="<%= id %>" id="taskitem<%= id %>" >
     <td colspan="7" >
-    <div class="head">
-        <%= titel %> <span class="pull-right badge <%= priority_label(priority) %>"><%= priority %></span>
+    <div class="head" style="border-top: 0px solid #cccccc; " >
+        <span class="badge <%= priority_label(priority) %>"><%= priority %></span>
+        <%= titel %>
+
+        <a style="margin-top:-5px; "
+        class="pull-right btn btn-small btn--success" href="/options"><i class="icon-star "></i></a>
+
     </div>
       <div class="comment"><%= prepare_text(kommentar)  %></div>
       <div class="tags"><i class="icon-tags"></i> <%= tag %></div>
@@ -146,7 +209,7 @@ maxi : {
  </tr>
   
 
-  <tr style="background-color:#eeeeee;  border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; " >
+  <tr  class="details"  style="background-color:#eeeeee;  border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; " >
     <td><%= status %></td>
     <td><%= projekt_id %></td>
     <td><%= tasktype %></td>
@@ -159,6 +222,41 @@ maxi : {
  <tr style="border-bottom: 0px solid #eeeeee;">
     <td colspan="8" >&nbsp;</td> 
  </tr>
+ ')
+}
+
+midi : {
+    Header : ''
+    Template : _.template('
+   <tr class="extraspace" style="border-bottom: 0px solid #eeeeee;">
+    <td colspan="8" >  &nbsp;</td> 
+   </tr>
+
+  <tr class="miditask task" data-taskid="<%= id %>">
+    <td colspan="7" >
+    <div class="head" >
+        <span class="badge <%= priority_label(priority) %>"><%= priority %></span>
+       <%= titel %>
+         <a style="margin-top:-5px; "
+        class="pull-right btn btn-small btn--success" href="/options"><i class="icon-star "></i></a>
+    </div>
+      <div class="comment"   ><%= prepare_text(kommentar)  %></div>
+      <div class="tags"      ><i class="icon-tags"></i> <%= tag %></div>
+      </td> 
+ </tr>
+  
+
+  <tr class="details" style="background-color:#eeeeee; border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; " >
+    <td><%= status %></td>
+    <td><%= projekt_id %></td>
+    <td><%= tasktype %></td>
+    <td><%= wichtig %></td>
+    <td><%= autor %></td>
+    <td><%= autor2 %></td>
+    <td><%= assigned_to %></td>
+  </tr>
+
+
  ')
 }
 
