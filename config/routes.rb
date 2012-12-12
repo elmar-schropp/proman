@@ -1,12 +1,10 @@
 Proman::Application.routes.draw do
+  
+  get 'tasks/list'
+  
   resources :tasks
-
-
   resources :projekts
-
-
   resources :users
-
 
 
   # The priority is based upon order of creation:

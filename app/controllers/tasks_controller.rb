@@ -1,11 +1,17 @@
 class TasksController < ApplicationController
   # GET /tasks
-  # GET /tasks.json
   def index
-    @tasks = Task.all(:order => "Priority DESC")
-
     respond_to do |format|
-      format.html # index.html.erb
+      format.html
+    end
+  end
+  
+  # GET /tasks/list.json
+  def list
+    #@my_projekt = Projekt.find_by_id(params[:projekt])
+    @tasks = Task.order("Priority DESC").find_all_by_projekt_id(params[:projekt])
+    
+    respond_to do |format|
       format.json { render json: @tasks }
     end
   end
