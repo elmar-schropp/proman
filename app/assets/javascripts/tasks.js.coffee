@@ -2,10 +2,12 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
+allTasks = new Object();
 myTasks = []
 $tasks = null
 taskId = null
-myProjektId = null
+# myProjektId = null
+myProjektId = 2
 
 window.isTouchDevice = 'ontouchstart' of document.documentElement;
 if $(window).width() < 880
@@ -76,6 +78,20 @@ $ ->
     $("#editor .save").click ->
         if ! taskId  then return
         $("#inputComment").css("backgroundColor", "#8cd36d")
+        taskData= {
+            titel : $("#inputTitle").val()
+            kommentar  : $("#inputComment").val()
+            tag        : $("#inputTags").val()
+            priority   : $("#inputPriority").val()
+            tasktype   : $("#inputTasktype").val()
+            status     : $("#inputStatus").val()
+            wichtig    : $("#inputWichtig").val()
+            projekt_id : $("#inputProjekt_id").val()
+            autor      : $("#inputAutor").val()
+            autor2     : $("#inputAutor2").val()
+            assigned_to: $("#inputAssigned_to").val()
+        }
+            
         $.ajax {
             url: "/tasks/" + taskId + ".json"
             data: {
@@ -94,7 +110,26 @@ $ ->
                 }
             }
             success: (data) ->
+                for row in allTasks[myProjektId]
+                    # alert("-->"+row.id+"<-- "+row.titel)
+                    # alert ("-->"+taskId+"<--")
+                    if  parseInt(row.id) ==  parseInt(taskId) 
+                        # alert ("TREFFER: "+row.id)
+                        # alert(row["titel"])
+                        # alert(taskData["titel"])
+                        
+                        row["titel"]=taskData["titel"]
+                        row["kommentar"]=taskData["kommentar"]
+                        row["priority"]=taskData["priority"]
+                        row["status"]=taskData["status"]
+
+                        # row=taskData    ..........warum geht der nicht ???
+                        
+                        
                 refreshTaskItem taskId 
+                # loadTasks
+                displayTasks()
+                
                 $("#inputComment").css("backgroundColor", "#ffffff")
                 if (isTouchDevice)
                     editor_hide()
@@ -104,7 +139,7 @@ $ ->
             dataType: "json"
             type: "PUT"
         }
-    
+        
     $tasks = $("table.tasks")
     if $tasks.size() > 0
         loadTasks
@@ -121,10 +156,19 @@ $ ->
 
 
 loadTasks = ->
+    # alert(myProjektId)
+    # alert(allTasks[myProjektId])
+    if allTasks[myProjektId]
+        myTasks = allTasks[myProjektId]
+        displayTasks()
+        return
     $.get "/tasks/list.json?projekt=" + myProjektId, (data) ->
+        # alert(myProjektId)
         myTasks = data
+        allTasks[myProjektId]=data
         displayTasks()
     , "json"
+
 
 dynamicSort = `function(property) { 
     return function (obj1,obj2) {
@@ -168,12 +212,15 @@ window.displayTasks = ->
         
         if isTouchDevice
             if isSelected
-                # alert "isSelected=true"
-                editor_show()
+                # alert e.screenX
+                if (e.screenX < 200)  
+                   editor_show()
+                else
+                    $(this).removeClass "selected"
             else
-                # alert "add class Selected"
-                $(".tasks .task.selected").removeClass "selected"
+                # TEST  $(".tasks .task.selected").removeClass "selected"
                 $(this).addClass "selected"
+                $(this).after(getEditBar())
 
         else
             $(".tasks .task.selected").removeClass "selected"
@@ -277,6 +324,39 @@ midi : {
     Header : ''
     Template : _.template('
    <tr class="extraspace" style="border-bottom: 0px solid #eeeeee;">
+    <td colspan="7" >  &nbsp;</td> 
+   </tr>
+
+  <tr class="miditask task" data-taskid="<%= id %>">
+    <td colspan="7" >
+    <div class="head" >
+        <span class="badge <%= priority_label(priority) %>"><%= priority %></span>
+       <%= titel %>
+    </div>
+      <div class="comment"   ><%= prepare_text(kommentar)  %></div>
+      <div class="tags"      ><i class="icon-tags"></i> <%= tag %></div>
+      </td> 
+ </tr>
+  
+
+  <tr class="details" style="background-color:#eeeeee; border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; " >
+    <td><%= status %></td>
+    <td><%= projekt_id %></td>
+    <td><%= tasktype %></td>
+    <td><%= wichtig %></td>
+    <td><%= autor %></td>
+    <td><%= autor2 %></td>
+    <td><%= assigned_to %></td>
+  </tr>
+
+
+ ')
+}
+
+midi2 : {
+    Header : ''
+    Template : _.template('
+   <tr class="extraspace" style="border-bottom: 0px solid #eeeeee;">
     <td colspan="8" >  &nbsp;</td> 
    </tr>
 
@@ -308,6 +388,9 @@ midi : {
  ')
 }
 
+
+
+
 mini: {
     Header: '<tr class="miniheader" data-taskid="<%= id %>">
     <th>Prio </th>
@@ -334,6 +417,19 @@ mini: {
 }
 }
 
+window.getEditBar = () ->
+    template= '
+    <br>
+    <div id="in-place-edit-bar">
+        <button class="btn btn-success"><i class="icon-white  icon-ok "></i> O K </button>
+        <button class="btn "><i class="  icon-pencil "></i> edit</button>
+        <button class="btn "><i class="  icon-star   "></i> Hit</button>
+        <button class="btn "><i class="  icon-plus   "></i> More</button>
+        <button class="btn btn-danger gotrash"><i class="icon-white icon-trash"></i></button>
+      </div>'
+    return template
+
+
 # myTemplate = template.maxi
 myTemplate = template.midi
 
@@ -343,6 +439,7 @@ window.setTaskTemplate = (templateId) ->
     displayTasks()
 
 window.setTaskProjektFilter = (projektId) ->
+    # alert  (projektId)
     myProjektId = projektId
     
     loadTasks()
