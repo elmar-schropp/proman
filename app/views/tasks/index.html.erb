@@ -10,7 +10,7 @@
   .tasks .head { border-top: 1px solid #82a292; border-bottom: 2px solid #82a292; background: white; padding: 4px; font-weight: bold; }
   
   .tasks tr.maxitask, .tasks tr.maxitask td { padding: 0; }
-  .tasks tr.task.selected, .tasks .selected div { background: #84c0fc; }
+  .tasks tr.task.selected, .tasks .selected div { background: #e8f2fd; }
   .tasks .selected .head { background: #84c0fc; color: #1e49ac; border-color: #6d9ed0; }
   .tasks .comment { font-size: 9pt; padding: 4px; background-color:#fafafa; }
   .tasks .tags { font-size: 7pt; padding: 4px; background-color:#fafafa; }
@@ -43,7 +43,7 @@
   <div class="navbar-inner">
     <ul class="nav">
       <li><a href="/"  target="_self" ><i class="icon-home"></i> Home</a></li>
-      <li class="current"><a href="<%= tasks_path %>" target="_self" ><i class="icon-list"></i> Tasks</a></li>
+      <li class="current"><a href="<%= tasks_path %>" target="_self" ><i class="icon-refresh"></i> Reload</a></li>
       <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projekte <b class="caret"></b></a>
         <ul class="dropdown-menu">
@@ -60,10 +60,12 @@
 </div>
 
 
-<button class="btn star" onclick="setTaskProjektFilter(4)" ><i class=" icon-bell " ></i> ugb</button>
-<button class="btn star" onclick="setTaskProjektFilter(2)" ><i class=" icon-flag "></i> proMan</button>
-<button class="btn star" onclick="setTaskProjektFilter(3)" ><i class="icon-thumbs-down "></i> privat</button>
-<button class="btn star" onclick="setTaskProjektFilter(5)" ><i class="icon-thumbs-down "></i>inbox</button>
+<button class="btn btn btn-primary" onclick="setTaskProjektFilter(5)" ><i class="icon-white  icon-folder-open " ></i> inbox</button>
+<button class="btn btn " onclick="setTaskProjektFilter(4)" > ugb</button>
+<button class="btn btn " onclick="setTaskProjektFilter(2)" > proMan</button>
+<button class="btn btn " onclick="setTaskProjektFilter(1)" > teamwiki</button>
+<button class="btn btn " onclick="setTaskProjektFilter(3)" > privat</button>
+<button class="btn star" onclick="setTaskProjektFilter(6)" >erledigt</button>
 
 
 

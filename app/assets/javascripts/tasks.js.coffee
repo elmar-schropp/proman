@@ -14,9 +14,6 @@ if $(window).width() < 880
    window.isTouchDevice = true 
 
 
-# alert("OK ???")
-# $.cookie("viewMode", 11);
-# alert($.cookie('viewMode'))
 
 
 initTasks = ->
@@ -34,13 +31,21 @@ initTasks = ->
         $('#editor .cancelbutton').show().click ->
             editor_hide()
         $('body').addClass("is-touch");
+    curProject=$.cookie("CurPro")
+    # alert(curProject)
+    setTaskProjektFilter(curProject)
+    # alert("OK ???")
+    # $.cookie("viewMode", 11);
+    # alert($.cookie('viewMode'))
+    # $.cookie("CurPro", 11);
+    # alert($.cookie('viewMode'))
+
     
     
     $('#editor').keydown (event) ->
         editor_onkeydown(event)
         # alert('Handler for .keydown() called.'  )
         # alert('Handler for .keydown() called.' + event.target )
-
 
 $(window).on 'load', -> setTimeout initTasks, 1000
 
@@ -213,12 +218,14 @@ window.displayTasks = ->
         if isTouchDevice
             if isSelected
                 # alert e.screenX
-                if (e.screenX < 200)  
+                if (e.screenX < 550)  
                    editor_show()
                 else
                     $(this).removeClass "selected"
+                    $("#in-place-edit-bar").remove()
             else
-                # TEST  $(".tasks .task.selected").removeClass "selected"
+                $(".tasks .task.selected").removeClass "selected"
+                $("#in-place-edit-bar").remove()
                 $(this).addClass "selected"
                 $(this).after(getEditBar())
 
@@ -328,7 +335,7 @@ midi : {
    </tr>
 
   <tr class="miditask task" data-taskid="<%= id %>">
-    <td colspan="7" >
+    <td colspan="8" >
     <div class="head" >
         <span class="badge <%= priority_label(priority) %>"><%= priority %></span>
        <%= titel %>
@@ -419,12 +426,11 @@ mini: {
 
 window.getEditBar = () ->
     template= '
-    <br>
-    <div id="in-place-edit-bar">
+    <div id="in-place-edit-bar" style="min-width:360px; ">
         <button class="btn btn-success"><i class="icon-white  icon-ok "></i> O K </button>
         <button class="btn "><i class="  icon-pencil "></i> edit</button>
-        <button class="btn "><i class="  icon-star   "></i> Hit</button>
-        <button class="btn "><i class="  icon-plus   "></i> More</button>
+        <button class="btn "><i class="  icon-plus   "></i> Neu</button>
+        <button class="btn "><i class="  icon-arrow-down   "></i> Tools</button>
         <button class="btn btn-danger gotrash"><i class="icon-white icon-trash"></i></button>
       </div>'
     return template
@@ -435,11 +441,11 @@ myTemplate = template.midi
 
 window.setTaskTemplate = (templateId) ->
     myTemplate = template[templateId]
-    
     displayTasks()
 
 window.setTaskProjektFilter = (projektId) ->
     # alert  (projektId)
     myProjektId = projektId
-    
+    # $.cookie("CurPro", myProjektId)
+
     loadTasks()
