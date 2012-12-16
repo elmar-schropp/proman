@@ -7,7 +7,12 @@ myTasks = []
 $tasks = null
 taskId = null
 # myProjektId = null
-myProjektId = 2
+# myProjektId = 2
+myProjektId = $.cookie("CurPro")
+# alert(myProjektId)
+if not myProjektId then myProjektId=2
+# alert(myProjektId)
+ 
 
 window.isTouchDevice = 'ontouchstart' of document.documentElement;
 if $(window).width() < 880
@@ -31,7 +36,8 @@ initTasks = ->
         $('#editor .cancelbutton').show().click ->
             editor_hide()
         $('body').addClass("is-touch");
-    curProject=$.cookie("CurPro")
+    
+    curProject=myProjektId 
     # alert(curProject)
     setTaskProjektFilter(curProject)
     # alert("OK ???")
@@ -65,7 +71,7 @@ refreshTaskItem = (taskId)->
 
 editor_show = ->
     #alert "show editor"
-  
+    # alert(taskId)
     $("#editor").show();
     $tasks.hide();
     if (isTouchDevice)
@@ -82,6 +88,9 @@ editor_hide = ->
 $ ->
     $("#editor .save").click ->
         if ! taskId  then return
+        if $("#inputProjekt_id").val() == "" 
+            alert("kein Projekt zugewiesen") ;  return
+             
         $("#inputComment").css("backgroundColor", "#8cd36d")
         taskData= {
             titel : $("#inputTitle").val()
@@ -446,6 +455,8 @@ window.setTaskTemplate = (templateId) ->
 window.setTaskProjektFilter = (projektId) ->
     # alert  (projektId)
     myProjektId = projektId
-    # $.cookie("CurPro", myProjektId)
-
+    # alert(myProjektId)
+    $.cookie("CurPro", myProjektId,  { path: '/' })
+    
+    # alert ("SET: "+$.cookie("CurPro"))
     loadTasks()

@@ -65,7 +65,7 @@
 		return null;
 	};
 
-	config.defaults = {};
+	config.defaults = {path: '/'};
 
 	$.removeCookie = function (key, options) {
 		if ($.cookie(key) !== null) {
