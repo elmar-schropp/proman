@@ -33,6 +33,9 @@
   
   .maxitask strong { color: #488b6a; font-size: 13px; }
   .miditask .head   {width:400px; }
+  
+  .toolbar-plus.hidden { background: #333;  display: none; }
+  
 </style>
 
   
@@ -42,10 +45,8 @@
 <div class="navbar navbar touch-only">
   <div class="navbar-inner">
     <ul class="nav">
-      <li><a href="/"  target="_self" ><i class="icon-home"></i> Home</a></li>
-      <li class="current"><a href="<%= tasks_path %>" target="_self" ><i class="icon-refresh"></i> Reload</a></li>
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projekte <b class="caret"></b></a>
+       <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-arrow-left"></i> Projekte <b class="caret"></b></a>
         <ul class="dropdown-menu">
           <li><a href="<%= projekts_path %>">Projekte verwalten...</a></li>
           <li class="divider"></li>
@@ -54,7 +55,36 @@
           <% end %>
         </ul>
       </li>
-      <li><a href="/options">Optionen</a></li>
+      <li class="current"><a href="<%= tasks_path %>" target="_self" ><i class="icon-refresh"></i> Reload</a></li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Filter <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="#" onclick="setTaskFilter('all')">Alle anzeigen</a></li>
+          <li><a href="#" onclick="setTaskFilter('undone')">Unerledigte</a></li>
+          <li><a href="#" onclick="setTaskFilter('undone')">Selbst erstellte</a></li>
+          <li><a href="#" onclick="setTaskFilter('undone')">Mir zugeordnete</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Sort <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="#" onclick="setTaskSort('mini')">Nach Prioritaet</a></li>
+          <li class="divider"></li>
+          <li><a href="#" onclick="setTaskSort('maxi')">Neueste zuerst</a></li>
+          <li><a href="#" onclick="setTaskSort('maxi')">Aelteste zuerst</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Ansicht <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="#" onclick="setTaskTemplate('mini')">Mini</a></li>
+          <li><a href="#" onclick="setTaskTemplate('midi')">Midi (3 Zeilen)</a></li>
+          <li><a href="#" onclick="setTaskTemplate('maxi')">Maxi</a></li>
+        </ul>
+      </li>
+     <li class="current"><a  href="#myModal"  data-toggle="modal">Optionen</a></li>
+       <!-- <li><a href="/"  target="_self" ><i class="icon-home"></i> Home</a></li> //!-->
+
     </ul>
   </div>
 </div>
@@ -67,6 +97,9 @@
 <button class="btn btn " onclick="setTaskProjektFilter(3)" > privat</button>
 <button class="btn star" onclick="setTaskProjektFilter(6)" >erledigt</button>
 
+<!-- Button to trigger modal -->
+<a href="#myModal" role="button" class="btn" data-toggle="modal">Launch demo modal</a>
+
 
 
 <div class="row">
@@ -78,7 +111,39 @@
   </div>
   
   
-  
+    
+    <!-- Modal -->
+    <div id="myModal" class="modal hide fade center" tabindex="-1"
+         style="width:85%; min-width:300px; max-width:600px; margin:10px 0 0 10px; left:5%; top:0%; "
+           role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">...</button>
+    <h3 id="myModalLabel">Optionen </h3>
+    </div>
+    <div class="modal-body" style="max-height:200px; " >
+    <p> ...ich finde so ein <b>modales fenster</b> fast besser wie die dropDownMenues, vor allem wenn sie bei touch nicht ordentlich funktionieren</p>
+    <p>...</p>
+    <p>Als erstes kommt die umschaltung einspaltig - zweispaltig fuer landscape und portrait</p>
+    <p>...</p>
+    <p>theoretisch koennte man auch die Ansicht da rein nehmen ???</p>
+    <p></p>
+    <p>und ein kleines Bild waere auch nicht schlecht</p>
+    <p>...</p>
+    <p>...</p>
+    <p>...</p>
+    <p>...</p>
+    <p>...</p>
+    <p>...</p>
+    <p>...</p>
+    </div>
+    <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <button class="btn btn-primary">Save changes</button>
+    </div>
+    </div>
+   
+     
+    
   <div class="span6 hidden-phone" style=""  >
     <a href="/tasks/85" data-confirm="Are you sure?" data-method="delete" rel="nofollow">Destroy</a>
     <div class="well" id="editor">
