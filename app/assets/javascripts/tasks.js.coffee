@@ -353,8 +353,10 @@ midi : {
 
   <tr class="miditask task" data-taskid="<%= id %>">
     <td colspan="8" >
-    <div class="head" >
+    <div class="head mybackground01" >
         <span class="badge <%= priority_label(priority) %>"><%= priority %></span>
+       <span class="badge badge-warning   "> <i class=" icon-white icon-hand-right "> </i></span></span>
+       <span class="badge                pull-right "> <i class=" icon-white icon-star"></i></span>
        <%= titel %>
     </div>
       <div class="comment"   ><%= prepare_text(kommentar)  %></div>
@@ -443,14 +445,16 @@ mini: {
 
 window.getEditBar = () ->
     template= '
-    <div id="in-place-edit-bar-0" style="min-width:360px; ">
+    <div id="in-place-edit-bar-0" style="min-width:360px; white-space:nowrap;  ">
         <button class="btn btn-success "><i class=" icon-white icon-ok ">         </i> O K </button>
-        <button class="btn btn-inverse "><i class=" icon-white icon-plus">        </i> </button>
+        <a class="btn btn-inverse " href="http://proman.wikilab.de/tasks/new" target="_self" ">
+            <i class=" icon-white icon-plus"> </i></a>
         <button class="btn btn-inverse "><i class=" icon-white icon-star">        </i> </button>
         <button class="btn btn-inverse " onclick="alert(|||...coming soon|||)"><i class=" icon-white icon-arrow-down "> </i> Mehr </button>
-        <button class="btn btn-primary "><i class=" icon-white icon-pencil ">   </i> edit </button>
+        <button class="btn btn-inverse "><i class=" icon-white icon-pencil ">   </i> edit </button>
+        <button class="btn btn-inverse "><i class="icon-white icon-trash"></i></button>
     </div>
-    <div id="in-place-edit-bar-2" style="min-width:360px;" class="toolbar-plus hidden">
+    <div id="in-place-edit-bar-2" style="min-width:360px; white-space:nowrap; " class="toolbar-plus hidden">
         <span class="badge">1</span>
         <button class="btn ">Heute</button>
         <button class="btn ">Morgen</button>
@@ -458,17 +462,17 @@ window.getEditBar = () ->
         <button class="btn ">naechste W.</button>
         <button class="btn ">Vorgemerkt</button>
         <button class="btn ">Archiv</button>
-        <button class="btn btn-danger gotrash"><i class="icon-white icon-trash">  </i></button>
+        <button class="btn btn-danger gotrash">BUG</button>
     </div>
-    <div id="in-place-edit-bar-1" style="min-width:370px; " class="toolbar-plus show">
+    <div id="in-place-edit-bar-1" style="min-width:370px;  white-space:nowrap; " class="toolbar-plus show">
         <span class="badge">2</span>
         <button class="btn ">NEXT</button>
         <button class="btn ">ruckZuck</button>
         <button class="btn ">Wichtig</button>
         <button class="btn ">Idee</button>
-        <button class="btn btn-warning "><i class="icon-white  icon-warning-sign">  </i></button>
+        <button class="btn "><i class=" icon-warning-sign">  </i></button>
    </div>
-    <div id="in-place-edit-bar-3" style="min-width:360px;"  class="toolbar-plus hidden"">
+    <div id="in-place-edit-bar-3" style="min-width:360px; white-space:nowrap; "  class="toolbar-plus hidden"">
         <span class="badge">3</span>
         <button class="btn ">...prioritaeten</button>
     </div>'

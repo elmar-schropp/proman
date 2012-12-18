@@ -7,19 +7,27 @@
   .tasks tr.minitask td.prio, .tasks tr.minitask td.titel { font-size: 14px; }
   
   .tasks .head.neu { border-top: 1px solid #01c45c; border-bottom: 2px solid #01c45c;  }
-  .tasks .head { border-top: 1px solid #82a292; border-bottom: 2px solid #82a292; background: white; padding: 4px; font-weight: bold; }
+  .tasks .head { border-top: 1px solid #82a292; border-bottom: 2px solid #82a292; __background: white; padding: 4px; font-weight: bold; }
   
   .tasks tr.maxitask, .tasks tr.maxitask td { padding: 0; }
   .tasks tr.task.selected, .tasks .selected div { background: #e8f2fd; }
+  .tasks tr.task.selected, .tasks .selected div { background: #ffffff; }
   .tasks .selected .head { background: #84c0fc; color: #1e49ac; border-color: #6d9ed0; }
   .tasks .comment { font-size: 9pt; padding: 4px; background-color:#fafafa; }
   .tasks .tags { font-size: 7pt; padding: 4px; background-color:#fafafa; }
   .tasks .tags i { vertical-align: middle }
   
-  .tasks tr.miditask, .tasks tr.miditask td { padding: 0;}
-  .miditask.selected, .tasks .selected div { background: 8f4c0fc;}
-  .miditask.selected .head { background: #84c0fc; color: #1e49ac; border-color: #6d9ed0; }
-  
+  .tasks tr.miditask, .tasks tr.miditask td { padding: 0; }
+  .miditask.selected, .tasks .selected div { background: 8f4c0fc; }
+  .miditask.selected, .tasks .selected div { background: #ffffff; }
+
+  .miditask .__head { background: #eeeeee; color: #1e49ac; border-color: #6d9ed0; }
+  .miditask .__head { background: #000000; color: #bbbbbb; border-color: #6d9ed0; }
+  .miditask .head { border-top: 1px solid #0000ff; border-bottom: 0px solid #82a292; padding: 4px;
+             font-weight: bold; color: #000000; text-shadow: 0px 1px 1px #fff; }
+  .miditask.selected .head { background: #84c0fc; color: #1e49ac; border-color: #6d9ed0;
+              color: #000; text-shadow: 0px 1px 1px #fff;} 
+   
   .tasks .comment { font-size: 9pt; padding: 4px; background-color:#fafafa; }
   .tasks .tags { font-size: 7pt; padding: 4px; background-color:#fafafa; }
   .tasks .tags i { vertical-align: middle }
@@ -42,11 +50,11 @@
   
     <!-- <h1>Listing tasks</h1>     //!-->
 
-<div class="navbar navbar touch-only">
-  <div class="navbar-inner">
+<div class="navbar navbar touch-only navbar-inverse">
+  <div class="navbar-inner" style="white-space:nowrap; ">
     <ul class="nav">
        <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-arrow-left"></i> Projekte <b class="caret"></b></a>
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-white icon-arrow-left"></i> Projekte <b class="caret"></b></a>
         <ul class="dropdown-menu">
           <li><a href="<%= projekts_path %>">Projekte verwalten...</a></li>
           <li class="divider"></li>
@@ -55,7 +63,7 @@
           <% end %>
         </ul>
       </li>
-      <li class="current"><a href="<%= tasks_path %>" target="_self" ><i class="icon-refresh"></i> Reload</a></li>
+      <li class="current"><a href="<%= tasks_path %>" target="_self" ><i class="icon-white icon-refresh"></i> Reload</a></li>
       <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Filter <b class="caret"></b></a>
         <ul class="dropdown-menu">
@@ -82,29 +90,30 @@
           <li><a href="#" onclick="setTaskTemplate('maxi')">Maxi</a></li>
         </ul>
       </li>
-     <li class="current"><a  href="#myModal"  data-toggle="modal">Optionen</a></li>
-       <!-- <li><a href="/"  target="_self" ><i class="icon-home"></i> Home</a></li> //!-->
+      <li class="current"><a  href="#myModal"  data-toggle="modal">Optionen</a></li>
+      <!-- <li><a href="/"  target="_self" ><i class="icon-home"></i> Home</a></li> //!-->
 
     </ul>
   </div>
 </div>
 
+<div style="white-space:nowrap; ">
+  <button class="btn btn btn-primary" onclick="setTaskProjektFilter(5)" ><i class="icon-white  icon-folder-open " ></i> inbox</button>
+  <button class="btn btn " onclick="setTaskProjektFilter(4)" > ugb</button>
+  <button class="btn btn " onclick="setTaskProjektFilter(2)" > proMan</button>
+  <button class="btn btn " onclick="setTaskProjektFilter(1)" > teamwiki</button>
+  <button class="btn btn " onclick="setTaskProjektFilter(3)" > privat</button>
+  <button class="btn star" onclick="setTaskProjektFilter(6)" >erledigt</button>
+</div>
 
-<button class="btn btn btn-primary" onclick="setTaskProjektFilter(5)" ><i class="icon-white  icon-folder-open " ></i> inbox</button>
-<button class="btn btn " onclick="setTaskProjektFilter(4)" > ugb</button>
-<button class="btn btn " onclick="setTaskProjektFilter(2)" > proMan</button>
-<button class="btn btn " onclick="setTaskProjektFilter(1)" > teamwiki</button>
-<button class="btn btn " onclick="setTaskProjektFilter(3)" > privat</button>
-<button class="btn star" onclick="setTaskProjektFilter(6)" >erledigt</button>
-
-<!-- Button to trigger modal -->
-<a href="#myModal" role="button" class="btn" data-toggle="modal">Launch demo modal</a>
+<!-- Button to trigger modal 
+<a href="#myModal" role="button" class="btn" data-toggle="modal">Launch demo modal</a>-->
 
 
 
 <div class="row">
   <div class="span6">
-    <br>
+
     <table class="tasks">
     </table>
     <br />
@@ -146,69 +155,60 @@
     
   <div class="span6 hidden-phone" style=""  >
     <a href="/tasks/85" data-confirm="Are you sure?" data-method="delete" rel="nofollow">Destroy</a>
-    <div class="well" id="editor">
+    <div class="well" id="editor" style="width:360px; " >
       
-
-      <div class="input-prepend">
+     
+    <div class="input-prepend">
           <span class="add-on"><i class="icon-text-width"></i></span>
-          <input type="text" style="font-weight:bold; width:320px; " id="inputTitle" class="input-xlarge">
+          <input type="text" style="font-weight:bold; width:320px; color:#fff; background-color:#000; "
+                 id="inputTitle" class="input-xlarge">
       </div>
-      <button class="btn star"><i class=" icon-plus "></i> Breite</button>
-      <button class="btn star"><i class=" icon-minus "></i> </button>
-      <button class="btn star pull-right"><i class=" icon-minus "></i> </button>
-      <button class="btn star pull-right"><i class=" icon-plus "></i> Hoehe </button>
-      
-      <div class="form-actions">
-        <button class="btn btn-primary save"><i class="icon-ok icon-white"></i> Save</button>
-        <button class="btn btn-primary nextbutton"><i class="icon-ok icon-white"></i> Next...</button>
-        <button class="btn btn-danger pull-right gotrash"><i class="icon-white icon-trash"></i></button>
-        <button class="btn btn-warning  pull-right cancelbutton"><i class="icon-arrow-left icon-white" style="display:none"></i> Abbruch</button>
-      </div>
-        
-      
-      <textarea type="text" id="inputComment" style="width:350px" rows=10></textarea>
-       
-      <br>
-      <button class="btn btn-primary save"><i class="icon-ok icon-white"></i> Save</button>
-      <button class="btn btn-primary nextbutton"><i class="icon-ok icon-white"></i> Next...</button>
-      <button class="btn btn-danger pull-right gotrash"><i class="icon-white icon-trash"></i></button>
-      <button class="btn btn-warning  pull-right cancelbutton"><i class="icon-arrow-left icon-white" style="display:none"></i> Abbruch</button>
-      <br>
-      
-      Tags:     
+
       <div class="input-prepend">
           <span class="add-on"><i class="icon-tags"></i></span>
           <input type="text" id="inputTags" class="input-xlarge" style="width:320px">
       </div>
+ 
+      <div class="row-fluid">
+      <div class="span8">         
+       <div class = "control-label"> Projekt </div>
+      <div class="controls"><input type="text" id="inputProjekt_id"  style="width:240px; " class="input-medium"></div>
+    </div>
+    <div class="span4">
+       <div class = "control-label"> Prioritaet </div>
+        <div class="controls"><input type="text" id="inputPriority" style="width:60px; " class="input-medium"></div>
+    </div>        
+   </div>
+     
+      <div class="form-actions">
+        <button class="btn btn-primary save"><i class="icon-ok icon-white"></i> Save</button>
+        <button class="btn btn-primary nextbutton"><i class="icon-ok icon-white"></i> Next...</button>
+        <a class="btn btn-success " href="http://proman.wikilab.de/tasks/new" target="_self" ">
+            <i class=" icon-white icon-plus"> </i></a>
+        <button class="btn btn-warning  pull-right cancelbutton"><i class="icon-arrow-left icon-white" style="display:none"></i> Abbruch</button>
+      </div>
+       <br> 
+      
+      <textarea type="text" id="inputComment" style="width:350px" rows=10></textarea>
+      <button class="btn star"><i class=" icon-plus "></i> Breite</button>
+      <button class="btn star"><i class=" icon-minus "></i> </button>
+      <button class="btn star pull-right"><i class=" icon-minus "></i> </button>
+      <button class="btn star pull-right"><i class=" icon-plus "></i> Hoehe </button>
+       
+      <br>
+      <br>
+      <button class="btn btn-primary save"><i class="icon-ok icon-white"></i> Save</button>
+      <button class="btn btn-primary nextbutton"><i class="icon-ok icon-white"></i> Next...</button>
+      <button class="btn btn-danger gotrash"><i class="icon-white icon-trash"></i></button>
+      <button class="btn btn-warning  pull-right cancelbutton"><i class="icon-arrow-left icon-white" style="display:none"></i> Abbruch</button>
+      <br>
+      
 
-      <button class="btn star"><i class=" icon-bell "></i> Neu</button>
-      <button class="btn star"><i class=" icon-flag "></i> Wichtig</button>
-      <button class="btn star"><i class="icon-thumbs-down "></i> Bug</button>
-      <button class="btn star  pull-right"><i class="icon-star "></i> STAR</button>
-
-
-
-
-        
+       
         
     <div class="row-fluid">
       <div class="span6">
-        
-        <div class = "control-label"> Prioritaet </div>
-        <div class="controls"><input type="text" id="inputPriority" class="input-medium"></div>
-       
-        <div class = "control-label"> Projekt </div>
-        <div class="controls"><input type="text" id="inputProjekt_id" class="input-medium"></div>
       
-       <div class = "control-label"> Autor </div>
-       <div class="controls"><input type="text" id="inputAutor" class="input-medium"></div>
-      
-      <div class = "control-label"> Autor2 </div>
-      <div class="controls"><input type="text" id="inputAutor2" class="input-medium"></div>
-      
-      </div>
-      <div class="span6">
- 
         <div class = "control-label"> Status </div>
         <div class="controls"><input type="text" id="inputStatus" class="input-medium"></div>
       
@@ -218,12 +218,40 @@
         <div class = "control-label"> Wichtig </div>
         <div class="controls"><input type="text" id="inputWichtig" class="input-medium"></div>
       
+      
+      </div>
+      <div class="span6">
+ 
         <div class = "control-label"> Assigned_to </div>
         <div class="controls"><input type="text" id="inputAssigned_to" class="input-medium"></div>
+
+       <div class = "control-label"> Autor </div>
+       <div class="controls"><input type="text" id="inputAutor" class="input-medium"></div>
+      
+      <div class = "control-label"> Autor2 </div>
+      <div class="controls"><input type="text" id="inputAutor2" class="input-medium"></div>
   
       </div>
      </div> 
         
+       <br>
+       <br>
+       <br>
+       <br>
+       <br>
+       <br>
+       <br>
+       <br>
+       <br>
+       <br>
+       <br>
+       <br>
+       <br>
+       <br>
+       <br>
+       <br>
+       <br>
+       <br>
        <br>
 
       

@@ -22,8 +22,14 @@
 
 $btnPinkBackground:              #70009d;
 $btnPinkBackgroundHighlight:     adjust-hue($btnPinkBackground, 20%) !default;
-.btn-pink {
+.btn-pink, .mybackground {
   @include buttonBackground($btnPinkBackgroundHighlight, $btnPinkBackground);
+}
+.btn-pink, .mybackground {
+  @include buttonBackground($btnPinkBackgroundHighlight, $btnPinkBackground);
+}
+.mybackground01 {
+  @include buttonBackground(#dddddd, #cccccc);
 }
 
 
