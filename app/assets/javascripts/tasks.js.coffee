@@ -74,6 +74,8 @@ refreshTaskItem = (taskId)->
 editor_show = ->
     #alert "show editor"
     # alert(taskId)
+    $("#main-toolbar").addClass "hide-on-editor"
+    $("#bookmark-toolbar").addClass "hide-on-editor"
     $("#editor").show();
     $tasks.hide();
     if (isTouchDevice)
@@ -82,6 +84,8 @@ editor_show = ->
 editor_hide = ->
     # alert "HIDE editor"
     $("#editor").hide();
+    $("#main-toolbar").removeClass "hide-on-editor"
+    $("#bookmark-toolbar").removeClass "hide-on-editor"
     $tasks.show();
     if (isTouchDevice)
         $(".touch-only").show();
@@ -222,6 +226,7 @@ window.displayTasks = ->
     $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in sortedTasks
     
     $("table.tasks .task").click (e)->
+        taskId = $(this).attr "data-taskid"
         isSelected= $(this).hasClass "selected"
         # if !e.ctrlKey
             # $(".tasks .task.selected").removeClass "selected"
@@ -229,22 +234,16 @@ window.displayTasks = ->
         if isTouchDevice
             if isSelected
                 # alert e.screenX
-                if (e.screenX < 550)  
-                   editor_show()
-                else
-                    $(this).removeClass "selected"
-                    $("#in-place-edit-bar-0").remove()
-                    $("#in-place-edit-bar-1").remove()
-                    $("#in-place-edit-bar-2").remove()
-                    $("#in-place-edit-bar-3").remove()
-            else
+                editor_show()
+             else
                 $(".tasks .task.selected").removeClass "selected"
                 $("#in-place-edit-bar-0").remove()
                 $("#in-place-edit-bar-1").remove()
                 $("#in-place-edit-bar-2").remove()
                 $("#in-place-edit-bar-3").remove()
+                $("#in-place-edit-bar-4").remove()
             $(this).addClass "selected"
-            $(this).after(getEditBar())
+            $(this).after(getEditBar(taskId))
 
         else
             $(".tasks .task.selected").removeClass "selected"
@@ -313,7 +312,7 @@ maxi : {
     Header : ''
     Template : _.template('
   <tr class="maxitask task" data-taskid="<%= id %>" id="taskitem<%= id %>" >
-    <td colspan="7" >
+    <td colspan="8" >
     <div class="head" style="border-top: 0px solid #cccccc; " >
         <span class="badge <%= priority_label(priority) %>"><%= priority %></span>
         <%= titel %>
@@ -348,15 +347,15 @@ midi : {
     Header : ''
     Template : _.template('
    <tr class="extraspace" style="border-bottom: 0px solid #eeeeee;">
-    <td colspan="7" >  &nbsp;</td> 
+       <td colspan="8" >  &nbsp;</td> 
    </tr>
 
   <tr class="miditask task" data-taskid="<%= id %>">
-    <td colspan="8" >
+     <td colspan="8" >
     <div class="head mybackground01" >
-        <span class="badge <%= priority_label(priority) %>"><%= priority %></span>
-       <span class="badge badge-warning   "> <i class=" icon-white icon-hand-right "> </i></span></span>
-       <span class="badge                pull-right "> <i class=" icon-white icon-star"></i></span>
+       <span class="badge <%= priority_label(priority) %>"><%= priority %></span>
+       <span class="badge badge-warning   "> <i class=" icon-white icon-hand-right "> </i> </span>
+       <span class="badge                pull-right "> <i class=" icon-white icon-star"></i> </span>
        <%= titel %>
     </div>
       <div class="comment"   ><%= prepare_text(kommentar)  %></div>
@@ -365,7 +364,8 @@ midi : {
  </tr>
   
 
-  <tr class="details" style="background-color:#eeeeee; border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; " >
+  <tr class="details" style="color:#ffffff; background-color:#333333;
+        border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; " >
     <td><%= status %></td>
     <td><%= projekt_id %></td>
     <td><%= tasktype %></td>
@@ -373,6 +373,7 @@ midi : {
     <td><%= autor %></td>
     <td><%= autor2 %></td>
     <td><%= assigned_to %></td>
+   <td>xxx</td>
   </tr>
 
 
@@ -401,7 +402,6 @@ midi2 : {
   
 
   <tr class="details" style="background-color:#eeeeee; border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; " >
-    <td><%= status %></td>
     <td><%= projekt_id %></td>
     <td><%= tasktype %></td>
     <td><%= wichtig %></td>
@@ -443,16 +443,28 @@ mini: {
 }
 }
 
-window.getEditBar = () ->
+window.getEditBar = (myTaskId) ->
+    #alert(myTaskId)
     template= '
-    <div id="in-place-edit-bar-0" style="min-width:360px; white-space:nowrap;  ">
+    <div id="in-place-edit-bar-0" style="display:none; min-width:360px; white-space:nowrap;  ">
         <button class="btn btn-success "><i class=" icon-white icon-ok ">         </i> O K </button>
-        <a class="btn btn-inverse " href="http://proman.wikilab.de/tasks/new" target="_self" ">
+        <a class="btn btn-inverse " href="http://proman.wikilab.de/tasks/new" target="_self" >
             <i class=" icon-white icon-plus"> </i></a>
         <button class="btn btn-inverse "><i class=" icon-white icon-star">        </i> </button>
-        <button class="btn btn-inverse " onclick="alert(|||...coming soon|||)"><i class=" icon-white icon-arrow-down "> </i> Mehr </button>
+        <button class="btn btn-inverse " onclick="alert(|||...xxx...coming soon|||)"><i class=" icon-white icon-arrow-down "> </i> Mehr </button>
         <button class="btn btn-inverse "><i class=" icon-white icon-pencil ">   </i> edit </button>
-        <button class="btn btn-inverse "><i class="icon-white icon-trash"></i></button>
+        <button class="btn btn-danger "><i class="icon-white icon-trash"></i></button>
+
+    </div>
+    <div id="in-place-edit-bar-1" style="min-width:360px; white-space:nowrap;  ">
+        <button class="btn btn-success "><i class=" icon-white icon-ok ">         </i> O K </button>
+        <a class="btn " href="http://proman.wikilab.de/tasks/new" target="_self" ">
+            <i class=" icon-plus"> </i></a>
+        <button class="btn"><i class="  icon-star">        </i> </button>
+        <button class="btn" onclick="alert(|||...coming soon|||)"><i class=" icon-arrow-down "> </i> Mehr </button>
+        <button class="btn"><i class="icon-pencil ">   </i> edit </button>
+         <a class="btn btn-danger" href="/tasks/'+myTaskId+'" data-confirm="'+myTaskId+'...Are you sure?" data-method="delete" rel="nofollow">
+            <i class=" icon-white icon-white icon-trash"> </i></a>
     </div>
     <div id="in-place-edit-bar-2" style="min-width:360px; white-space:nowrap; " class="toolbar-plus hidden">
         <span class="badge">1</span>
@@ -460,19 +472,20 @@ window.getEditBar = () ->
         <button class="btn ">Morgen</button>
         <button class="btn ">diese Woche</button>
         <button class="btn ">naechste W.</button>
+        <br>
         <button class="btn ">Vorgemerkt</button>
         <button class="btn ">Archiv</button>
         <button class="btn btn-danger gotrash">BUG</button>
     </div>
-    <div id="in-place-edit-bar-1" style="min-width:370px;  white-space:nowrap; " class="toolbar-plus show">
+    <div id="in-place-edit-bar-3" style="display:none; min-width:370px;  white-space:nowrap; " class="toolbar-plus show">
         <span class="badge">2</span>
-        <button class="btn ">NEXT</button>
-        <button class="btn ">ruckZuck</button>
-        <button class="btn ">Wichtig</button>
-        <button class="btn ">Idee</button>
-        <button class="btn "><i class=" icon-warning-sign">  </i></button>
+        <button class="btn btn-inverse">NEXT</button>
+        <button class="btn btn-inverse">ruckZuck</button>
+        <button class="btn btn-inverse">Wichtig</button>
+        <button class="btn btn-inverse">Idee</button>
+        <button class="btn btn-inverse"><i class=" icon-white icon-warning-sign">  </i></button>
    </div>
-    <div id="in-place-edit-bar-3" style="min-width:360px; white-space:nowrap; "  class="toolbar-plus hidden"">
+    <div id="in-place-edit-bar-4" style="min-width:360px; white-space:nowrap; "  class="toolbar-plus hidden"">
         <span class="badge">3</span>
         <button class="btn ">...prioritaeten</button>
     </div>'
