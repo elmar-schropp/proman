@@ -15,10 +15,10 @@ if not myProjektId then myProjektId=2
  
 
 window.isTouchDevice = 'ontouchstart' of document.documentElement;
-if $(window).width() < 480
+if $(window).width() < 600
    window.isTouchDevice = true 
 
-# window.isTouchDevice = false
+ # window.isTouchDevice = false
 
 
 
@@ -221,7 +221,7 @@ window.displayTasks = ->
     $tasks.html ""
     
     sortedTasks = myTasks.sort(dynamicSort("priority"))
-    
+    $tasks.append("<br><br>")
     $tasks.append myTemplate.Header
     $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in sortedTasks
     
@@ -243,8 +243,10 @@ window.displayTasks = ->
                 $("#in-place-edit-bar-3").remove()
                 $("#in-place-edit-bar-4").remove()
             $(this).addClass "selected"
-            $(this).after(getEditBar(taskId))
-
+            # $(this).after(getEditBar(taskId))
+            # alert(taskId)
+            # alert($("#direktedit"+taskId)[0].id)
+            $("#direktedit"+taskId).append(getEditBar(taskId))
         else
             $(".tasks .task.selected").removeClass "selected"
             $(this).addClass "selected"
@@ -346,25 +348,23 @@ maxi : {
 midi : {
     Header : ''
     Template : _.template('
-   <tr class="extraspace" style="border-bottom: 0px solid #eeeeee;">
-       <td colspan="8" >  &nbsp;</td> 
-   </tr>
+
 
   <tr class="miditask task" data-taskid="<%= id %>">
      <td colspan="8" >
     <div class="head mybackground01" >
        <span class="badge <%= priority_label(priority) %>"><%= priority %></span>
-       <span class="badge badge-warning   "> <i class=" icon-white icon-hand-right "> </i> </span>
        <span class="badge                pull-right "> <i class=" icon-white icon-star"></i> </span>
        <%= titel %>
     </div>
       <div class="comment"   ><%= prepare_text(kommentar)  %></div>
       <div class="tags"      ><i class="icon-tags"></i> <%= tag %></div>
-      </td> 
+  </td>
+      
  </tr>
   
 
-  <tr class="details" style="color:#ffffff; background-color:#333333;
+  <tr class="details" style="color:#ffffff; background-color:#888888;
         border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; " >
     <td><%= status %></td>
     <td><%= projekt_id %></td>
@@ -374,6 +374,10 @@ midi : {
     <td><%= autor2 %></td>
     <td><%= assigned_to %></td>
    <td>xxx</td>
+  </tr>
+  <tr class="extraspace" id="direktedit<%= id %>" style="border-bottom: 0px solid #eeeeee;" >
+       <td colspan="8" >
+       </td> 
   </tr>
 
 
@@ -401,7 +405,7 @@ midi2 : {
  </tr>
   
 
-  <tr class="details" style="background-color:#eeeeee; border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; " >
+  <tr class="details" style="background:#aaaaaa; border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; " >
     <td><%= projekt_id %></td>
     <td><%= tasktype %></td>
     <td><%= wichtig %></td>
@@ -446,23 +450,14 @@ mini: {
 window.getEditBar = (myTaskId) ->
     #alert(myTaskId)
     template= '
-    <div id="in-place-edit-bar-0" style="display:none; min-width:360px; white-space:nowrap;  ">
-        <button class="btn btn-success "><i class=" icon-white icon-ok ">         </i> O K </button>
-        <a class="btn btn-inverse " href="http://proman.wikilab.de/tasks/new" target="_self" >
-            <i class=" icon-white icon-plus"> </i></a>
-        <button class="btn btn-inverse "><i class=" icon-white icon-star">        </i> </button>
-        <button class="btn btn-inverse " onclick="alert(|||...xxx...coming soon|||)"><i class=" icon-white icon-arrow-down "> </i> Mehr </button>
-        <button class="btn btn-inverse "><i class=" icon-white icon-pencil ">   </i> edit </button>
-        <button class="btn btn-danger "><i class="icon-white icon-trash"></i></button>
 
-    </div>
     <div id="in-place-edit-bar-1" style="min-width:360px; white-space:nowrap;  ">
         <button class="btn btn-success "><i class=" icon-white icon-ok ">         </i> O K </button>
-        <a class="btn " href="http://proman.wikilab.de/tasks/new" target="_self" ">
-            <i class=" icon-plus"> </i></a>
-        <button class="btn"><i class="  icon-star">        </i> </button>
-        <button class="btn" onclick="alert(|||...coming soon|||)"><i class=" icon-arrow-down "> </i> Mehr </button>
-        <button class="btn"><i class="icon-pencil ">   </i> edit </button>
+        <a class="btn btn-inverse" href="http://proman.wikilab.de/tasks/new" target="_self" ">
+            <i class="icon-white icon-plus"> </i></a>
+        <button class="btn btn-inverse"><i class=" icon-white icon-star">        </i> </button>
+        <button class="btn btn-inverse" onclick="alert(|||...coming soon|||)"><i class=" icon-arrow-down "> </i> Mehr </button>
+        <button class="btn btn-inverse"><i class="icon-whiteicon-pencil ">   </i> edit </button>
          <a class="btn btn-danger" href="/tasks/'+myTaskId+'" data-confirm="'+myTaskId+'...Are you sure?" data-method="delete" rel="nofollow">
             <i class=" icon-white icon-white icon-trash"> </i></a>
     </div>
@@ -477,13 +472,15 @@ window.getEditBar = (myTaskId) ->
         <button class="btn ">Archiv</button>
         <button class="btn btn-danger gotrash">BUG</button>
     </div>
-    <div id="in-place-edit-bar-3" style="display:none; min-width:370px;  white-space:nowrap; " class="toolbar-plus show">
+    <div id="in-place-edit-bar-3" style="min-width:370px;  white-space:nowrap; " class="toolbar-plus show">
         <span class="badge">2</span>
-        <button class="btn btn-inverse">NEXT</button>
-        <button class="btn btn-inverse">ruckZuck</button>
-        <button class="btn btn-inverse">Wichtig</button>
-        <button class="btn btn-inverse">Idee</button>
-        <button class="btn btn-inverse"><i class=" icon-white icon-warning-sign">  </i></button>
+        <button class="btn ">NEXT</button>
+        <button class="btn ">ruckZuck</button>
+        <button class="btn ">Wichtig</button>
+        <button class="btn ">Idee</button>
+        <button class="btn "><i class=" icon-white icon-warning-sign">  </i></button>
+        <br>
+        <br>
    </div>
     <div id="in-place-edit-bar-4" style="min-width:360px; white-space:nowrap; "  class="toolbar-plus hidden"">
         <span class="badge">3</span>

@@ -22,17 +22,25 @@
 }
 
 .task li { margin-left: 15px; }
+.task li { margin-right: 15px; }
 
 $btnPinkBackground:              #70009d;
 $btnPinkBackgroundHighlight:     adjust-hue($btnPinkBackground, 20%) !default;
-.btn-pink, .mybackground {
+.btn-pink{
   @include buttonBackground($btnPinkBackgroundHighlight, $btnPinkBackground);
 }
-.btn-pink, .mybackground {
-  @include buttonBackground($btnPinkBackgroundHighlight, $btnPinkBackground);
-}
+
+
+
+$esBackground:              #cccccc;
+$esBackgroundHighlight:     adjust-hue($esBackground, 40%) !default;
+
 .mybackground01 {
-  @include buttonBackground(#dddddd, #cccccc);
+  background-image: -moz-linear-gradient(top, #eee, #ccc);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#eee), to(#ccc));
+  background-image: -webkit-linear-gradient(top, #eee, #ccc);
+  background-image: -o-linear-gradient(top, #eee, #ccc);
+  background-image: linear-gradient(to bottom, #eee, #ccc);
 }
 
 

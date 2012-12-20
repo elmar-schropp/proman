@@ -1,6 +1,6 @@
 
 <style>
-  
+  #tasklist.tasks { padding-top: 0px; }
   .tasks .miniheader { background: #333; color: #ccc; font-size: 7pt;  }
   .tasks tr.minitask:nth-child(odd) { background: #eee; }
   .tasks tr.minitask td { font-size: 11px; }
@@ -21,10 +21,11 @@
   .miditask.selected, .tasks .selected div { background: 8f4c0fc; }
   .miditask.selected, .tasks .selected div { background: #ffffff; }
 
-  .miditask .__head { background: #eeeeee; color: #1e49ac; border-color: #6d9ed0; }
+  .miditask .head {min-width:300px; max-width:500px; }
+ .miditask .__head { background: #eeeeee; color: #1e49ac; border-color: #6d9ed0; }
   .miditask .__head { background: #000000; color: #bbbbbb; border-color: #6d9ed0; }
-  .miditask .head { border-top: 1px solid #0000ff; border-bottom: 0px solid #82a292; padding: 4px;
-             font-weight: bold; color: #000000; text-shadow: 0px 1px 1px #fff; }
+   .miditask .head { border-top: 1px solid #aaaaaa; border-bottom: 0px solid #82a292; padding: 4px;
+              font-weight: bold; color: #000000; text-shadow: 0px 1px 1px #fff; }
   .miditask.selected .head { background: #84c0fc; color: #1e49ac; border-color: #6d9ed0;
               color: #000; text-shadow: 0px 1px 1px #fff;} 
    
@@ -42,6 +43,9 @@
   .maxitask strong { color: #488b6a; font-size: 13px; }
   .tasks {min-width:300px; max-width:700px; }
   .toolbar-plus.hidden { background: #333;  display: none; }
+  
+  
+
   
 </style>
 
@@ -111,8 +115,7 @@
 
 
 <div class="row" style="margin-top:-10px; ">
-  <div class="span6">
-
+  <div id="tasklist" class="span6">
     <table class="tasks">
     </table>
     <br />
