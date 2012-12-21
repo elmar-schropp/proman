@@ -59,6 +59,18 @@ $(window).on 'load', -> setTimeout initTasks, 1000
 
 
 
+window.setTaskTemplate = (templateId) ->
+    myTemplate = template[templateId]
+    displayTasks()
+
+window.setTaskProjektFilter = (projektId) ->
+    # alert  (projektId)
+    myProjektId = projektId
+    # alert(myProjektId)
+    $.cookie("CurPro", myProjektId,  { path: '/' })
+    
+    # alert ("SET: "+$.cookie("CurPro"))
+    loadTasks()
 
 
 window.editor_onkeydown=(event) ->
@@ -89,6 +101,16 @@ editor_hide = ->
     $tasks.show();
     if (isTouchDevice)
         $(".touch-only").show();
+
+window.toolbar_toggle01 = ->
+    # alert ("toolbar_toggle01")
+    toolbarIndex=parseInt($.cookie("toolbarIndex"))
+    if isNaN(toolbarIndex) then  toolbarIndex=0 
+    newIndex=1+toolbarIndex
+    alert(newIndex)
+    if newIndex>3 then newIndex=-1
+    $.cookie("toolbarIndex", newIndex,  { path: '/' })
+
 
 
 $ ->
@@ -242,11 +264,12 @@ window.displayTasks = ->
                 $("#in-place-edit-bar-2").remove()
                 $("#in-place-edit-bar-3").remove()
                 $("#in-place-edit-bar-4").remove()
-            $(this).addClass "selected"
-            # $(this).after(getEditBar(taskId))
-            # alert(taskId)
-            # alert($("#direktedit"+taskId)[0].id)
-            $("#direktedit"+taskId).append(getEditBar(taskId))
+                $(this).addClass "selected"
+                # alert($("#direktedit"+taskId)[0].id)
+                $("#direktedit"+taskId).append(getEditBar(taskId))
+                alert($("#222-direktedit"+taskId)[0].id)
+                # $(this).after(getEditBar(taskId))
+                # alert(taskId)
         else
             $(".tasks .task.selected").removeClass "selected"
             $(this).addClass "selected"
@@ -364,7 +387,7 @@ midi : {
  </tr>
   
 
-  <tr class="details" style="color:#ffffff; background-color:#888888;
+  <tr class="details" style="color:#dddddd; background-color:#333333;
         border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; " >
     <td><%= status %></td>
     <td><%= projekt_id %></td>
@@ -375,8 +398,9 @@ midi : {
     <td><%= assigned_to %></td>
    <td>xxx</td>
   </tr>
-  <tr class="extraspace" id="direktedit<%= id %>" style="border-bottom: 0px solid #eeeeee;" >
+  <tr class=""  style="border-bottom: 0px solid #eeeeee;" >
        <td colspan="8" >
+            <div id="direktedit<%= id %>" ></div>
        </td> 
   </tr>
 
@@ -405,7 +429,7 @@ midi2 : {
  </tr>
   
 
-  <tr class="details" style="background:#aaaaaa; border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; " >
+  <tr class="details" style="background:#444; border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; " >
     <td><%= projekt_id %></td>
     <td><%= tasktype %></td>
     <td><%= wichtig %></td>
@@ -449,19 +473,24 @@ mini: {
 
 window.getEditBar = (myTaskId) ->
     #alert(myTaskId)
+    toolbarIndex=parseInt($.cookie("toolbarIndex"))
+    if isNaN(toolbarIndex) then  toolbarIndex=0 
+    show01="hidden"; if toolbarIndex == 1 then show01="show";
+    show02="hidden"; if toolbarIndex == 2 then show02="show";
+    show03="hidden"; if toolbarIndex == 3 then show03="show";
+
     template= '
 
     <div id="in-place-edit-bar-1" style="min-width:360px; white-space:nowrap;  ">
         <button class="btn btn-success "><i class=" icon-white icon-ok ">         </i> O K </button>
-        <a class="btn btn-inverse" href="http://proman.wikilab.de/tasks/new" target="_self" ">
-            <i class="icon-white icon-plus"> </i></a>
         <button class="btn btn-inverse"><i class=" icon-white icon-star">        </i> </button>
-        <button class="btn btn-inverse" onclick="alert(|||...coming soon|||)"><i class=" icon-arrow-down "> </i> Mehr </button>
-        <button class="btn btn-inverse"><i class="icon-whiteicon-pencil ">   </i> edit </button>
-         <a class="btn btn-danger" href="/tasks/'+myTaskId+'" data-confirm="'+myTaskId+'...Are you sure?" data-method="delete" rel="nofollow">
-            <i class=" icon-white icon-white icon-trash"> </i></a>
-    </div>
-    <div id="in-place-edit-bar-2" style="min-width:360px; white-space:nowrap; " class="toolbar-plus hidden">
+        <button class="btn btn-inverse" onclick="toolbar_toggle01()"><i class=" icon-white icon-arrow-down "> </i> Mehr </button>
+        <button class="btn btn-inverse"><i class="icon-white icon-pencil ">   </i> edit </button>
+        <a class="btn btn btn-warning " href="http://proman.wikilab.de/tasks/new" target="_self" ">
+            <i class="icon-white icon-plus"> </i></a>
+   </div>
+    <div id="in-place-edit-bar-2"  class="toolbar-plus '+show01+'"
+           style="min-width:360px; white-space:nowrap; ">
         <span class="badge">1</span>
         <button class="btn ">Heute</button>
         <button class="btn ">Morgen</button>
@@ -472,17 +501,20 @@ window.getEditBar = (myTaskId) ->
         <button class="btn ">Archiv</button>
         <button class="btn btn-danger gotrash">BUG</button>
     </div>
-    <div id="in-place-edit-bar-3" style="min-width:370px;  white-space:nowrap; " class="toolbar-plus show">
+    <div id="in-place-edit-bar-3"  class="toolbar-plus '+show02+'"
+              style="min-width:370px;  white-space:nowrap; ">
         <span class="badge">2</span>
         <button class="btn ">NEXT</button>
         <button class="btn ">ruckZuck</button>
         <button class="btn ">Wichtig</button>
         <button class="btn ">Idee</button>
-        <button class="btn "><i class=" icon-white icon-warning-sign">  </i></button>
+          <a class="btn btn-danger" href="/tasks/'+myTaskId+'" data-confirm="'+myTaskId+'...Are you sure?" data-method="delete" rel="nofollow">
+            <i class=" icon-white icon-white icon-trash"> </i></a>
         <br>
         <br>
    </div>
-    <div id="in-place-edit-bar-4" style="min-width:360px; white-space:nowrap; "  class="toolbar-plus hidden"">
+    <div id="in-place-edit-bar-4" class="toolbar-plus '+show03+'"
+                style="min-width:360px; white-space:nowrap; " > 
         <span class="badge">3</span>
         <button class="btn ">...prioritaeten</button>
     </div>'
@@ -496,15 +528,3 @@ window.getEditBar = (myTaskId) ->
 # myTemplate = template.maxi
 myTemplate = template.midi
 
-window.setTaskTemplate = (templateId) ->
-    myTemplate = template[templateId]
-    displayTasks()
-
-window.setTaskProjektFilter = (projektId) ->
-    # alert  (projektId)
-    myProjektId = projektId
-    # alert(myProjektId)
-    $.cookie("CurPro", myProjektId,  { path: '/' })
-    
-    # alert ("SET: "+$.cookie("CurPro"))
-    loadTasks()

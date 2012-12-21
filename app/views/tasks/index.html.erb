@@ -21,7 +21,7 @@
   .miditask.selected, .tasks .selected div { background: 8f4c0fc; }
   .miditask.selected, .tasks .selected div { background: #ffffff; }
 
-  .miditask .head {min-width:300px; max-width:500px; }
+  .miditask .head {min-width:300px; max-width:450px; }
  .miditask .__head { background: #eeeeee; color: #1e49ac; border-color: #6d9ed0; }
   .miditask .__head { background: #000000; color: #bbbbbb; border-color: #6d9ed0; }
    .miditask .head { border-top: 1px solid #aaaaaa; border-bottom: 0px solid #82a292; padding: 4px;
@@ -41,7 +41,7 @@
   #editor { overflow: hidden; }
   
   .maxitask strong { color: #488b6a; font-size: 13px; }
-  .tasks {min-width:300px; max-width:700px; }
+  .tasks {min-width:300px; max-width:600px; }
   .toolbar-plus.hidden { background: #333;  display: none; }
   
   
@@ -54,7 +54,7 @@
     <!-- <h1>Listing tasks</h1>     //!-->
    <!-- <h1>touch-only    //!-->
 
-<div id="main-toolbar" class="navbar navbar navbar-inverse" style="white-space:nowrap; width:500px; ">
+<div id="main-toolbar" class="navbar navbar navbar-inverse" style="white-space:nowrap;">
   <div class="navbar-inner" style="white-space:nowrap; padding-left:0px; ">
     <ul class="nav" style="white-space:nowrap; " >
        <li class="dropdown">
@@ -94,20 +94,27 @@
           <li><a href="#" onclick="setTaskTemplate('maxi')">Maxi</a></li>
         </ul>
       </li>
-      <li class="current"><a  href="#myModal"  data-toggle="modal">Opt</a></li>
+      <!-- <li class="current"><a  href="#myModal"  data-toggle="modal">Opt</a></li> //!-->
       <!-- <li><a href="/"  target="_self" ><i class="icon-home"></i> Home</a></li> //!-->
     </ul>
   </div>
 </div>
 
 <div id="bookmark-toolbar" style="white-space:nowrap; margin-top:-18px; width:90%; ">
-  <button class="btn btn btn-primary" onclick="setTaskProjektFilter(5)" ><i class="icon-white  icon-folder-open " ></i> inbox</button>
+
+  <li class="current"><a href="<%= tasks_path %>" target="_self" ><i class="icon-refresh"></i> </a></li>
+
+   <button class="btn btn btn-primary" onclick="setTaskProjektFilter(5)" >
+                <i class="icon-white  icon-folder-open " ></i> inbox</button>
   <button class="btn btn " onclick="setTaskProjektFilter(4)" > ugb</button>
   <button class="btn btn " onclick="setTaskProjektFilter(2)" > proMan</button>
   <button class="btn btn " onclick="setTaskProjektFilter(1)" > teamwiki</button>
   <button class="btn btn " onclick="setTaskProjektFilter(3)" > privat</button>
+  <br>
   <button class="btn star" onclick="setTaskProjektFilter(6)" >erledigt</button>
- </div>
+  <button class="btn star" onclick="setTaskProjektFilter(7)" >pinboard</button>
+  <button class="btn star" onclick="setTaskProjektFilter(9)" >pm-doku</button>
+</div>
 
 <!-- Button to trigger modal 
 <a href="#myModal" role="button" class="btn" data-toggle="modal">Launch demo modal</a>-->
@@ -161,7 +168,7 @@
      
     <div class="input-prepend">
           <span class="add-on"><i class="icon-text-width"></i></span>
-          <input type="text" style="font-weight:bold; width:320px; color:#fff; background-color:#000; "
+          <input type="text" style="font-weight:bold; width:320px; color:#fff; background-color:#0044cc; "
                  id="inputTitle" class="input-xlarge">
       </div>
 
