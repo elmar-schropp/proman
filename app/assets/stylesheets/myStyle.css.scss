@@ -1,6 +1,13 @@
 @import "bootstrap";
 /*@import "bootstrap-responsive";*/
 
+.comment hr {
+  margin: 10px -0;
+  border-top: 1px solid #eeeeee;
+  border-bottom: 1px solid white;
+  margin-bottom: -15px;
+}
+
 #editor { position:fixed;top:85px; }
 .hide-on-editor { display: none; }
 

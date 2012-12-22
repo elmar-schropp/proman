@@ -13,7 +13,15 @@
 
   
   
-  
+  <p>
+  <b>eindat:</b>
+  <%= @task.created_at %>
+  </p>
+ 
+  <b>aenddat:</b>
+  <%= @task.updated_at %>
+  </p>
+   
   <br>
   <div class="field">
     <%= f.label :titel %>
@@ -81,5 +89,21 @@
     <%= f.label :assigned_to, :class=>"control-label" %>
     <div class="controls"><%= f.number_field :assigned_to %></div>
   </div>
+   <div class="control-group">
+    <%= f.label :url, :class=>"control-label" %>
+    <div class="controls"><%= f.text_field :url %></div>
+  </div>
+   <div class="control-group">
+    <%= f.label :img, :class=>"control-label" %>
+    <div class="controls"><%= f.text_field :img %></div>
+  </div> 
+   <div class="control-group">
+    <%= f.label :done, :class=>"control-label" %>
+    <div class="controls"><%= f.text_field :done %></div>
+  </div>
    </div>
+   
+
+   
+   
   <% end %>

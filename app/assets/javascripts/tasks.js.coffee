@@ -21,6 +21,10 @@ if $(window).width() < 600
  # window.isTouchDevice = false
 
 
+refreshTaskItem = (taskId)->
+    alert(taskId)
+
+
 
 
 initTasks = ->
@@ -102,15 +106,21 @@ editor_hide = ->
     if (isTouchDevice)
         $(".touch-only").show();
 
-window.toolbar_toggle01 = ->
-    # alert ("toolbar_toggle01")
+window.toolbar_toggle01 =(taskId) ->
+    # alert (taskId)
     toolbarIndex=parseInt($.cookie("toolbarIndex"))
     if isNaN(toolbarIndex) then  toolbarIndex=0 
     newIndex=1+toolbarIndex
-    alert(newIndex)
-    if newIndex>3 then newIndex=-1
+   #  alert(newIndex)
+    if newIndex>3 then newIndex=0
     $.cookie("toolbarIndex", newIndex,  { path: '/' })
+    toolbar_show(taskId)
 
+
+window.toolbar_show =(taskId) ->
+    # alert (taskId)
+    $(".toolbar-plus").remove()
+    $("#direktedit"+taskId).append(getEditBar(taskId))
 
 
 $ ->
@@ -137,36 +147,17 @@ $ ->
         $.ajax {
             url: "/tasks/" + taskId + ".json"
             data: {
-                task: {
-                    titel : $("#inputTitle").val()
-                    kommentar  : $("#inputComment").val()
-                    tag        : $("#inputTags").val()
-                    priority   : $("#inputPriority").val()
-                    tasktype   : $("#inputTasktype").val()
-                    status     : $("#inputStatus").val()
-                    wichtig    : $("#inputWichtig").val()
-                    projekt_id : $("#inputProjekt_id").val()
-                    autor      : $("#inputAutor").val()
-                    autor2     : $("#inputAutor2").val()
-                    assigned_to: $("#inputAssigned_to").val()
-                }
+                task: taskData
             }
             success: (data) ->
-                for row in allTasks[myProjektId]
-                    # alert("-->"+row.id+"<-- "+row.titel)
-                    # alert ("-->"+taskId+"<--")
-                    if  parseInt(row.id) ==  parseInt(taskId) 
-                        # alert ("TREFFER: "+row.id)
-                        # alert(row["titel"])
-                        # alert(taskData["titel"])
-                        
-                        row["titel"]=taskData["titel"]
-                        row["kommentar"]=taskData["kommentar"]
-                        row["priority"]=taskData["priority"]
-                        row["status"]=taskData["status"]
-
-                        # row=taskData    ..........warum geht der nicht ???
-                        
+                for i of allTasks[myProjektId]
+                    if  parseInt(allTasks[myProjektId][i].id) ==  parseInt(taskId)
+                        #extend...
+                        # allTasks[myProjektId][i]=taskData
+                        allTasks[myProjektId][i]["titel"]=taskData["titel"]
+                        allTasks[myProjektId][i]["kommentar"]=taskData["kommentar"]
+                        allTasks[myProjektId][i]["priority"]=taskData["priority"]
+                        allTasks[myProjektId][i]["status"]=taskData["status"]
                         
                 refreshTaskItem taskId 
                 # loadTasks
@@ -214,10 +205,18 @@ loadTasks = ->
 
 dynamicSort = `function(property) { 
     return function (obj1,obj2) {
+        return obj1[property] > obj2[property] ? 1
+            : obj1[property] < obj2[property] ? -1 : 0;
+    }
+}`
+
+dynamicSortInverse = `function(property) { 
+    return function (obj1,obj2) {
         return obj1[property] < obj2[property] ? 1
             : obj1[property] > obj2[property] ? -1 : 0;
     }
 }`
+
 
 dynamicSortMultiple = `function() {
     /*
@@ -232,7 +231,11 @@ dynamicSortMultiple = `function() {
          * as long as we have extra properties to compare
          */
         while(result === 0 && i < numberOfProperties) {
-            result = dynamicSort(props[i])(obj1, obj2);
+            if (i == 0) 
+                result = dynamicSort(props[i])(obj1, obj2);
+            else
+                result = dynamicSortInverse(props[i])(obj1, obj2);
+                
             i++;
         }
         return result;
@@ -241,8 +244,9 @@ dynamicSortMultiple = `function() {
 
 window.displayTasks = ->
     $tasks.html ""
-    
-    sortedTasks = myTasks.sort(dynamicSort("priority"))
+    # sortedTasks = myTasks.sort(dynamicSortMultiple("priority" ))
+    sortedTasks = myTasks.sort(dynamicSortMultiple("done", "priority" ))
+    # sortedTasks = myTasks.sort(dynamicSort("created_at"))
     $tasks.append("<br><br>")
     $tasks.append myTemplate.Header
     $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in sortedTasks
@@ -259,22 +263,14 @@ window.displayTasks = ->
                 editor_show()
              else
                 $(".tasks .task.selected").removeClass "selected"
-                $("#in-place-edit-bar-0").remove()
-                $("#in-place-edit-bar-1").remove()
-                $("#in-place-edit-bar-2").remove()
-                $("#in-place-edit-bar-3").remove()
-                $("#in-place-edit-bar-4").remove()
                 $(this).addClass "selected"
-                # alert($("#direktedit"+taskId)[0].id)
-                $("#direktedit"+taskId).append(getEditBar(taskId))
-                alert($("#222-direktedit"+taskId)[0].id)
-                # $(this).after(getEditBar(taskId))
                 # alert(taskId)
         else
             $(".tasks .task.selected").removeClass "selected"
             $(this).addClass "selected"
         
         taskId = $(this).attr "data-taskid"
+        toolbar_show(taskId)
         
         $.get("/tasks/" + taskId + ".json", (data) ->
             $("#inputTitle").val data.titel
@@ -306,7 +302,10 @@ viewHelpers = {
         .replace(/\*\*(.*?)\*\*/mg, '<b>$1</b>')
         .replace(/^\s*\*(.*)$/mg, '<li>$1</li>')
         .replace(/^(\s*)!(.*)$/mg, '$1<strong>$2</strong>')
+        .replace(/^----$/mg, '<hr>')
         .replace(/___(.*?)___/mg, '<u>$1</u>')
+        # ACHTUNG: Spezialtrick wegen underscore...
+        .replace(/((mailto:|(news|(ht|f)tp(s?)):&#x2F;&#x2F;){1}\S+)/mg, '<a href="$1" target="_blank">$1</a>')
         .replace(/@@(.*?)@@/mg, '<span class="label label-info">$1</span>')
         .replace(/\n/g, "<br>")
         .replace(/<\/li><br>/g, "</li>") #das muss auch irgendwie richtig gehen!
@@ -377,7 +376,8 @@ midi : {
      <td colspan="8" >
     <div class="head mybackground01" >
        <span class="badge <%= priority_label(priority) %>"><%= priority %></span>
-       <span class="badge                pull-right "> <i class=" icon-white icon-star"></i> </span>
+       <span class="badge badge-success  pull-right is-done--<%= done %> " > <i class=" icon-white icon-ok"></i> </span>
+       <span class="badge  pull-right is-star--<%= img %> " > <i class=" icon-white icon-star"></i> </span>
        <%= titel %>
     </div>
       <div class="comment"   ><%= prepare_text(kommentar)  %></div>
@@ -391,10 +391,10 @@ midi : {
         border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; " >
     <td><%= status %></td>
     <td><%= projekt_id %></td>
+   <td><%= created_at %></td>
     <td><%= tasktype %></td>
     <td><%= wichtig %></td>
     <td><%= autor %></td>
-    <td><%= autor2 %></td>
     <td><%= assigned_to %></td>
    <td>xxx</td>
   </tr>
@@ -431,7 +431,7 @@ midi2 : {
 
   <tr class="details" style="background:#444; border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; " >
     <td><%= projekt_id %></td>
-    <td><%= tasktype %></td>
+     <td><%= tasktype %></td>
     <td><%= wichtig %></td>
     <td><%= autor %></td>
     <td><%= autor2 %></td>
@@ -481,15 +481,16 @@ window.getEditBar = (myTaskId) ->
 
     template= '
 
-    <div id="in-place-edit-bar-1" style="min-width:360px; white-space:nowrap;  ">
+    <div id="in-place-edit-bar-0" class="toolbar-plus" style="min-width:360px; white-space:nowrap;  ">
         <button class="btn btn-success "><i class=" icon-white icon-ok ">         </i> O K </button>
         <button class="btn btn-inverse"><i class=" icon-white icon-star">        </i> </button>
-        <button class="btn btn-inverse" onclick="toolbar_toggle01()"><i class=" icon-white icon-arrow-down "> </i> Mehr </button>
+        <button class="btn btn-inverse" onclick="toolbar_toggle01('+myTaskId+')">
+             <i class=" icon-white icon-arrow-down "> </i> Mehr </button>
         <button class="btn btn-inverse"><i class="icon-white icon-pencil ">   </i> edit </button>
         <a class="btn btn btn-warning " href="http://proman.wikilab.de/tasks/new" target="_self" ">
             <i class="icon-white icon-plus"> </i></a>
    </div>
-    <div id="in-place-edit-bar-2"  class="toolbar-plus '+show01+'"
+    <div id="in-place-edit-bar-1"  class="toolbar-plus '+show01+'"
            style="min-width:360px; white-space:nowrap; ">
         <span class="badge">1</span>
         <button class="btn ">Heute</button>
@@ -501,7 +502,7 @@ window.getEditBar = (myTaskId) ->
         <button class="btn ">Archiv</button>
         <button class="btn btn-danger gotrash">BUG</button>
     </div>
-    <div id="in-place-edit-bar-3"  class="toolbar-plus '+show02+'"
+    <div id="in-place-edit-bar-2"  class="toolbar-plus '+show02+'"
               style="min-width:370px;  white-space:nowrap; ">
         <span class="badge">2</span>
         <button class="btn ">NEXT</button>
@@ -513,7 +514,7 @@ window.getEditBar = (myTaskId) ->
         <br>
         <br>
    </div>
-    <div id="in-place-edit-bar-4" class="toolbar-plus '+show03+'"
+    <div id="in-place-edit-bar-3" class="toolbar-plus '+show03+'"
                 style="min-width:360px; white-space:nowrap; " > 
         <span class="badge">3</span>
         <button class="btn ">...prioritaeten</button>
