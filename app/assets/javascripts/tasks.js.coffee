@@ -20,11 +20,110 @@ if $(window).width() < 600
 
  # window.isTouchDevice = false
 
+window.reloadTaskList = ()->
+    # <a href="<%= tasks_path %>" target="_self"
+    # id="#taskitem"+taskId
+    # alert ("refreshTaskItem: "+id)
+    # $(id).replaceWith("...ich werde mal der aktualisierte Inhalt ")
+    
 
-refreshTaskItem = (taskId)->
-    alert(taskId)
+window.toggle_ok = (taskId)->
+    # alert(taskId)
+    for i of allTasks[myProjektId]
+        if  parseInt(allTasks[myProjektId][i].id) ==  parseInt(taskId)
+            done=allTasks[myProjektId][i]["done"]
+            if (done)
+                done=null
+            else
+                done=1
+            allTasks[myProjektId][i]["done"]=done
+            # alert(allTasks[myProjektId][i]["done"])
+
+            taskData= {
+                done : done
+                # tag  : "TAG-xxxxxxxxxxxx"
+            }
+            $.ajax {
+                url: "/tasks/" + taskId + ".json"
+                data: {
+                    task: taskData
+                }
+                success: (data) ->
+                    # alert("gespeichert: "+allTasks[myProjektId][i]["titel"])
+                    # refreshTaskItem taskId 
+                    # loadTasks
+                    displayTasks()
+                dataType: "json"
+                type: "PUT"
+            }
+                
+
+window.toggle_star = (taskId)->
+    # alert(taskId)
+    for i of allTasks[myProjektId]
+        if  parseInt(allTasks[myProjektId][i].id) ==  parseInt(taskId)
+            star=allTasks[myProjektId][i]["star"]
+            if (star)
+                star=null
+            else
+                star=1
+            allTasks[myProjektId][i]["star"]=star
+            # alert(allTasks[myProjektId][i]["star"])
+
+            taskData= {
+                star : star
+                # tag  : "TAG-xxxxxxxxxxxx"
+            }
+            $.ajax {
+                url: "/tasks/" + taskId + ".json"
+                data: {
+                    task: taskData
+                }
+                success: (data) ->
+                    # alert("gespeichert: "+allTasks[myProjektId][i]["titel"])
+                    # refreshTaskItem taskId 
+                    # loadTasks
+                    displayTasks()
+                dataType: "json"
+                type: "PUT"
+            }
+                
 
 
+
+window.toggle_highlight = (newValue, taskId)->
+    # alert(newValue)
+    for i of allTasks[myProjektId]
+        if  parseInt(allTasks[myProjektId][i].id) ==  parseInt(taskId)
+            allTasks[myProjektId][i]["highlight"]=newValue
+            # alert(allTasks[myProjektId][i]["star"])
+
+            taskData= {
+                highlight : newValue
+                # tag  : "TAG-xxxxxxxxxxxx"
+            }
+            $.ajax {
+                url: "/tasks/" + taskId + ".json"
+                data: {
+                    task: taskData
+                }
+                success: (data) ->
+                    # alert("gespeichert: "+allTasks[myProjektId][i]["titel"])
+                    # refreshTaskItem taskId 
+                    # loadTasks
+                    displayTasks()
+                dataType: "json"
+                type: "PUT"
+            }
+                
+
+
+
+window.refreshTaskItem = (taskId)->
+    id="#taskitem"+taskId
+    # alert ("refreshTaskItem: "+id)
+    # $(id).replaceWith("...ich werde mal der aktualisierte Inhalt ")
+    
 
 
 initTasks = ->
@@ -81,12 +180,6 @@ window.editor_onkeydown=(event) ->
     # alert ("xxx: editor_onkeydown"+event.target)
 
 
-refreshTaskItem = (taskId)->
-    id="#taskitem"+taskId
-    # alert ("refreshTaskItem: "+id)
-    # $(id).replaceWith("...ich werde mal der aktualisierte Inhalt ")
-    
-
 editor_show = ->
     #alert "show editor"
     # alert(taskId)
@@ -131,7 +224,7 @@ $ ->
              
         $("#inputComment").css("backgroundColor", "#8cd36d")
         taskData= {
-            titel : $("#inputTitle").val()
+            titel      : $("#inputTitle").val()
             kommentar  : $("#inputComment").val()
             tag        : $("#inputTags").val()
             priority   : $("#inputPriority").val()
@@ -374,10 +467,10 @@ midi : {
 
   <tr class="miditask task" data-taskid="<%= id %>">
      <td colspan="8" >
-    <div class="head mybackground01" >
+    <div class="head tasklist-hl--<%= highlight %> " >
        <span class="badge <%= priority_label(priority) %>"><%= priority %></span>
        <span class="badge badge-success  pull-right is-done--<%= done %> " > <i class=" icon-white icon-ok"></i> </span>
-       <span class="badge  pull-right is-star--<%= img %> " > <i class=" icon-white icon-star"></i> </span>
+       <span class="badge  pull-right is-star--<%= star %> " > <i class=" icon-white icon-star"></i> </span>
        <%= titel %>
     </div>
       <div class="comment"   ><%= prepare_text(kommentar)  %></div>
@@ -479,20 +572,36 @@ window.getEditBar = (myTaskId) ->
     show02="hidden"; if toolbarIndex == 2 then show02="show";
     show03="hidden"; if toolbarIndex == 3 then show03="show";
 
+
+
     template= '
 
     <div id="in-place-edit-bar-0" class="toolbar-plus" style="min-width:360px; white-space:nowrap;  ">
-        <button class="btn btn-success "><i class=" icon-white icon-ok ">         </i> O K </button>
-        <button class="btn btn-inverse"><i class=" icon-white icon-star">        </i> </button>
+        <button class="btn btn-success " onclick="toggle_ok('+myTaskId+')">
+            <i class=" icon-white icon-ok ">         </i> O K </button>
+        <button class="btn btn-inverse"  onclick="toggle_star('+myTaskId+')">
+             <i class=" icon-white icon-star">        </i> </button>
         <button class="btn btn-inverse" onclick="toolbar_toggle01('+myTaskId+')">
-             <i class=" icon-white icon-arrow-down "> </i> Mehr </button>
-        <button class="btn btn-inverse"><i class="icon-white icon-pencil ">   </i> edit </button>
-        <a class="btn btn btn-warning " href="http://proman.wikilab.de/tasks/new" target="_self" ">
+             <i class=" icon-white icon-arrow-down "> </i> Mehr('+toolbarIndex+') </button>
+        <a class="btn btn btn-inverse" href="http://proman.wikilab.de/tasks/'+myTaskId+'/edit" target="_self" ">
+            <i class="icon-white icon-pencil"> </i>  edit </a>
+        <a class="btn btn-warning " href="http://proman.wikilab.de/tasks/new" target="_self" ">
             <i class="icon-white icon-plus"> </i></a>
-   </div>
+    </div>
     <div id="in-place-edit-bar-1"  class="toolbar-plus '+show01+'"
-           style="min-width:360px; white-space:nowrap; ">
+              style="min-width:370px;  white-space:nowrap; ">
         <span class="badge">1</span>
+        <button class="btn " onclick="toggle_highlight(0, '+myTaskId+')" >X</button>
+        <button class="btn " onclick="toggle_highlight(1, '+myTaskId+')" >NEXT</button>
+        <button class="btn " onclick="toggle_highlight(2, '+myTaskId+')" >ruckZuck</button>
+        <button class="btn " onclick="toggle_highlight(3, '+myTaskId+')" >Wichtig</button>
+        <button class="btn " onclick="toggle_highlight(4, '+myTaskId+')" >Idee</button>
+        <br>
+        <br>
+    </div>
+    <div id="in-place-edit-bar-2"  class="toolbar-plus '+show02+'"
+           style="min-width:360px; white-space:nowrap; ">
+        <span class="badge">2</span>
         <button class="btn ">Heute</button>
         <button class="btn ">Morgen</button>
         <button class="btn ">diese Woche</button>
@@ -501,19 +610,9 @@ window.getEditBar = (myTaskId) ->
         <button class="btn ">Vorgemerkt</button>
         <button class="btn ">Archiv</button>
         <button class="btn btn-danger gotrash">BUG</button>
-    </div>
-    <div id="in-place-edit-bar-2"  class="toolbar-plus '+show02+'"
-              style="min-width:370px;  white-space:nowrap; ">
-        <span class="badge">2</span>
-        <button class="btn ">NEXT</button>
-        <button class="btn ">ruckZuck</button>
-        <button class="btn ">Wichtig</button>
-        <button class="btn ">Idee</button>
           <a class="btn btn-danger" href="/tasks/'+myTaskId+'" data-confirm="'+myTaskId+'...Are you sure?" data-method="delete" rel="nofollow">
             <i class=" icon-white icon-white icon-trash"> </i></a>
-        <br>
-        <br>
-   </div>
+    </div>
     <div id="in-place-edit-bar-3" class="toolbar-plus '+show03+'"
                 style="min-width:360px; white-space:nowrap; " > 
         <span class="badge">3</span>

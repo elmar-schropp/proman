@@ -42,12 +42,46 @@ $btnPinkBackgroundHighlight:     adjust-hue($btnPinkBackground, 20%) !default;
 $esBackground:              #cccccc;
 $esBackgroundHighlight:     adjust-hue($esBackground, 40%) !default;
 
-.mybackground01 {
+.tasklist-hl--, .tasklist-hl--0, .miditask .head.tasklist-hl--, .miditask .head.tasklist-hl--0 {
   background-image: -moz-linear-gradient(top, #eee, #ccc);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#eee), to(#ccc));
   background-image: -webkit-linear-gradient(top, #eee, #ccc);
   background-image: -o-linear-gradient(top, #eee, #ccc);
   background-image: linear-gradient(to bottom, #eee, #ccc);
 }
+.miditask .selected, .head.tasklist-hl--  .miditask .selected .head.tasklist-hl--0 {
+  color:#00f; 
+}
+
+.tasklist-hl--1, .miditask .head.tasklist-hl--1 {
+  background-image: -moz-linear-gradient(top, #f8e5bd, #f8c763);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f8e5bd), to(#f8c763));
+  background-image: -webkit-linear-gradient(top, #f8e5bd, #f8c763);
+  background-image: -o-linear-gradient(top, #f8e5bd, #f8c763);
+  background-image: linear-gradient(to bottom, #f8e5bd, #f8c763);
+}
+
+.tasklist-hl--2,  .miditask .head.tasklist-hl--2{
+  background-image: -moz-linear-gradient(top, #c5f7c6, #8ae78c);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#c5f7c6), to(#8ae78c));
+  background-image: -webkit-linear-gradient(top, #c5f7c6, #8ae78c);
+  background-image: -o-linear-gradient(top, #c5f7c6, #8ae78c);
+  background-image: linear-gradient(to bottom, #c5f7c6, #8ae78c);
+}
 
 
+.tasklist-hl--3,  .miditask .head.tasklist-hl--3{
+  background-image: -moz-linear-gradient(top, #f3bab8, #e68886);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f3bab8), to(#e68886));
+  background-image: -webkit-linear-gradient(top, #f3bab8, #e68886);
+  background-image: -o-linear-gradient(top, #f3bab8, #e68886);
+  background-image: linear-gradient(to bottom, #f3bab8, #e68886);
+}
+
+.tasklist-hl--4,  .miditask .head.tasklist-hl--4 {
+  background-image: -moz-linear-gradient(top, #daedf6, #8ec7e8);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#daedf6), to(#8ec7e8));
+  background-image: -webkit-linear-gradient(top, #daedf6, #8ec7e8);
+  background-image: -o-linear-gradient(top, #daedf6, #8ec7e8);
+  background-image: linear-gradient(to bottom, #daedf6, #8ec7e8);
+}

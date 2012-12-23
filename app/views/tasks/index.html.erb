@@ -12,21 +12,21 @@
   .tasks tr.maxitask, .tasks tr.maxitask td { padding: 0; }
   .tasks tr.task.selected, .tasks .selected div { background: #e8f2fd; }
   .tasks tr.task.selected, .tasks .selected div { background: #ffffff; }
-  .tasks .selected .head { background: #84c0fc; color: #1e49ac; border-color: #6d9ed0; }
+  .tasks .___selected .head { background: #84c0fc; color: #1e49ac; border-color: #6d9ed0; }
   .tasks .comment { font-size: 9pt; padding: 4px; background-color:#fafafa; }
   .tasks .tags { font-size: 7pt; padding: 4px; background-color:#fafafa; }
   .tasks .tags i { vertical-align: middle }
   
   .tasks tr.miditask, .tasks tr.miditask td { padding: 0; }
   .miditask.selected, .tasks .selected div { background: 8f4c0fc; }
-  .miditask.selected, .tasks .selected div { background: #ffffff; }
+  .miditask.selected, .tasks .selected div { background-color: #ffffff; }
 
-  .miditask .head {min-width:300px; max-width:450px; }
- .miditask .__head { background: #eeeeee; color: #1e49ac; border-color: #6d9ed0; }
+  .miditask .head   {min-width:300px; max-width:450px; }
+  .miditask .__head { background: #eeeeee; color: #1e49ac; border-color: #6d9ed0; }
   .miditask .__head { background: #000000; color: #bbbbbb; border-color: #6d9ed0; }
-   .miditask .head { border-top: 1px solid #aaaaaa; border-bottom: 0px solid #82a292; padding: 4px;
+  .miditask .head   { border-top: 1px solid #aaaaaa; border-bottom: 0px solid #82a292; padding: 4px;
               font-weight: bold; color: #000000; text-shadow: 0px 1px 1px #fff; }
-  .miditask.selected .head { background: #84c0fc; color: #1e49ac; border-color: #6d9ed0;
+  .miditask.__selected .__head { background: #84c0fc; color: #1e49ac; border-color: #6d9ed0;
               color: #000; text-shadow: 0px 1px 1px #fff;} 
    
   .tasks .comment { font-size: 9pt; padding: 4px; background-color:#fafafa; }
@@ -199,11 +199,11 @@
       <div class="row-fluid">
       <div class="span8">         
        <div class = "control-label"> Projekt </div>
-      <div class="controls"><input type="text" id="inputProjekt_id"  style="width:240px; " class="input-medium"></div>
+      <div class="controls"><input type="number" id="inputProjekt_id"  style="width:240px; " class="input-medium"></div>
     </div>
     <div class="span4">
        <div class = "control-label"> Prioritaet </div>
-        <div class="controls"><input type="text" id="inputPriority" style="width:60px; " class="input-medium"></div>
+        <div class="controls"><input type="number" id="inputPriority" style="width:60px; " class="input-medium"></div>
     </div>        
    </div>
      
