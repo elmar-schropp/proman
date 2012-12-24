@@ -340,7 +340,7 @@ window.displayTasks = ->
     # sortedTasks = myTasks.sort(dynamicSortMultiple("priority" ))
     sortedTasks = myTasks.sort(dynamicSortMultiple("done", "priority" ))
     # sortedTasks = myTasks.sort(dynamicSort("created_at"))
-    $tasks.append("<br><br>")
+    # $tasks.append("<br><br>")
     $tasks.append myTemplate.Header
     $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in sortedTasks
     
@@ -352,8 +352,7 @@ window.displayTasks = ->
         
         if isTouchDevice
             if isSelected
-                # alert e.screenX
-                editor_show()
+                if not (e.target.tagName == "A") then editor_show()
              else
                 $(".tasks .task.selected").removeClass "selected"
                 $(this).addClass "selected"
