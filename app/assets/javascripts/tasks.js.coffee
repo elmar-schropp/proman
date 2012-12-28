@@ -127,8 +127,9 @@ window.refreshTaskItem = (taskId)->
 
 
 initTasks = ->
-    $('#editor .nextbutton').click ->
-        alert("brainstorm-modus --- coming soon")
+    #$('#editor .nextbutton').click ->
+    #    alert("brainstorm-modus --- coming soon")
+    
     $('#editor .gotrash').click ->
         alert("ab in den papierkorb - coming soon")
     if (isTouchDevice)
@@ -158,6 +159,7 @@ initTasks = ->
         # alert('Handler for .keydown() called.'  )
         # alert('Handler for .keydown() called.' + event.target )
 
+
 $(window).on 'load', -> setTimeout initTasks, 1000
 
 
@@ -166,9 +168,21 @@ window.setTaskTemplate = (templateId) ->
     myTemplate = template[templateId]
     displayTasks()
 
+
+window.toggleToolbars = (tollbarItem) ->
+    # alert  (projektId)
+    $(".dyna-toolbar").addClass "hidden"
+    $("#toolbar-"+tollbarItem).removeClass "hidden"
+    # alert(tollbarItem)
+
+    
+
+
 window.setTaskProjektFilter = (projektId) ->
     # alert  (projektId)
     myProjektId = projektId
+    $("#toolbar-bookmark .btn").removeClass "btn-primary"
+    $("#toolbar-bookmark-"+projektId).addClass "btn-primary"
     # alert(myProjektId)
     $.cookie("CurPro", myProjektId,  { path: '/' })
     
@@ -216,7 +230,63 @@ window.toolbar_show =(taskId) ->
     $("#direktedit"+taskId).append(getEditBar(taskId))
 
 
+
+
 $ ->
+    $("#editor .nextbutton").click ->
+        alert("...soll mal onNEU werden")
+        if $("#inputProjekt_id").val() == "" 
+            alert("kein Projekt zugewiesen") ;  return
+        $("#inputComment").css("backgroundColor", "#8cd36d")
+        taskData= {
+            titel      : $("#inputTitle").val()
+            kommentar  : $("#inputComment").val()
+            tag        : $("#inputTags").val()
+            priority   : $("#inputPriority").val()
+            tasktype   : $("#inputTasktype").val()
+            status     : $("#inputStatus").val()
+            wichtig    : $("#inputWichtig").val()
+            projekt_id : $("#inputProjekt_id").val()
+            autor      : $("#inputAutor").val()
+            autor2     : $("#inputAutor2").val()
+            assigned_to: $("#inputAssigned_to").val()
+        }
+        alert(taskData)
+        $.ajax {
+            url: "/tasks/" + "new" + ".json"
+            data: {
+                task: taskData
+            }
+            success: (data) ->
+                alert ("neuer task angelegt")
+                return
+                 
+                for i of allTasks[myProjektId]
+                    if  parseInt(allTasks[myProjektId][i].id) ==  parseInt(taskId)
+                        #extend...
+                        # allTasks[myProjektId][i]=taskData
+                        allTasks[myProjektId][i]["titel"]=taskData["titel"]
+                        allTasks[myProjektId][i]["kommentar"]=taskData["kommentar"]
+                        allTasks[myProjektId][i]["priority"]=taskData["priority"]
+                        allTasks[myProjektId][i]["status"]=taskData["status"]
+                        
+                refreshTaskItem taskId 
+                # loadTasks
+                displayTasks()
+                
+                $("#inputComment").css("backgroundColor", "#ffffff")
+                if (isTouchDevice)
+                    editor_hide()
+                    # $("#editor").hide(); $tasks.show();
+                    $('body').addClass("is-touch");
+                    # alert("OK")
+            dataType: "json"
+            type: "PUT"
+        }
+    
+    
+    
+    
     $("#editor .save").click ->
         if ! taskId  then return
         if $("#inputProjekt_id").val() == "" 

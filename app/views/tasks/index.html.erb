@@ -71,13 +71,13 @@
         </ul>
       </li>
 
-      <li class="current"><a href="#"  >
+      <li class="current"><a href="#" onClick="toggleToolbars('bookmark'); return false;"  >
            <i class="icon-white icon-flag"></i>
            </a></li>
-     <li class="current"><a href="#" target="_self" >
+     <li class="btn-primary"><a href="#" onClick="toggleToolbars('sort'); return false;"  >
            <i class="icon-white icon-th"></i>
            </a></li>
-      <li class="current"><a href="#" target="_self" >
+      <li class="current"><a href="#" onClick="toggleToolbars('filter'); return false;"  >
            <i class="icon-white icon-filter"></i>
            </a></li>
       <li class="current"><a href="<%= tasks_path %>" target="_self" >
@@ -89,30 +89,32 @@
      <li class="current"><a  href="#myModal"  data-toggle="modal">
           <i class="icon-white icon-comment"></i>
           </a></li>
-      <!-- <li><a href="/"  target="_self" ><i class="icon-home"></i> Home</a></li> //!-->
+      <!--main-toolbar
+      <li><a href="/"  target="_self" ><i class="icon-home"></i> Home</a></li> //!-->
+      
     </ul>
   </div>
 </div>
 
-<div id="bookmark-toolbar" class="dyna-toolbar "
+<div id="toolbar-bookmark" class="dyna-toolbar "
         style="white-space:nowrap; margin-top:-10px; width:99%; ">
-
-   <button class="btn btn btn-primary" onclick="setTaskProjektFilter(5)" >
+ <b> Bookmarks</b><br>
+   <button class="btn btn-primary" id="toolbar-bookmark-5" onclick="setTaskProjektFilter(5, this)" >
                 <i class="icon-white  icon-folder-open " ></i> inbox</button>
-  <button class="btn " onclick="setTaskProjektFilter(4)" > ugb</button>
-  <button class="btn " onclick="setTaskProjektFilter(2)" > proMan</button>
-  <button class="btn " onclick="setTaskProjektFilter(1)" > teamwiki</button>
-  <button class="btn " onclick="setTaskProjektFilter(3)" > privat</button>
+  <button class="btn "  id="toolbar-bookmark-4" onclick="setTaskProjektFilter(4, this)" > ugb</button>
+  <button class="btn "  id="toolbar-bookmark-2" onclick="setTaskProjektFilter(2, this)" > proMan</button>
+  <button class="btn "  id="toolbar-bookmark-1" onclick="setTaskProjektFilter(1, this)" > teamwiki</button>
+  <button class="btn "  id="toolbar-bookmark-3" onclick="setTaskProjektFilter(3, this)" > privat</button>
   <br>
-  <button class="btn " onclick="setTaskProjektFilter(6)" >erledigt</button>
-  <button class="btn " onclick="setTaskProjektFilter(7)" >pinboard</button>
-  <button class="btn " onclick="setTaskProjektFilter(9)" >pm-doku</button>
+  <button class="btn "  id="toolbar-bookmark-6" onclick="setTaskProjektFilter(6, this)" >erledigt</button>
+  <button class="btn "  id="toolbar-bookmark-7" onclick="setTaskProjektFilter(7, this)" >pinboard</button>
+  <button class="btn "  id="toolbar-bookmark-9" onclick="setTaskProjektFilter(9, this)" >pm-doku</button>
   <br>
   <br>
 </div>
 
   
-<div id="bookmark-toolbar" class="dyna-toolbar hidden"
+<div id="toolbar-filter" class="dyna-toolbar hidden"
              style="white-space:nowrap; margin-top:-10px; width:99%; ">
   <b> Filter:</b>
   <input class="btn" type="button" onclick="setTaskProjektFilter(2) " value="vorgemerkt">
@@ -128,7 +130,7 @@
 </div>
 
 
-<div id="bookmark-toolbar" class="dyna-toolbar hidden"
+<div id="toolbar-sort" class="dyna-toolbar hidden"
            style="white-space:nowrap; margin-top:-10px; width:99%; ">
   <b> Sort :</b>
   <input class="btn" type="button" onclick="setTaskProjektFilter(2) " value="Nach Prioritaet">
@@ -228,7 +230,7 @@
      
       <div class="form-actions">
         <button class="btn btn-primary save"><i class="icon-ok icon-white"></i> Save</button>
-        <button class="btn btn-primary nextbutton"><i class="icon-ok icon-white"></i> Next...</button>
+        <button class="btn btn-primary nextbutton"><i class="icon-ok icon-white"></i> NEW...</button>
         <a class="btn btn-success " href="http://proman.wikilab.de/tasks/new" target="_self" ">
             <i class=" icon-white icon-plus"> </i></a>
         <button class="btn btn-warning  pull-right cancelbutton"><i class="icon-arrow-left icon-white" style="display:none"></i> Abbruch</button>
@@ -276,7 +278,7 @@
         
        <br>
       <button class="btn btn-primary save"><i class="icon-ok icon-white"></i> Save</button>
-      <button class="btn btn-primary nextbutton"><i class="icon-ok icon-white"></i> Next...</button>
+      <button class="btn btn-primary nextbutton"><i class="icon-ok icon-white"></i> NEW...</button>
       <button class="btn btn-danger gotrash"><i class="icon-white icon-trash"></i></button>
       <button class="btn btn-warning  pull-right cancelbutton"><i class="icon-arrow-left icon-white" style="display:none"></i> Abbruch</button>
       <br>
