@@ -170,19 +170,20 @@ window.setTaskTemplate = (templateId) ->
 
 
 window.toggleToolbars = (tollbarItem) ->
-    # alert  (projektId)
+    # alert  (tollbarItem)
+    $("#main-toolbar .main-element").removeClass "btn-primary"
+    $("#main-element-"+tollbarItem).addClass "btn-primary"
     $(".dyna-toolbar").addClass "hidden"
-    $("#toolbar-"+tollbarItem).removeClass "hidden"
+    $("#dyna-toolbar-"+tollbarItem).removeClass "hidden"
     # alert(tollbarItem)
 
-    
 
 
 window.setTaskProjektFilter = (projektId) ->
     # alert  (projektId)
     myProjektId = projektId
-    $("#toolbar-bookmark .btn").removeClass "btn-primary"
-    $("#toolbar-bookmark-"+projektId).addClass "btn-primary"
+    $("#dyna-toolbar-bookmark .btn").removeClass "btn-primary"
+    $("#tb-bookmark-"+projektId).addClass "btn-primary"
     # alert(myProjektId)
     $.cookie("CurPro", myProjektId,  { path: '/' })
     
@@ -321,6 +322,7 @@ $ ->
                         allTasks[myProjektId][i]["kommentar"]=taskData["kommentar"]
                         allTasks[myProjektId][i]["priority"]=taskData["priority"]
                         allTasks[myProjektId][i]["status"]=taskData["status"]
+                        allTasks[myProjektId][i]["autor2"]=taskData["autor2"]
                         
                 refreshTaskItem taskId 
                 # loadTasks
@@ -486,6 +488,11 @@ viewHelpers = {
             "badge-inverse"
         else
             ""
+    isAutor2 : (autor2) ->
+        if autor2
+            "badge-warning"
+        else
+            ""
 
 }
 
@@ -540,6 +547,8 @@ midi : {
        <span class="badge <%= priority_label(priority) %>"><%= priority %></span>
        <span class="badge badge-success  pull-right is-done--<%= done %> " > <i class=" icon-white icon-ok"></i> </span>
        <span class="badge  pull-right is-star--<%= star %> " > <i class=" icon-white icon-star"></i> </span>
+       <span class="badge pull-right badge-warning is-autor2--<%= isAutor2(autor2) %>"><%= autor2 %></span>
+       
        <%= titel %>
     </div>
       <div class="comment"   ><%= prepare_text(kommentar)  %></div>

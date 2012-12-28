@@ -6,6 +6,7 @@ Proman::Application.routes.draw do
   resources :projekts
   resources :users
 
+  open_id_complete 'session', :controller => "session", :action => "create", :requirements => { :method => :get }
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
