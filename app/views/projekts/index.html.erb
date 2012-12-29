@@ -1,5 +1,11 @@
 <h1>Listing projekts</h1>
 
+<div class="btn-group">
+<%= link_to 'Zurück zu den Tasks', tasks_path, :class => 'btn' %>
+<%= link_to 'New Projekt', new_projekt_path, :class => 'btn' %>
+</div>
+<br>
+
 <table class="table">
   <tr>
     <th>Name</th>
@@ -22,4 +28,4 @@
 
 <br />
 
-<%= link_to 'New Projekt', new_projekt_path %>
+

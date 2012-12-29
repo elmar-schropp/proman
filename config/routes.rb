@@ -1,12 +1,9 @@
 Proman::Application.routes.draw do
-  
+  devise_for :user
   get 'tasks/list'
   
   resources :tasks
   resources :projekts
-  resources :users
-
-  open_id_complete 'session', :controller => "session", :action => "create", :requirements => { :method => :get }
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -15,7 +12,7 @@ Proman::Application.routes.draw do
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
 
-match 'options/' => 'users#options'
+  match 'options/' => 'users#options'
 
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
@@ -60,7 +57,7 @@ match 'options/' => 'users#options'
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  root :to => 'users#welcome'
+  root :to => 'home#welcome'
   # See how all your routes lay out with "rake routes"
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.

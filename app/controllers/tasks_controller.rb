@@ -1,4 +1,6 @@
 class TasksController < ApplicationController
+  before_filter :authenticate_user!
+  
   # GET /tasks
   def index
     respond_to do |format|

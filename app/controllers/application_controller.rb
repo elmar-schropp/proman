@@ -5,5 +5,7 @@ class ApplicationController < ActionController::Base
   
   def load_fav_projekts
     @my_fav_projekts = Projekt.all
+
+    ActionMailer::Base.default_url_options = {:host => request.host_with_port}
   end
 end

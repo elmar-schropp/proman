@@ -9,14 +9,14 @@
 </head>
 <body style="background-color:#eeeeee; ">
   
-  <!--  navbar     
-  <div class="navbar navbar-fixed-bottom  navbar-inverse"  >
+  <!--
+  <div class="navbar navbar-fixed-bottom "  >
     <div class="navbar-inner" >
-      < !--  <a class="brand" href="#">Title</a>  // ! -- >  
+      <a class="brand" href="#">Projekt-Manager</a>    
       <div class="container">
-        <a href="<%= new_task_path %>" target="_self" class="btn btn-success pull-left"><i class="icon-plus icon-white"></i></a>
+
         <ul class="nav">
-          <li class="notouch-only"><a href="/"  target="_self" ><i class="icon-home icon-white"></i> Home</a></li>
+          <li><a href="/"  target="_self" ><i class="icon-home icon-white"></i> Home</a></li>
           <li class="notouch-only"><a href="<%= tasks_path %>"  target="_self" ><i class="icon-refresh icon-white"></i> Reload</a></li>
           <li class="notouch-only dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projekte <b class="caret"></b></a>
@@ -59,9 +59,17 @@
       </div>
     </div>
   </div>
-  //!-->   
+  -->
       
   <div class=container>
+      <% if not notice.nil? then %>
+       <p class="alert alert-success"><%= notice %></p>
+       <% end %>
+      <% if not alert.nil? then %>
+       <p class="alert alert-warning"><%= alert %></p>
+       <% end %>
+
+
   <%= yield %>
   </div>
 </body>
