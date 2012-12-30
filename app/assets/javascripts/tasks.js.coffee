@@ -199,7 +199,7 @@ editor_show = ->
     #alert "show editor"
     # alert(taskId)
     $("#main-toolbar").addClass "hide-on-editor"
-    $("#bookmark-toolbar").addClass "hide-on-editor"
+    $("#dyna-toolbar-container").addClass "hide-on-editor"
     $("#editor").show();
     $tasks.hide();
     if (isTouchDevice)
@@ -209,7 +209,7 @@ editor_hide = ->
     # alert "HIDE editor"
     $("#editor").hide();
     $("#main-toolbar").removeClass "hide-on-editor"
-    $("#bookmark-toolbar").removeClass "hide-on-editor"
+    $("#dyna-toolbar-container").removeClass "hide-on-editor"
     $tasks.show();
     if (isTouchDevice)
         $(".touch-only").show();
@@ -433,8 +433,14 @@ window.displayTasks = ->
             $(".tasks .task.selected").removeClass "selected"
             $(this).addClass "selected"
         
+        # alert(taskId)
+        window.location.hash=""
+        insertUrlParam("task",taskId) 
+        # alert("done")
+
         taskId = $(this).attr "data-taskid"
         toolbar_show(taskId)
+        
         
         $.get("/tasks/" + taskId + ".json", (data) ->
             $("#inputTitle").val data.titel
