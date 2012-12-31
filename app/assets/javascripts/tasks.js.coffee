@@ -34,13 +34,17 @@ window.toggle_ok = (taskId)->
             done=allTasks[myProjektId][i]["done"]
             if (done)
                 done=null
+                allTasks[myProjektId][i]["done_at"]=null
+                # allTasks[myProjektId][i]["done_at"]=allTasks[myProjektId][i]["created_at"]
             else
                 done=1
+                now = new Date()
+                allTasks[myProjektId][i]["done_at"]= new Date()
             allTasks[myProjektId][i]["done"]=done
             # alert(allTasks[myProjektId][i]["done"])
-
             taskData= {
                 done : done
+                done_at : allTasks[myProjektId][i]["done_at"]
                 # tag  : "TAG-xxxxxxxxxxxx"
             }
             $.ajax {
@@ -251,6 +255,7 @@ $ ->
             autor      : $("#inputAutor").val()
             autor2     : $("#inputAutor2").val()
             assigned_to: $("#inputAssigned_to").val()
+            done_at:     $("#inputDone_at").val()
         }
         alert(taskData)
         $.ajax {
@@ -306,6 +311,7 @@ $ ->
             autor      : $("#inputAutor").val()
             autor2     : $("#inputAutor2").val()
             assigned_to: $("#inputAssigned_to").val()
+            done_at    : $("#inputDone_at").val()
         }
             
         $.ajax {
@@ -323,6 +329,7 @@ $ ->
                         allTasks[myProjektId][i]["priority"]=taskData["priority"]
                         allTasks[myProjektId][i]["status"]=taskData["status"]
                         allTasks[myProjektId][i]["autor2"]=taskData["autor2"]
+                        allTasks[myProjektId][i]["done_at"]=taskData["done_at"]
                         
                 refreshTaskItem taskId 
                 # loadTasks
@@ -409,8 +416,17 @@ dynamicSortMultiple = `function() {
 
 window.displayTasks = ->
     $tasks.html ""
+    for row in myTasks
+        if  (row["done_at"] ==  null) 
+            row["done_at"] = ""
+    
     # sortedTasks = myTasks.sort(dynamicSortMultiple("priority" ))
-    sortedTasks = myTasks.sort(dynamicSortMultiple("done", "priority" ))
+    # sortedTasks = myTasks.sort(dynamicSortMultiple("autor2", "created_at" ))
+    # sortedTasks = myTasks.sort(dynamicSortMultiple("done", "priority" ))
+    # sortedTasks = myTasks.sort(dynamicSortMultiple("done", "created_at" ))
+    sortedTasks = myTasks.sort(dynamicSortMultiple("done", "done_at", "priority" ))
+    # sortedTasks = myTasks.sort(dynamicSortMultiple("done", "priority" ))
+    # sortedTasks = myTasks.sort(dynamicSortMultiple("done_at" ))
     # sortedTasks = myTasks.sort(dynamicSort("created_at"))
     # $tasks.append("<br><br>")
     $tasks.append myTemplate.Header
@@ -419,6 +435,7 @@ window.displayTasks = ->
     $("table.tasks .task").click (e)->
         taskId = $(this).attr "data-taskid"
         isSelected= $(this).hasClass "selected"
+        $("p.alert").css("display", "none")
         # if !e.ctrlKey
             # $(".tasks .task.selected").removeClass "selected"
         
@@ -434,8 +451,10 @@ window.displayTasks = ->
             $(this).addClass "selected"
         
         # alert(taskId)
-        window.location.hash=""
-        insertUrlParam("task",taskId) 
+        
+        # window.location.hash=""
+        # insertUrlParam("task",taskId)
+        
         # alert("done")
 
         taskId = $(this).attr "data-taskid"
@@ -454,6 +473,8 @@ window.displayTasks = ->
             $("#inputAutor").val data.autor   
             $("#inputAutor2").val data.autor2   
             $("#inputAssigned_to").val data.assigned_to   
+            $("#inputCreated_at").val data.created_at   
+            $("#inputDone_at").val data.done_at   
             
         , "json")
         
@@ -551,9 +572,12 @@ midi : {
      <td colspan="8" >
     <div class="head tasklist-hl--<%= highlight %> " >
        <span class="badge <%= priority_label(priority) %>"><%= priority %></span>
-       <span class="badge badge-success  pull-right is-done--<%= done %> " > <i class=" icon-white icon-ok"></i> </span>
+       <span class="badge badge-info is-autor2--<%= isAutor2(autor2) %>"><%= autor2 %></span>
+ 
+      <span class="badge badge-warning is-status--<%= status %> pull-right " > <%= status %></span>
+      <span class="badge badge-success  pull-right is-done--<%= done %>" title="<%= done_at %>">
+            <i class=" icon-white icon-ok"></i></span>
        <span class="badge  pull-right is-star--<%= star %> " > <i class=" icon-white icon-star"></i> </span>
-       <span class="badge pull-right badge-warning is-autor2--<%= isAutor2(autor2) %>"><%= autor2 %></span>
        
        <%= titel %>
     </div>
@@ -568,12 +592,12 @@ midi : {
         border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; " >
     <td><%= status %></td>
     <td><%= projekt_id %></td>
-   <td><%= created_at %></td>
+    <td><%= created_at %></td>
     <td><%= tasktype %></td>
     <td><%= wichtig %></td>
-    <td><%= autor %></td>
-    <td><%= assigned_to %></td>
-   <td>xxx</td>
+    <td><%= autor2 %></td>
+    <td> --- </td>
+    <td><%= done_at %></td>
   </tr>
   <tr class=""  style="border-bottom: 0px solid #eeeeee;" >
        <td colspan="8" >

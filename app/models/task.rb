@@ -4,6 +4,6 @@ class Task < ActiveRecord::Base
     validates_numericality_of :projekt_id,
     :only_integer => true,
     :message => "Bitte nur ganze Zahlen eingeben"
-
+    validates_presence_of :projekt, :message => "Keine gueltige Projekt-Id"
 end
 
