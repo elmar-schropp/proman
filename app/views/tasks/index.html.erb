@@ -52,7 +52,10 @@
   .is-autor2--true {display:inline; }
   .is-status--     {display:none; }
   .is-status--true {display:inline; }
-  
+  .is-trash--      {display:none; }
+  .is-trash--true  {display:inline; }
+ 
+ 
   .hidden  {display:none; }
   
 </style>
@@ -64,16 +67,28 @@
   <div class="navbar-inner" style="white-space:nowrap; padding-left:0px; padding-right:0px; " >
     <ul class="nav" style="white-space:nowrap; ">
        <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menue
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menü
             <b class="caret"> </b></a>
        <ul class="dropdown-menu">
           <li><a href="/"  target="_self" ><i class="icon-home "></i> Home</a></li>
-          <li class="main-element"> <%= link_to "Logout", destroy_user_session_path, :method => :delete %>
+
+       <li class="main-element"><a  href="#myModal"  data-toggle="modal">
+          <i class="icon-wrench"></i>
+          Optionen</a></li>
+
+        <li class="divider"></li>
+        <li class="main-element"><a href="<%= tasks_path %>" target="_self" >
+           <i class="icon-refresh"></i>
+           reload</a></li>
+        <li class="divider"></li>
+        <li class="main-element"><%= link_to "Logout", destroy_user_session_path, :method => :delete %>
              </li>
-          <li><a href="<%= projekts_path %>">Projekte verwalten...</a></li>
-          <li class="divider"></li>
+        <li class="divider"></li>
+
+        <li><a href="<%= projekts_path %>">Projekte verwalten...</a></li>
+          
           <% @my_fav_projekts.each do |p| %>
-          <li><a href="#" onclick="setTaskProjektFilter('<%= p.id %>')"><%= p.name %></a></li>
+        <li><a href="#" onclick="setTaskProjektFilter('<%= p.id %>')"><%= p.name %></a></li>
           <% end %>
         </ul>
       </li>
@@ -84,45 +99,60 @@
            </a></li>
      <li  id="main-element-sort" class="main-element "><a href="#"
            onClick="toggleToolbars('sort'); return false;"  >
-           <i class="icon-white icon-th"></i>
+           <i class="icon-white icon-list"></i>
            </a></li>
       <li id="main-element-filter" class="main-element"><a href="#"
           onClick="toggleToolbars('filter'); return false;"  >
            <i class="icon-white icon-filter"></i>
            </a></li>
 
-      <li id="main-element-tags" class="main-element"><a href="#"
-          onClick="toggleToolbars('tags'); return false;"  >
-           <i class="icon-white icon-tags"></i>
+      <li id="main-element-team" class="main-element"><a href="#"
+          onClick="toggleToolbars('team'); return false;"  >
+           <i class="icon-white icon-user"></i>
+           </a></li>
+      <li id="main-element-time" class="main-element"><a href="#"
+          onClick="toggleToolbars('time'); return false;"  >
+           <i class="icon-white icon-time"></i>
+           </a></li>
+      <li id="main-element-archiv" class="main-element"><a href="#"
+          onClick="toggleToolbars('archiv'); return false;"  >
+           <i class="icon-white icon-check"></i>
            </a></li>
       <li id="main-element-search" class="main-element"><a href="#"
           onClick="toggleToolbars('search'); return false;"  >
            <i class="icon-white icon-search"></i>
            </a></li>
+      
+      <li class="main-element"><a  href="#myModalHelp"  data-toggle="modal">
+          <b> ? </b></a></li>
 
-      <li class="main-element"><a href="<%= tasks_path %>" target="_self" >
-           <i class="icon-white icon-refresh"></i>
-           </a></li>
+<!-- 
      <li class="main-element"><a  href="#myModal"  data-toggle="modal">
           <i class="icon-white icon-wrench"></i>
           </a></li>
-     <li class="main-element"><a  href="#myModal"  data-toggle="modal">
-          <i class="icon-white icon-comment"></i>
-          </a></li>
-
-     <li class="main-element"><%= link_to "Logout", destroy_user_session_path, :method => :delete %>
-        </li>
-      <!--main-toolbar
-      <li><a href="/"  target="_self" ><i class="icon-home"></i> Home</a></li> //!-->
-      
+      <li class="main-element"><a href="<%= tasks_path %>" target="_self" >
+           <i class="icon-white icon-refresh"></i>
+           </a></li>
+ //!-->
+ 
     </ul>
   </div>
 </div>
 
-<div id="dyna-toolbar-container">
+<div id="dyna-toolbar-container" style="width:100%;" >
 <div id="dyna-toolbar-bookmark" class="dyna-toolbar "
-        style="white-space:nowrap; margin-top:-10px; width:99%; ">
- <b> Bookmarks</b><br>
+        style="white-space:nowrap; padding:15px; margin-top:-20px;background:#bbbbbb; ">
+ <b> Bookmarks</b>
+<a  href="#myModal"  data-toggle="modal">
+          <i class="icon-white icon-wrench"></i>Optionen
+          </a>
+<a href="<%= tasks_path %>" target="_self" >
+           <i class="icon-white icon-refresh"></i>reload
+           </a>
+ 
+ 
+ <br>
+ <br>
   <button class="btn "  id="tb-bookmark-2" onclick="setTaskProjektFilter(2, this)" > proMan</button>
   <button class="btn "  id="tb-bookmark-9" onclick="setTaskProjektFilter(9, this)" >pm-doku</button>
   <button class="btn "  id="tb-bookmark-7" onclick="setTaskProjektFilter(7, this)" >pinboard</button>
@@ -130,11 +160,9 @@
   <br>  
   <button class="btn "  id="tb-bookmark-1" onclick="setTaskProjektFilter(1, this)" > teamwiki</button>
   <button class="btn "  id="tb-bookmark-9" onclick="setTaskProjektFilter(10, this)" >ets-data</button>
-  <br>  
-   <button class="btn btn-primary" id="tb-bookmark-5" onclick="setTaskProjektFilter(5, this)" >
+  <button class="btn btn-primary" id="tb-bookmark-5" onclick="setTaskProjektFilter(5, this)" >
                 <i class="icon-white  icon-folder-open " ></i> inbox</button>
   <button class="btn "  id="tb-bookmark-3" onclick="setTaskProjektFilter(3, this)" > privat</button>
-  <button class="btn "  id="tb-bookmark-6" onclick="setTaskProjektFilter(6, this)" >erledigt</button>
   <br>
   <br>
 </div>
@@ -165,6 +193,51 @@
   <br>
   <br>
 </div>
+
+<div id="dyna-toolbar-team" class="dyna-toolbar hidden"
+           style="white-space:nowrap; margin-top:-10px; width:99%; ">
+  <b> Team / Delegation :</b><br>
+  <input class="btn" type="button" onclick="setTaskProjektFilter(2) " value="Nach Prioritaet">
+  <input class="btn" type="button"  onclick="setTaskProjektFilter(4) " value="Neueste zuerst">
+  <input class="btn" type="button" value="Aelteste zuerst">
+  <br>
+  <br>
+</div>
+
+<div id="dyna-toolbar-time" class="dyna-toolbar hidden"
+           style="white-space:nowrap; margin-top:-10px; width:99%; ">
+  <b> Timing / Termine :</b><br>
+  <input class="btn" type="button" onclick="setTaskProjektFilter(2) " value="Nach Prioritaet">
+  <input class="btn" type="button"  onclick="setTaskProjektFilter(4) " value="Neueste zuerst">
+  <input class="btn" type="button" value="Aelteste zuerst">
+  <br>
+  <br>
+</div>
+
+<div id="dyna-toolbar-archiv" class="dyna-toolbar hidden"
+           style="white-space:nowrap; margin-top:-10px; width:99%; ">
+  <b> Erledigt / Archiv :</b><br>
+  <input class="btn" type="button" onclick="setTaskProjektFilter(2) " value="Nach Prioritaet">
+  <input class="btn" type="button"  onclick="setTaskProjektFilter(4) " value="Neueste zuerst">
+  <input class="btn" type="button" value="Aelteste zuerst">
+  <br>
+  <br>
+</div>
+
+<div id="dyna-toolbar-search" class="dyna-toolbar hidden"
+           style="white-space:nowrap; margin-top:-10px; width:99%; ">
+  <b> Suchen / Tag-Wolke :</b><br>
+  <input class="btn" type="button" onclick="setTaskProjektFilter(2) " value="Nach Prioritaet">
+  <input class="btn" type="button"  onclick="setTaskProjektFilter(4) " value="Neueste zuerst">
+  <input class="btn" type="button" value="Aelteste zuerst">
+  <br>
+  <div style="background: #aaaaaa; height:250px; margin:11px;"> ...platz für die tag-wolke
+    
+  </div>
+  <br>
+</div>
+
+
 
 </div>
 
@@ -219,6 +292,34 @@
       <p>...</p>
       <p>...</p>
       <p>...</p>
+      </div>
+      <div class="modal-footer">
+      <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+      <button class="btn btn-primary">Save changes</button>
+      </div>
+   </div>
+   
+    <!-- Modal -->
+    <div id="myModalHelp" class="modal hide fade center" tabindex="-1"
+         style="width:85%; min-width:300px; max-width:600px; margin:10px 0 0 10px; left:5%; top:0%; "
+           role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">...</button>
+      <h3 id="myModalLabel">H i l f e </h3>
+      </div>
+      <div class="modal-body" style="max-height:200px; " >
+      
+      <p> ...ich finde so ein <b>modales fenster</b> fast besser wie die dropDownMenues, vor allem wenn sie bei touch nicht ordentlich funktionieren</p>
+      <p>...</p>
+      <p>Als erstes kommt die umschaltung einspaltig - zweispaltig fuer landscape und portrait</p>
+      <p>...</p>
+      <p>theoretisch koennte man auch die Ansicht da rein nehmen ???</p>
+      <p></p>
+      <p>und ein kleines Bild waere auch nicht schlecht</p>
+      <p>...</p>
+      <p>...</p>
+      <p>...</p>
+    
       </div>
       <div class="modal-footer">
       <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>

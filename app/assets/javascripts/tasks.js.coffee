@@ -60,7 +60,36 @@ window.toggle_ok = (taskId)->
                 dataType: "json"
                 type: "PUT"
             }
-                
+
+window.toggle_trash = (taskId)->
+    # alert(taskId)
+    for i of allTasks[myProjektId]
+        if  parseInt(allTasks[myProjektId][i].id) ==  parseInt(taskId)
+            trash=allTasks[myProjektId][i]["trash"]
+            if (trash)
+                trash=null
+                allTasks[myProjektId][i]["trash_at"]=null
+            else
+                trash=1
+                now = new Date()
+                allTasks[myProjektId][i]["trash_at"]= new Date()
+            allTasks[myProjektId][i]["trash"]=trash
+            taskData= {
+                trash : trash
+                trash_at : allTasks[myProjektId][i]["trash_at"]
+                # tag  : "TAG-xxxxxxxxxxxx"
+            }
+            $.ajax {
+                url: "/tasks/" + taskId + ".json"
+                data: {
+                    task: taskData
+                }
+                success: (data) ->
+                   displayTasks()
+                dataType: "json"
+                type: "PUT"
+            }
+
 
 window.toggle_star = (taskId)->
     # alert(taskId)
@@ -69,13 +98,16 @@ window.toggle_star = (taskId)->
             star=allTasks[myProjektId][i]["star"]
             if (star)
                 star=null
+                allTasks[myProjektId][i]["highlight"]=null
             else
                 star=1
+                allTasks[myProjektId][i]["highlight"]=5
             allTasks[myProjektId][i]["star"]=star
             # alert(allTasks[myProjektId][i]["star"])
 
             taskData= {
                 star : star
+                highlight : allTasks[myProjektId][i]["highlight"]
                 # tag  : "TAG-xxxxxxxxxxxx"
             }
             $.ajax {
@@ -403,7 +435,7 @@ dynamicSortMultiple = `function() {
          * as long as we have extra properties to compare
          */
         while(result === 0 && i < numberOfProperties) {
-            if (i == 0) 
+            if (i < 2) 
                 result = dynamicSort(props[i])(obj1, obj2);
             else
                 result = dynamicSortInverse(props[i])(obj1, obj2);
@@ -424,7 +456,7 @@ window.displayTasks = ->
     # sortedTasks = myTasks.sort(dynamicSortMultiple("autor2", "created_at" ))
     # sortedTasks = myTasks.sort(dynamicSortMultiple("done", "priority" ))
     # sortedTasks = myTasks.sort(dynamicSortMultiple("done", "created_at" ))
-    sortedTasks = myTasks.sort(dynamicSortMultiple("done", "done_at", "priority" ))
+    sortedTasks = myTasks.sort(dynamicSortMultiple("trash", "done", "done_at", "priority" ))
     # sortedTasks = myTasks.sort(dynamicSortMultiple("done", "priority" ))
     # sortedTasks = myTasks.sort(dynamicSortMultiple("done_at" ))
     # sortedTasks = myTasks.sort(dynamicSort("created_at"))
@@ -574,7 +606,8 @@ midi : {
        <span class="badge <%= priority_label(priority) %>"><%= priority %></span>
        <span class="badge badge-info is-autor2--<%= isAutor2(autor2) %>"><%= autor2 %></span>
  
-      <span class="badge badge-warning is-status--<%= status %> pull-right " > <%= status %></span>
+      <span class="badge badge-inverse is-trash--<%= trash %> pull-right " ><i class=" icon-white icon-trash"></i></span>
+      <span class="badge badge-inverse is-status--<%= status %> pull-right " > <%= status %></span>
       <span class="badge badge-success  pull-right is-done--<%= done %>" title="<%= done_at %>">
             <i class=" icon-white icon-ok"></i></span>
        <span class="badge  pull-right is-star--<%= star %> " > <i class=" icon-white icon-star"></i> </span>
@@ -693,7 +726,9 @@ window.getEditBar = (myTaskId) ->
              <i class=" icon-white icon-arrow-down "> </i> Mehr('+toolbarIndex+') </button>
         <a class="btn btn btn-inverse" href="http://proman.wikilab.de/tasks/'+myTaskId+'/edit" target="_self" ">
             <i class="icon-white icon-pencil"> </i>  edit </a>
-        <a class="btn btn-warning " href="http://proman.wikilab.de/tasks/new" target="_self" ">
+         <button class="btn btn-inverse" onclick="toggle_trash('+myTaskId+')">
+             <i class=" icon-white icon-trash "> </i>  </button>
+         <a class="btn btn-warning " href="http://proman.wikilab.de/tasks/new" target="_self" ">
             <i class="icon-white icon-plus"> </i></a>
     </div>
     <div id="in-place-edit-bar-1"  class="toolbar-plus '+show01+'"

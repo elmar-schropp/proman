@@ -85,3 +85,11 @@ $esBackgroundHighlight:     adjust-hue($esBackground, 40%) !default;
   background-image: -o-linear-gradient(top, #daedf6, #8ec7e8);
   background-image: linear-gradient(to bottom, #daedf6, #8ec7e8);
 }
+.tasklist-hl--5,  .miditask .head.tasklist-hl--5 {
+  color:#fff; text-shadow: 0px 1px 1px #000;
+  background-image: -moz-linear-gradient(top, #888888, #555555);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#888888), to(#555555));
+  background-image: -webkit-linear-gradient(top, #888888, #555555);
+  background-image: -o-linear-gradient(top, #888888, #555555);
+  background-image: linear-gradient(to bottom, #888888, #555555);
+}
