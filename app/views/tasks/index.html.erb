@@ -18,16 +18,15 @@
   .tasks .tags i { vertical-align: middle }
   
   .tasks tr.miditask, .tasks tr.miditask td { padding: 0; }
-  .miditask.selected, .tasks .selected div { background: 8f4c0fc; }
   .miditask.selected, .tasks .selected div { background-color: #ffffff; }
 
-  .miditask .head   {min-width:300px; max-width:450px; }
+  .miditask .head   {min-width:400px; max-width:450px; }
   .miditask .__head { background: #eeeeee; color: #1e49ac; border-color: #6d9ed0; }
   .miditask .__head { background: #000000; color: #bbbbbb; border-color: #6d9ed0; }
-  .miditask .head   { border-top: 1px solid #aaaaaa; border-bottom: 0px solid #82a292; padding: 4px;
+  .miditask .head   { border-top: 0px solid #aaaaaa; border-bottom: 1px solid #aaaacc; padding: 4px;
               font-weight: bold; color: #000000; text-shadow: 0px 1px 1px #fff; }
-  .miditask.__selected .__head { background: #84c0fc; color: #1e49ac; border-color: #6d9ed0;
-              color: #000; text-shadow: 0px 1px 1px #fff;} 
+  
+  .miditask.selected .head { border-top: 2px solid #0000ff; border-bottom: 2px solid #0000ff; } 
    
   .tasks .comment { font-size: 9pt; padding: 4px; background-color:#fafafa; }
   .tasks .tags { font-size: 7pt; padding: 4px; background-color:#fafafa; }
@@ -41,7 +40,7 @@
   #editor { overflow: hidden; }
   
   .maxitask strong { color: #488b6a; font-size: 13px; }
-  .tasks {min-width:300px; max-width:600px; }
+  .tasks {min-width:330px; max-width:600px; }
   .toolbar-plus.hidden { background: #333;  display: none; }
   
   .is-done--       {display:none; }
@@ -57,7 +56,12 @@
  
  
   .hidden  {display:none; }
+  .toolbars hr { margin-top:5px;  margin-bottom:5px;  }
   
+  #myClock {font-size:26px; font-weight: bold; color: #555555; text-shadow: 0px 1px 1px #dddddd; }
+  #myDate {font-size:14px; font-weight: bold; color: #666666; text-shadow: 0px 1px 1px #dddddd; }
+  #projekttitel {font-size:26px; font-weight: bold; color: #777777; text-shadow: 0px 1px 1px #dddddd; }
+
 </style>
 
   
@@ -114,18 +118,16 @@
           onClick="toggleToolbars('time'); return false;"  >
            <i class="icon-white icon-time"></i>
            </a></li>
-      <li id="main-element-archiv" class="main-element"><a href="#"
-          onClick="toggleToolbars('archiv'); return false;"  >
-           <i class="icon-white icon-check"></i>
-           </a></li>
       <li id="main-element-search" class="main-element"><a href="#"
           onClick="toggleToolbars('search'); return false;"  >
            <i class="icon-white icon-search"></i>
            </a></li>
       
+<!--
       <li class="main-element"><a  href="#myModalHelp"  data-toggle="modal">
           <b> ? </b></a></li>
-
+ //!-->
+ 
 <!-- 
      <li class="main-element"><a  href="#myModal"  data-toggle="modal">
           <i class="icon-white icon-wrench"></i>
@@ -139,31 +141,40 @@
   </div>
 </div>
 
-<div id="dyna-toolbar-container" style="width:100%;" >
+<div id="dyna-toolbar-container" class="toolbars" style="width:100%;" >
 <div id="dyna-toolbar-bookmark" class="dyna-toolbar "
-        style="white-space:nowrap; padding:15px; margin-top:-20px;background:#bbbbbb; ">
- <b> Bookmarks</b>
-<a  href="#myModal"  data-toggle="modal">
-          <i class="icon-white icon-wrench"></i>Optionen
-          </a>
-<a href="<%= tasks_path %>" target="_self" >
-           <i class="icon-white icon-refresh"></i>reload
+        style="white-space:nowrap; padding:15px; margin-top:-20px;background:transparent; ">
+  <div style="background:#999999; padding:5px;">
+    <b> Bookmarks&nbsp;&nbsp;&nbsp;</b>
+    <span id="myDate">01.01.2013</span>
+    <span id="myClock">19:01</span>
+    &nbsp;&nbsp;&nbsp; 
+    <a href="<%= tasks_path %>" target="_self" >
+           <i class="icon-white icon-refresh"></i>&nbsp;reload
            </a>
- 
- 
- <br>
- <br>
+    &nbsp;&nbsp;       
+    <a  href="#myModal"  data-toggle="modal">
+          <i class="icon-white icon-wrench"></i>&nbsp;Optionen
+          </a>
+  </div>
+  <br>
   <button class="btn "  id="tb-bookmark-2" onclick="setTaskProjektFilter(2, this)" > proMan</button>
   <button class="btn "  id="tb-bookmark-9" onclick="setTaskProjektFilter(9, this)" >pm-doku</button>
   <button class="btn "  id="tb-bookmark-7" onclick="setTaskProjektFilter(7, this)" >pinboard</button>
   <button class="btn "  id="tb-bookmark-4" onclick="setTaskProjektFilter(4, this)" > ugb</button>
-  <br>  
+  <a class="btn btn-warning " href="http://proman.wikilab.de/tasks/new" target="_self" ">
+     <i class="icon-white icon-plus"> </i></a>
+  <hr>  
   <button class="btn "  id="tb-bookmark-1" onclick="setTaskProjektFilter(1, this)" > teamwiki</button>
   <button class="btn "  id="tb-bookmark-9" onclick="setTaskProjektFilter(10, this)" >ets-data</button>
-  <button class="btn btn-primary" id="tb-bookmark-5" onclick="setTaskProjektFilter(5, this)" >
-                <i class="icon-white  icon-folder-open " ></i> inbox</button>
-  <button class="btn "  id="tb-bookmark-3" onclick="setTaskProjektFilter(3, this)" > privat</button>
+  <button class="btn "  id="tb-bookmark-3" onclick="setTaskProjektFilter(3, this)" >privat</button>
+  <button class="btn "  id="tb-bookmark-99" onclick="test1()" > test-1</button>
+  <button class="btn "  id="tb-bookmark-98" onclick="test2()" > test-2</button>
+  <button class="btn "  id="tb-bookmark-97" onclick="test3()" > test-3</button>
   <br>
+  <br>
+  <br>
+  <span id="projekttitel">Projekt-Manager</span>
   <br>
 </div>
 
@@ -171,7 +182,7 @@
 <div id="dyna-toolbar-filter" class="dyna-toolbar hidden"
              style="white-space:nowrap; margin-top:-10px; width:99%; ">
   <b> Filter:</b><br>
-  <input class="btn" type="button" onclick="setTaskProjektFilter(2) " value="vorgemerkt">
+  <input class="btn" type="button" onclick="test1() " value="vorgemerkt">
   <input class="btn" type="button"  onclick="setTaskProjektFilter(4) " value="von mir">
   <input class="btn" type="button" value="fuer mich">
   <br>
@@ -207,16 +218,6 @@
 <div id="dyna-toolbar-time" class="dyna-toolbar hidden"
            style="white-space:nowrap; margin-top:-10px; width:99%; ">
   <b> Timing / Termine :</b><br>
-  <input class="btn" type="button" onclick="setTaskProjektFilter(2) " value="Nach Prioritaet">
-  <input class="btn" type="button"  onclick="setTaskProjektFilter(4) " value="Neueste zuerst">
-  <input class="btn" type="button" value="Aelteste zuerst">
-  <br>
-  <br>
-</div>
-
-<div id="dyna-toolbar-archiv" class="dyna-toolbar hidden"
-           style="white-space:nowrap; margin-top:-10px; width:99%; ">
-  <b> Erledigt / Archiv :</b><br>
   <input class="btn" type="button" onclick="setTaskProjektFilter(2) " value="Nach Prioritaet">
   <input class="btn" type="button"  onclick="setTaskProjektFilter(4) " value="Neueste zuerst">
   <input class="btn" type="button" value="Aelteste zuerst">

@@ -20,6 +20,20 @@ window.replaceAll=function(oldStr,findStr,repStr,maxCount) {
 }//endFunction
 
 
+window.mid=function(str, start, len) {
+  if (start < 0 || len < 0) return "";
+  var iEnd
+  var iLen = String(str).length;
+  if (start + len > iLen)
+    iEnd = iLen;
+  else
+    iEnd = start + len;
+  return String(str).substring(start,iEnd);
+} //endFunction
+
+
+
+
 window.insertUrlParam=function(key, value) {
   key = escape(key); value = escape(value);
   var kvp = document.location.search.substr(1).split('&');

@@ -13,6 +13,29 @@ myProjektId = $.cookie("CurPro")
 if not myProjektId then myProjektId=2
 # alert(myProjektId)
  
+window.test1 = ()->
+    refreshDateTime()
+    d = new Date();
+    f = 'MMMM dd, yyyy KK:mm:ss:SSS a';
+    f = 'k:mm:ss';
+    df = $.format.date(d, f);
+    # alert( df)
+
+
+window.refreshDateTime = ()->
+    # alert("ok")
+    d = new Date();
+    f = 'k:mm:ss';
+    df = $.format.date(d, f);
+    $("#myClock").html df
+    f="yyyy-MM-dd"
+    f="dd.MM.yyyy  w "
+    df = $.format.date(d, f);
+    $("#myDate").html df
+
+
+setInterval("refreshDateTime()",1000)
+
 
 window.isTouchDevice = 'ontouchstart' of document.documentElement;
 if $(window).width() < 600
@@ -447,22 +470,48 @@ dynamicSortMultiple = `function() {
 }`
 
 window.displayTasks = ->
+    tTrash= new Array();
+    tDone = new Array();
+    tNew  = new Array();
+    tPrio = new Array();
     $tasks.html ""
     for row in myTasks
-        if  (row["done_at"] ==  null) 
+        if  (row["done_at"] ==  null)
             row["done_at"] = ""
+            
+        if (row["trash"]    > "") 
+            tTrash[tTrash.length]=row
+            continue;
+        if (row["done"]         ) 
+            tDone[tDone.length]=row
+            continue;
+        if (row["priority"] > 0) 
+            tPrio[tPrio.length]=row
+            continue;
+        tNew[tNew.length]=row
+        
+    TasksNew    = tNew.sort  (dynamicSortMultiple("trash", "done", "created_at", "priority" ))
+    TasksPriio  = tPrio.sort (dynamicSortMultiple("trash", "done", "done_at",    "priority" ))
+    TasksDone   = tDone.sort (dynamicSortMultiple("trash", "done", "done_at",    "priority" ))
+    TasksTrash  = tTrash.sort(dynamicSortMultiple("trash", "done", "done_at",    "priority" ))
     
     # sortedTasks = myTasks.sort(dynamicSortMultiple("priority" ))
     # sortedTasks = myTasks.sort(dynamicSortMultiple("autor2", "created_at" ))
     # sortedTasks = myTasks.sort(dynamicSortMultiple("done", "priority" ))
     # sortedTasks = myTasks.sort(dynamicSortMultiple("done", "created_at" ))
-    sortedTasks = myTasks.sort(dynamicSortMultiple("trash", "done", "done_at", "priority" ))
+    # sortedTasks = myTasks.sort(dynamicSortMultiple("trash", "done", "done_at", "priority" ))
+    # sortedTasks = OUT.sort(dynamicSortMultiple("trash", "done", "done_at", "priority" ))
     # sortedTasks = myTasks.sort(dynamicSortMultiple("done", "priority" ))
     # sortedTasks = myTasks.sort(dynamicSortMultiple("done_at" ))
     # sortedTasks = myTasks.sort(dynamicSort("created_at"))
     # $tasks.append("<br><br>")
     $tasks.append myTemplate.Header
-    $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in sortedTasks
+    window.myvar="ja "
+    $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksNew
+    window.myvar=""
+    $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksPriio
+    $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksDone
+    $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksTrash
     
     $("table.tasks .task").click (e)->
         taskId = $(this).attr "data-taskid"
@@ -552,7 +601,11 @@ viewHelpers = {
             "badge-warning"
         else
             ""
-
+    isKommentar : (kommentar) ->
+        if kommentar > ""
+            "+&nbsp;"
+        else
+            "&nbsp;&nbsp;&nbsp;"
 }
 
 
@@ -603,7 +656,7 @@ midi : {
   <tr class="miditask task" data-taskid="<%= id %>">
      <td colspan="8" >
     <div class="head tasklist-hl--<%= highlight %> " >
-       <span class="badge <%= priority_label(priority) %>"><%= priority %></span>
+       <%= isKommentar(kommentar) %><span class="badge <%= priority_label(priority) %>"><%= priority %></span>
        <span class="badge badge-info is-autor2--<%= isAutor2(autor2) %>"><%= autor2 %></span>
  
       <span class="badge badge-inverse is-trash--<%= trash %> pull-right " ><i class=" icon-white icon-trash"></i></span>
@@ -612,7 +665,7 @@ midi : {
             <i class=" icon-white icon-ok"></i></span>
        <span class="badge  pull-right is-star--<%= star %> " > <i class=" icon-white icon-star"></i> </span>
        
-       <%= titel %>
+      &nbsp;<%= titel %>
     </div>
       <div class="comment"   ><%= prepare_text(kommentar)  %></div>
       <div class="tags"      ><i class="icon-tags"></i> <%= tag %></div>
@@ -621,8 +674,8 @@ midi : {
  </tr>
   
 
-  <tr class="details" style="color:#dddddd; background-color:#333333;
-        border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; " >
+  <tr class="details" style="color:#888888; background-color:#ffffff;
+        border-top: 1px solid #999999; border-bottom: 1px solid #999999; " >
     <td><%= status %></td>
     <td><%= projekt_id %></td>
     <td><%= created_at %></td>

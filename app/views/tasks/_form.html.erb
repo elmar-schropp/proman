@@ -1,7 +1,7 @@
 <%= form_for(@task, :html => { :class => 'form form-horizontal'}) do |f| %>
   <% if @task.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@task.errors.count, "error") %> prohibited this task from being saved:</h2>
+      <h4><%= pluralize(@task.errors.count, "error") %> prohibited this task from being saved:</h4>
 
       <ul>
       <% @task.errors.full_messages.each do |msg| %>
@@ -11,25 +11,10 @@
     </div>
   <% end %>
 
+ <div style="padding:15px;"  >
   
   
-  <p>
-  <b>eindat:</b>
-  <%= @task.created_at %>
-  </p>
- 
-  <b>aenddat:</b>
-  <%= @task.updated_at %>
-  </p>
-   
-  <b>done_at:</b>
-  <%= @task.done_at %>
-  </p>
-   
-  <br>
   
- 
- <br>
    <div class="control-group">
     <%= f.label :projekt_id, :class=>"control-label"%>
     <div class="controls"><%= f.number_field :projekt_id %></div>
@@ -39,12 +24,12 @@
     <div class="controls"><%= f.number_field :priority %></div>
   </div>
  
- <br>
+ 
   <div class="actions">
     <%= f.submit %>
     <%= link_to 'Back', tasks_path %>
   </div>
- <br>
+
 
 
 
@@ -52,18 +37,18 @@
 
 <div class="field">
     <%= f.label :titel %>
-     <%= f.text_field :titel, :style=>"width:45%" %>
+     <%= f.text_field :titel, :style=>"width:90%" %>
   </div>
   
   <div class="field">
     <%= f.label :Details %>
-    <%= f.text_area :kommentar, :style=>"width:45%; height:150px" %>
+    <%= f.text_area :kommentar, :style=>"width:90%; height:150px" %>
   </div>
   
  
   <div class="field">
     <%= f.label :tags %>
-    <%= f.text_field :tag, :style=>"width:45% " %>
+    <%= f.text_field :tag, :style=>"width:90% " %>
   </div>
  
  
@@ -164,6 +149,25 @@
   
    </div>
    
+
+  
+  
+  <p>
+  <b>eindat:</b>
+  <%= @task.created_at %>
+  </p>
+ 
+  <b>aenddat:</b>
+  <%= @task.updated_at %>
+  </p>
+   
+  <b>done_at:</b>
+  <%= @task.done_at %>
+  </p>
+   
+  <br>
+  
+ </div>
 
    
    

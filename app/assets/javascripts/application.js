@@ -17,5 +17,6 @@
 //= require jquery_cookie
 //= require_tree
 //= require bootstrap
+//= require jquery.format-1.2.min.js
 
 
