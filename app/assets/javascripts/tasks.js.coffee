@@ -15,11 +15,27 @@ if not myProjektId then myProjektId=2
  
 window.test1 = ()->
     refreshDateTime()
-    d = new Date();
-    f = 'MMMM dd, yyyy KK:mm:ss:SSS a';
-    f = 'k:mm:ss';
-    df = $.format.date(d, f);
+    # d = new Date();
+    # f = 'MMMM dd, yyyy KK:mm:ss:SSS a';
+    # f = 'k:mm:ss';
+    # df = $.format.date(d, f);
     # alert( df)
+
+window.editNew = ()->
+    $("#inputTitle").val("")
+    $("#inputComment").val("")
+    $("#inputTags").val("")
+    $("#inputPriority").val("")
+    $("#inputTasktype").val("")
+    $("#inputStatus").val("")
+    $("#inputWichtig").val("")
+    # $("#inputProjekt_id").val("")
+    $("#inputAutor").val("")
+    $("#inputAutor2").val("")
+    $("#inputAssigned_to").val("")
+    $("#inputDone_at".val("")
+    editor_show()
+    alert("editNew")
 
 
 window.refreshDateTime = ()->
@@ -294,9 +310,7 @@ window.toolbar_show =(taskId) ->
 
 $ ->
     $("#editor .nextbutton").click ->
-        alert("...soll mal onNEU werden")
-        if $("#inputProjekt_id").val() == "" 
-            alert("kein Projekt zugewiesen") ;  return
+        # alert("...soll mal onNEU werden")
         $("#inputComment").css("backgroundColor", "#8cd36d")
         taskData= {
             titel      : $("#inputTitle").val()
@@ -312,14 +326,30 @@ $ ->
             assigned_to: $("#inputAssigned_to").val()
             done_at:     $("#inputDone_at").val()
         }
-        alert(taskData)
         $.ajax {
-            url: "/tasks/" + "new" + ".json"
+            url: "/tasks" + ".json"
             data: {
                 task: taskData
             }
             success: (data) ->
-                alert ("neuer task angelegt")
+                $("#inputComment").css("backgroundColor", "#ffffff")
+                projekt_id=data["projekt_id"]
+                # alert(projekt_id)
+                allTasks[projekt_id]=null
+                # alert("set null")
+                setTaskProjektFilter(projekt_id)
+                # alert("fertig")
+                editor_hide()
+                return
+            
+                alert(projekt_id)
+                alert(data["id"])
+                
+                # 1prüfen, ob id schon geladen, sonst dieses anzeigen
+                
+                # an vorhandenes array dranhängen, anzeige neu anstoßen
+                alert (data["titel"])
+                
                 return
                  
                 for i of allTasks[myProjektId]
@@ -342,7 +372,7 @@ $ ->
                     $('body').addClass("is-touch");
                     # alert("OK")
             dataType: "json"
-            type: "PUT"
+            type: "POST"
         }
     
     
@@ -385,6 +415,7 @@ $ ->
                         allTasks[myProjektId][i]["status"]=taskData["status"]
                         allTasks[myProjektId][i]["autor2"]=taskData["autor2"]
                         allTasks[myProjektId][i]["done_at"]=taskData["done_at"]
+                        allTasks[myProjektId][i]["wichtig"]=taskData["wichtig"]
                         
                 refreshTaskItem taskId 
                 # loadTasks
@@ -470,11 +501,13 @@ dynamicSortMultiple = `function() {
 }`
 
 window.displayTasks = ->
+    
+    $tasks.html ""
+    # alert("display löschen")
     tTrash= new Array();
     tDone = new Array();
     tNew  = new Array();
     tPrio = new Array();
-    $tasks.html ""
     for row in myTasks
         if  (row["done_at"] ==  null)
             row["done_at"] = ""
@@ -490,10 +523,10 @@ window.displayTasks = ->
             continue;
         tNew[tNew.length]=row
         
-    TasksNew    = tNew.sort  (dynamicSortMultiple("trash", "done", "created_at", "priority" ))
-    TasksPriio  = tPrio.sort (dynamicSortMultiple("trash", "done", "done_at",    "priority" ))
-    TasksDone   = tDone.sort (dynamicSortMultiple("trash", "done", "done_at",    "priority" ))
-    TasksTrash  = tTrash.sort(dynamicSortMultiple("trash", "done", "done_at",    "priority" ))
+    TasksNew    = tNew.sort  (dynamicSortMultiple("wichtig", "done", "created_at", "priority" ))
+    TasksPriio  = tPrio.sort (dynamicSortMultiple("trash",   "done", "done_at",    "priority" ))
+    TasksDone   = tDone.sort (dynamicSortMultiple("trash",   "done", "done_at",    "priority" ))
+    TasksTrash  = tTrash.sort(dynamicSortMultiple("trash",   "done", "done_at",    "priority" ))
     
     # sortedTasks = myTasks.sort(dynamicSortMultiple("priority" ))
     # sortedTasks = myTasks.sort(dynamicSortMultiple("autor2", "created_at" ))
@@ -506,9 +539,9 @@ window.displayTasks = ->
     # sortedTasks = myTasks.sort(dynamicSort("created_at"))
     # $tasks.append("<br><br>")
     $tasks.append myTemplate.Header
-    window.myvar="ja "
+    window.myvar="ja "; window.globGetPrefix=1
     $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksNew
-    window.myvar=""
+    window.myvar=""; window.globGetPrefix=0
     $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksPriio
     $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksDone
     $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksTrash
@@ -606,6 +639,10 @@ viewHelpers = {
             "+&nbsp;"
         else
             "&nbsp;&nbsp;&nbsp;"
+    getPrefix : (para) ->
+        if ( window.globGetPrefix==1)
+            dateFormat="&nbsp;&nbsp;" + mid(para,5,5)
+            return dateFormat
 }
 
 
@@ -657,15 +694,18 @@ midi : {
      <td colspan="8" >
     <div class="head tasklist-hl--<%= highlight %> " >
        <%= isKommentar(kommentar) %><span class="badge <%= priority_label(priority) %>"><%= priority %></span>
+       <span style="font-size:10px; "><%= getPrefix(created_at) %></span>
        <span class="badge badge-info is-autor2--<%= isAutor2(autor2) %>"><%= autor2 %></span>
  
-      <span class="badge badge-inverse is-trash--<%= trash %> pull-right " ><i class=" icon-white icon-trash"></i></span>
       <span class="badge badge-inverse is-status--<%= status %> pull-right " > <%= status %></span>
+      <span class="badge badge-inverse is-trash--<%= trash %> pull-right " ><i class=" icon-white icon-trash"></i></span>
       <span class="badge badge-success  pull-right is-done--<%= done %>" title="<%= done_at %>">
             <i class=" icon-white icon-ok"></i></span>
-       <span class="badge  pull-right is-star--<%= star %> " > <i class=" icon-white icon-star"></i> </span>
+      <span class="badge is-wichtig--<%= wichtig %> pull-right " ><%= wichtig %></span>
+      <span class="badge  pull-right is-star--<%= star %> " > <i class=" icon-white icon-star"></i> </span>
        
       &nbsp;<%= titel %>
+      
     </div>
       <div class="comment"   ><%= prepare_text(kommentar)  %></div>
       <div class="tags"      ><i class="icon-tags"></i> <%= tag %></div>

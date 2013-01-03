@@ -53,6 +53,10 @@
   .is-status--true {display:inline; }
   .is-trash--      {display:none; }
   .is-trash--true  {display:inline; }
+  .is-wichtig--      {display:none; }
+  .is-wichtig--true  {display:inline; }
+ 
+
  
  
   .hidden  {display:none; }
@@ -162,19 +166,24 @@
   <button class="btn "  id="tb-bookmark-9" onclick="setTaskProjektFilter(9, this)" >pm-doku</button>
   <button class="btn "  id="tb-bookmark-7" onclick="setTaskProjektFilter(7, this)" >pinboard</button>
   <button class="btn "  id="tb-bookmark-4" onclick="setTaskProjektFilter(4, this)" > ugb</button>
-  <a class="btn btn-warning " href="http://proman.wikilab.de/tasks/new" target="_self" ">
-     <i class="icon-white icon-plus"> </i></a>
-  <hr>  
+    <a class="btn btn-small " href="http://proman.wikilab.de/tasks/new" target="_self" ">
+     <i class="icon-x-white icon-plus"> </i></a>
+  <button class="btn "  id="tb-bookmark-97" onclick="editNew()" ><i class="icon-x-white icon-plus"> </i> neu</button>
+ <hr>  
   <button class="btn "  id="tb-bookmark-1" onclick="setTaskProjektFilter(1, this)" > teamwiki</button>
   <button class="btn "  id="tb-bookmark-9" onclick="setTaskProjektFilter(10, this)" >ets-data</button>
   <button class="btn "  id="tb-bookmark-3" onclick="setTaskProjektFilter(3, this)" >privat</button>
-  <button class="btn "  id="tb-bookmark-99" onclick="test1()" > test-1</button>
-  <button class="btn "  id="tb-bookmark-98" onclick="test2()" > test-2</button>
-  <button class="btn "  id="tb-bookmark-97" onclick="test3()" > test-3</button>
+  <button class="btn "  id="tb-bookmark-99" onclick="test1()" > test-1      </button>
+  <button class="btn "  id="tb-bookmark-98" onclick="test2()" > test-2      </button>
+  <button class="btn "  id="tb-bookmark-97" onclick=" editNew() " > editNew()   </button>
   <br>
   <br>
   <br>
-  <span id="projekttitel">Projekt-Manager</span>
+      <a href="#" onclick="editNew()" >
+           <i class="icon-white icon-plus"></i>&nbsp;neu...
+           </a>
+    &nbsp;&nbsp;       
+<span id="projekttitel">Projekt-Manager</span>
   <br>
 </div>
 
