@@ -12,6 +12,7 @@ myProjektId = $.cookie("CurPro")
 # alert(myProjektId)
 if not myProjektId then myProjektId=2
 # alert(myProjektId)
+window.editorOnNew = false
  
 window.test1 = ()->
     refreshDateTime()
@@ -21,22 +22,28 @@ window.test1 = ()->
     # df = $.format.date(d, f);
     # alert( df)
 
-window.editNew = ()->
-    $("#inputTitle").val("")
-    $("#inputComment").val("")
-    $("#inputTags").val("")
-    $("#inputPriority").val("")
-    $("#inputTasktype").val("")
-    $("#inputStatus").val("")
-    $("#inputWichtig").val("")
-    # $("#inputProjekt_id").val("")
-    $("#inputAutor").val("")
-    $("#inputAutor2").val("")
-    $("#inputAssigned_to").val("")
-    $("#inputDone_at".val("")
-    editor_show()
-    alert("editNew")
 
+
+window.close_selected = (taskId)->
+    # alert( taskId)
+    $(".toolbar-plus").remove()
+    $(".tasks .task.selected").removeClass "selected"
+
+
+window.toolbar_show =(taskId) ->
+    # alert (taskId)
+    $(".toolbar-plus").remove()
+    $("#direktedit"+taskId).append(getEditBar(taskId))
+
+
+window.showIndikator =() ->
+    # alert ("showIndikator")
+    $("#busy-indicator").removeClass "visibility-hidden"
+
+
+window.hideIndikator =() ->
+    # alert ("hideIndikator")
+    $("#busy-indicator").addClass "visibility-hidden"
 
 window.refreshDateTime = ()->
     # alert("ok")
@@ -51,6 +58,57 @@ window.refreshDateTime = ()->
 
 
 setInterval("refreshDateTime()",1000)
+
+
+window.editor_onkeydown=(event) ->
+    # alert ("xxx: editor_onkeydown"+event.target)
+
+
+editor_show = ->
+    #alert "show editor"
+    # alert(taskId)
+    $("#editor").show();
+    $("#tb-editor-edit").removeClass "hidden"
+    $("#tb-editor-onNew").addClass "hidden"
+    if (isTouchDevice)
+        $("#main-toolbar").addClass "hide-on-editor"
+        $("#dyna-toolbar-container").addClass "hide-on-editor"
+        $(".touch-only").hide();
+        $tasks.hide();
+
+editor_hide = ->
+    # alert "HIDE editor"
+    $("#editor").hide();
+    $("#main-toolbar").removeClass "hide-on-editor"
+    $("#dyna-toolbar-container").removeClass "hide-on-editor"
+    $tasks.show();
+    if (isTouchDevice)
+        $(".touch-only").show();
+    displayTasks()    
+    # alert "HIDE editor"
+
+
+
+window.editNew = ()->
+    # ...Reihenfolge ist wichtig 
+    editor_show()
+    window.editorOnNew = true
+    # alert(editorOnNew)
+    
+    $("#tb-editor-edit").addClass "hidden"
+    $("#tb-editor-onNew").removeClass "hidden"
+    $("#inputProjekt_id"  ).val myProjektId
+    $("#inputTitle"       ).val "" 
+    $("#inputComment"     ).val "" 
+    $("#inputTags"        ).val "" 
+    $("#inputPriority"    ).val "" 
+    $("#inputTasktype"    ).val "" 
+    $("#inputStatus"      ).val "" 
+    $("#inputWichtig"     ).val "" 
+    $("#inputAutor"       ).val "" 
+    $("#inputAutor2"      ).val "" 
+    $("#inputAssigned_to" ).val "" 
+    $("#inputTitle"       ).focus()
 
 
 window.isTouchDevice = 'ontouchstart' of document.documentElement;
@@ -78,12 +136,15 @@ window.toggle_ok = (taskId)->
             else
                 done=1
                 now = new Date()
-                allTasks[myProjektId][i]["done_at"]= new Date()
+                d = new Date();
+                f="yyyy-MM-ddTkk:mm:ssZ";
+                now2 = $.format.date(d, f);
+                allTasks[myProjektId][i]["done_at"]= now2 
             allTasks[myProjektId][i]["done"]=done
             # alert(allTasks[myProjektId][i]["done"])
             taskData= {
                 done : done
-                done_at : allTasks[myProjektId][i]["done_at"]
+                done_at : now
                 # tag  : "TAG-xxxxxxxxxxxx"
             }
             $.ajax {
@@ -266,29 +327,6 @@ window.setTaskProjektFilter = (projektId) ->
     loadTasks()
 
 
-window.editor_onkeydown=(event) ->
-    # alert ("xxx: editor_onkeydown"+event.target)
-
-
-editor_show = ->
-    #alert "show editor"
-    # alert(taskId)
-    $("#main-toolbar").addClass "hide-on-editor"
-    $("#dyna-toolbar-container").addClass "hide-on-editor"
-    $("#editor").show();
-    $tasks.hide();
-    if (isTouchDevice)
-        $(".touch-only").hide();
-
-editor_hide = ->
-    # alert "HIDE editor"
-    $("#editor").hide();
-    $("#main-toolbar").removeClass "hide-on-editor"
-    $("#dyna-toolbar-container").removeClass "hide-on-editor"
-    $tasks.show();
-    if (isTouchDevice)
-        $(".touch-only").show();
-
 window.toolbar_toggle01 =(taskId) ->
     # alert (taskId)
     toolbarIndex=parseInt($.cookie("toolbarIndex"))
@@ -300,16 +338,11 @@ window.toolbar_toggle01 =(taskId) ->
     toolbar_show(taskId)
 
 
-window.toolbar_show =(taskId) ->
-    # alert (taskId)
-    $(".toolbar-plus").remove()
-    $("#direktedit"+taskId).append(getEditBar(taskId))
-
-
 
 
 $ ->
     $("#editor .nextbutton").click ->
+        return
         # alert("...soll mal onNEU werden")
         $("#inputComment").css("backgroundColor", "#8cd36d")
         taskData= {
@@ -324,7 +357,6 @@ $ ->
             autor      : $("#inputAutor").val()
             autor2     : $("#inputAutor2").val()
             assigned_to: $("#inputAssigned_to").val()
-            done_at:     $("#inputDone_at").val()
         }
         $.ajax {
             url: "/tasks" + ".json"
@@ -335,6 +367,15 @@ $ ->
                 $("#inputComment").css("backgroundColor", "#ffffff")
                 projekt_id=data["projekt_id"]
                 # alert(projekt_id)
+                
+                allTasks[projekt_id][allTasks[projekt_id].length]=data
+                setTaskProjektFilter(projekt_id)
+                # alert("fertig")
+                editor_hide()
+                return
+            
+                
+                
                 allTasks[projekt_id]=null
                 # alert("set null")
                 setTaskProjektFilter(projekt_id)
@@ -379,10 +420,12 @@ $ ->
     
     
     $("#editor .save").click ->
-        if ! taskId  then return
-        if $("#inputProjekt_id").val() == "" 
+        # alert("editor onSaveClick "+window.editorOnNew)
+        if (window.editorOnNew != true)
+            if ! taskId  then return
+        if $("#inputProjekt_id").val() == ""
+            # ... vielleicht ein defaultProjekt definieren?
             alert("kein Projekt zugewiesen") ;  return
-             
         $("#inputComment").css("backgroundColor", "#8cd36d")
         taskData= {
             titel      : $("#inputTitle").val()
@@ -396,40 +439,63 @@ $ ->
             autor      : $("#inputAutor").val()
             autor2     : $("#inputAutor2").val()
             assigned_to: $("#inputAssigned_to").val()
-            done_at    : $("#inputDone_at").val()
         }
-            
-        $.ajax {
-            url: "/tasks/" + taskId + ".json"
-            data: {
-                task: taskData
-            }
-            success: (data) ->
-                for i of allTasks[myProjektId]
-                    if  parseInt(allTasks[myProjektId][i].id) ==  parseInt(taskId)
-                        #extend...
-                        # allTasks[myProjektId][i]=taskData
-                        allTasks[myProjektId][i]["titel"]=taskData["titel"]
-                        allTasks[myProjektId][i]["kommentar"]=taskData["kommentar"]
-                        allTasks[myProjektId][i]["priority"]=taskData["priority"]
-                        allTasks[myProjektId][i]["status"]=taskData["status"]
-                        allTasks[myProjektId][i]["autor2"]=taskData["autor2"]
-                        allTasks[myProjektId][i]["done_at"]=taskData["done_at"]
-                        allTasks[myProjektId][i]["wichtig"]=taskData["wichtig"]
-                        
-                refreshTaskItem taskId 
-                # loadTasks
-                displayTasks()
-                
-                $("#inputComment").css("backgroundColor", "#ffffff")
-                if (isTouchDevice)
+        if (window.editorOnNew == true)
+            # alert(window.editorOnNew)
+            # alert("kein id")
+            $.ajax {
+                url:  "/tasks" + ".json"
+                data: {
+                    task: taskData
+                }
+                success: (data) ->
+                    $("#inputComment").css("backgroundColor", "#ffffff")
+                    projekt_id=data["projekt_id"]
+                    # alert(projekt_id)
+                    allTasks[projekt_id][allTasks[projekt_id].length]=data
+                    setTaskProjektFilter(projekt_id)
+                    # alert("fertig")
                     editor_hide()
-                    # $("#editor").hide(); $tasks.show();
-                    $('body').addClass("is-touch");
-                    # alert("OK")
-            dataType: "json"
-            type: "PUT"
-        }
+                    return
+                dataType: "json"
+                type: "POST"
+            }
+        else
+            # alert(window.editorOnNew)
+            # alert("id: "+taskId)
+            $.ajax {
+                url: "/tasks/" + taskId + ".json"
+                data: {
+                    task: taskData
+                }
+                success: (data) ->
+                    for i of allTasks[myProjektId]
+                        if  parseInt(allTasks[myProjektId][i].id) ==  parseInt(taskId)
+                            #extend...
+                            # allTasks[myProjektId][i]=taskData
+                            allTasks[myProjektId][i]["titel"]=taskData["titel"]
+                            allTasks[myProjektId][i]["kommentar"]=taskData["kommentar"]
+                            allTasks[myProjektId][i]["priority"]=taskData["priority"]
+                            allTasks[myProjektId][i]["status"]=taskData["status"]
+                            allTasks[myProjektId][i]["autor2"]=taskData["autor2"]
+                            allTasks[myProjektId][i]["done_at"]=taskData["done_at"]
+                            allTasks[myProjektId][i]["wichtig"]=taskData["wichtig"]
+                            
+                    refreshTaskItem taskId 
+                    # loadTasks
+                    displayTasks()
+                    
+                    $("#inputComment").css("backgroundColor", "#ffffff")
+                    if (isTouchDevice)
+                        editor_hide()
+                        # $("#editor").hide(); $tasks.show();
+                        $('body').addClass("is-touch");
+                        # alert("OK")
+                dataType: "json"
+                type: "PUT"
+            }
+        
+        
         
     $tasks = $("table.tasks")
     if $tasks.size() > 0
@@ -449,6 +515,7 @@ $ ->
 loadTasks = ->
     # alert(myProjektId)
     # alert(allTasks[myProjektId])
+    showIndikator()
     if allTasks[myProjektId]
         myTasks = allTasks[myProjektId]
         displayTasks()
@@ -539,11 +606,16 @@ window.displayTasks = ->
     # sortedTasks = myTasks.sort(dynamicSort("created_at"))
     # $tasks.append("<br><br>")
     $tasks.append myTemplate.Header
-    window.myvar="ja "; window.globGetPrefix=1
+    
+    window.globGetPrefix=1
     $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksNew
-    window.myvar=""; window.globGetPrefix=0
+    window.globGetPrefix=0
     $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksPriio
+    
+    window.globGetPostfix=1
     $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksDone
+    window.globGetPostfix=0
+    
     $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksTrash
     
     $("table.tasks .task").click (e)->
@@ -553,6 +625,7 @@ window.displayTasks = ->
         # if !e.ctrlKey
             # $(".tasks .task.selected").removeClass "selected"
         
+        window.editorOnNew = false
         if isTouchDevice
             if isSelected
                 if not (e.target.tagName == "A") then editor_show()
@@ -563,6 +636,7 @@ window.displayTasks = ->
         else
             $(".tasks .task.selected").removeClass "selected"
             $(this).addClass "selected"
+            editor_show()
         
         # alert(taskId)
         
@@ -587,13 +661,12 @@ window.displayTasks = ->
             $("#inputAutor").val data.autor   
             $("#inputAutor2").val data.autor2   
             $("#inputAssigned_to").val data.assigned_to   
-            $("#inputCreated_at").val data.created_at   
-            $("#inputDone_at").val data.done_at   
-            
         , "json")
         
     .dblclick (e) ->
         window.location = "/tasks/" + $(this).attr("data-taskid") + "/edit"
+    hideIndikator()
+
 
 wikitextUnarm = (t) ->
     t.replace(/([*_@!])/g, (ch) -> "&#" + ch.charCodeAt(0) + ";");
@@ -642,6 +715,10 @@ viewHelpers = {
     getPrefix : (para) ->
         if ( window.globGetPrefix==1)
             dateFormat="&nbsp;&nbsp;" + mid(para,5,5)
+            return dateFormat
+    getPostfix : (para) ->
+        if ( window.globGetPostfix==1)
+            dateFormat="&nbsp;" + mid(para,5,5)+"&nbsp;&nbsp;"
             return dateFormat
 }
 
@@ -703,6 +780,7 @@ midi : {
             <i class=" icon-white icon-ok"></i></span>
       <span class="badge is-wichtig--<%= wichtig %> pull-right " ><%= wichtig %></span>
       <span class="badge  pull-right is-star--<%= star %> " > <i class=" icon-white icon-star"></i> </span>
+      <span style="font-size:10px; float:right; "><%= getPostfix(done_at) %></span>
        
       &nbsp;<%= titel %>
       
@@ -810,7 +888,8 @@ window.getEditBar = (myTaskId) ->
 
     template= '
 
-    <div id="in-place-edit-bar-0" class="toolbar-plus" style="min-width:360px; white-space:nowrap;  ">
+    <div id="in-place-edit-bar-0" class="toolbar-plus" style="min-width:360px; padding:5px; white-space:nowrap;  ">
+        <button class="btn " onclick="close_selected('+myTaskId+')" >X</button>
         <button class="btn btn-success " onclick="toggle_ok('+myTaskId+')">
             <i class=" icon-white icon-ok ">         </i> O K </button>
         <button class="btn btn-inverse"  onclick="toggle_star('+myTaskId+')">
@@ -825,18 +904,17 @@ window.getEditBar = (myTaskId) ->
             <i class="icon-white icon-plus"> </i></a>
     </div>
     <div id="in-place-edit-bar-1"  class="toolbar-plus '+show01+'"
-              style="min-width:370px;  white-space:nowrap; ">
+              style="min-width:370px;  white-space:nowrap; padding:5px; ">
         <span class="badge">1</span>
+        <button class="btn tasklist-hl--1" onclick="toggle_highlight(1, '+myTaskId+')" >&nbsp;&nbsp;&nbsp;</button>
+        <button class="btn tasklist-hl--2" onclick="toggle_highlight(2, '+myTaskId+')" >&nbsp;&nbsp;&nbsp;</button>
+        <button class="btn tasklist-hl--3" onclick="toggle_highlight(3, '+myTaskId+')" >&nbsp;&nbsp;&nbsp;</button>
+        <button class="btn tasklist-hl--4" onclick="toggle_highlight(4, '+myTaskId+')" >&nbsp;&nbsp;&nbsp;</button>
         <button class="btn " onclick="toggle_highlight(0, '+myTaskId+')" >X</button>
-        <button class="btn " onclick="toggle_highlight(1, '+myTaskId+')" >NEXT</button>
-        <button class="btn " onclick="toggle_highlight(2, '+myTaskId+')" >ruckZuck</button>
-        <button class="btn " onclick="toggle_highlight(3, '+myTaskId+')" >Wichtig</button>
-        <button class="btn " onclick="toggle_highlight(4, '+myTaskId+')" >Idee</button>
-        <br>
-        <br>
+
     </div>
     <div id="in-place-edit-bar-2"  class="toolbar-plus '+show02+'"
-           style="min-width:360px; white-space:nowrap; ">
+           style="min-width:360px; white-space:nowrap; padding:5px; ">
         <span class="badge">2</span>
         <button class="btn ">Heute</button>
         <button class="btn ">Morgen</button>
@@ -850,7 +928,7 @@ window.getEditBar = (myTaskId) ->
             <i class=" icon-white icon-white icon-trash"> </i></a>
     </div>
     <div id="in-place-edit-bar-3" class="toolbar-plus '+show03+'"
-                style="min-width:360px; white-space:nowrap; " > 
+                style="min-width:360px; white-space:nowrap; padding:5px; " > 
         <span class="badge">3</span>
         <button class="btn ">...prioritaeten</button>
     </div>'
