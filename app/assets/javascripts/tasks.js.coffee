@@ -673,13 +673,16 @@ wikitextUnarm = (t) ->
 
 viewHelpers = {
     prepare_text : (text) ->
-        _(text).escape()
+        xxx=_(text).escape()
         .replace(/{{{\s*([\s\S]*?)}}}/mg, (t) -> "<pre>" + wikitextUnarm(RegExp.$1) + "</pre>")
-        .replace(/\[_\]/mg, '<input type=checkbox disabled>')
-        .replace(/\[x\]/mg, '<input type=checkbox disabled checked>')
+        # .replace(/\[_\]/mg, '<input type=checkbox disabled>')
+        # .replace(/\[x\]/mg, '<input type=checkbox disabled checked>')
+        .replace(/\[_\]/mg, '<input type=checkbox >')
+        .replace(/\[x\]/mg, '<input type=checkbox checked>')
         .replace(/\*\*(.*?)\*\*/mg, '<b>$1</b>')
         .replace(/^\s*\*(.*)$/mg, '<li>$1</li>')
-        .replace(/^(\s*)!(.*)$/mg, '$1<strong>$2</strong>')
+        # .replace(/^(\s*)!(.*)$/mg, '$1<strong>$2</strong>')
+        .replace(/^(\s*)!(.*)$/mg, '$1<div class="ueberschrift">$2</div>eatLF')
         .replace(/^----$/mg, '<hr>')
         .replace(/___(.*?)___/mg, '<u>$1</u>')
         # ACHTUNG: Spezialtrick wegen underscore...
@@ -687,6 +690,8 @@ viewHelpers = {
         .replace(/@@(.*?)@@/mg, '<span class="label label-info">$1</span>')
         .replace(/\n/g, "<br>")
         .replace(/<\/li><br>/g, "</li>") #das muss auch irgendwie richtig gehen!
+        LF=String.fromCharCode(13)
+        return replaceAll(xxx,"eatLF"+"<br>" , "")
     priority_label : (prio) ->
         if prio < 100
             ""

@@ -67,6 +67,15 @@
   #myDate {font-size:14px; font-weight: bold; color: #888888; text-shadow: 0px 1px 1px #dddddd; }
   #projekttitel {font-size:24px; font-weight: bold; color: #444444; text-shadow: 0px 1px 1px #dddddd; }
 
+  #tasklist .ueberschrift  {
+    font-size:20px;
+    font-weight: bold;
+    color: #555555;
+    background:#dddddd;
+    diplay:block;
+  }
+
+  
 </style>
 
   
@@ -265,6 +274,7 @@
 
 </div>
 
+ 
   
 <!-- <h1>Listing tasks</h1>     //!-->
 <div class="row" style="margin-top:-10px; ">
@@ -273,7 +283,7 @@
     </table>
     <br />
   </div>
-  
+ 
   
 <!-- Button to trigger modal 
 <a href="#myModal" role="button" class="btn" data-toggle="modal">Launch demo modal</a>-->
@@ -353,8 +363,7 @@
    
    
    
-   
-     
+
     
   <div class="span6 hidden-phone" style=""  >
       <div class="well" id="editor" style="max-width:360px" >
@@ -415,7 +424,7 @@
         <button class="btn  nextbutton"><i class="icon-ok"></i>&nbsp;WEITER </button>
         <button class="btn btn-warning  pull-right cancelbutton"> Abbruch</button>
       </div>
-       <br> 
+       <br>
       
       <textarea type="text" id="inputComment" style="width:350px" rows=6></textarea>
       <button class="btn star"><i class=" icon-plus "></i> Breite</button>
@@ -456,9 +465,9 @@
         
       <div class="form-actions" style="padding-top:7px; padding-bottom:7px; ">
         <button class="btn btn-primary save"><i class="icon-ok icon-white"></i>&nbsp;OK </button>
-        <button class="btn  nextbutton"><i class="icon-ok icon-white"></i>&nbsp;WEITER </button>
+        <button class="btn  nextbutton"><i class="icon-ok "></i>&nbsp;WEITER </button>
         <button class="btn btn-danger pull-right gotrash"><i class="icon-white icon-trash"></i></button>
-        <button class="btn btn-warning  pull-right cancelbutton"> Abbruch</button>
+        <button class="btn btn-warning  pull-right cancelbutton"> Abbruch.</button>
       </div>
        <br>
        <br>
@@ -485,6 +494,6 @@
 </div>
     <!-- <%= link_to 'New Task', new_task_path %> //!-->
        <!-- <a href="/tasks/85" data-confirm="Are you sure?" data-method="delete" rel="nofollow">Destroy</a> //!-->
-br>
+<br>
 <br>
 
