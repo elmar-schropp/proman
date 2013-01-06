@@ -24,6 +24,14 @@ window.test1 = ()->
 
 
 
+
+window.toggleDebug = ()->
+   alert("toggleDebug")
+
+
+
+
+
 window.close_selected = (taskId)->
     # alert( taskId)
     $(".toolbar-plus").remove()
@@ -567,6 +575,44 @@ dynamicSortMultiple = `function() {
     }
 }`
 
+
+window.onSliderClick = (el_id, data_id1, data_id2) ->
+    # alert("11111")
+    # alert(el_id)
+    # alert("222")
+    # alert($("#'+elid+'"[0].id))
+    # alert("333")
+    # alert("444444444")
+    tpl=getSliderTemplate("titel","elid","xxx", "yyyy")
+    # $(tpl).insertAfter($("#slider_TaskNew_android"))
+    $(tpl).insertAfter($("#"+el_id))
+    # alert("55555555555")
+    # alert("OK") 
+
+
+
+
+window.getSliderTemplate = (titel, el_id, id1, id2, anz) ->
+    template='
+     <tr id="'+el_id+'" onclick="onSliderClick(|||'+el_id+'|||, |||'+id1+'|||, |||'+id2+'|||)" class="miditask task" data-taskid="xxx">
+     <td colspan="8" >
+     <div class="head tasklist-hl--99" style="font-size:18px; "
+        >
+       <span style="font-size:10px; ">&nbsp;&nbsp;&nbsp;DATUM</span>
+       <span class="badge badge-inverse is-status-- pull-right " > STATUS</span>
+       <span class="badge  pull-right is-star--5 " > <i class=" icon-white icon-star"></i> </span>
+       <span style="font-size:10px; float:right; ">postfix &nbsp;&nbsp; </span>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+titel+'
+     </div>
+     </td>
+    </tr>'
+    temp=replaceAll(template,"|||","'")
+    # alert(temp)
+    return temp
+
+
+
+
 window.displayTasks = ->
     
     $tasks.html ""
@@ -608,12 +654,45 @@ window.displayTasks = ->
     $tasks.append myTemplate.Header
     
     window.globGetPrefix=1
-    $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksNew
+    window.myTemp = new Object()
+    myOut=window.myTemp["TaskNew"] = new Object()
+    for row in TasksNew
+        kat=row["wichtig"]
+        if (kat != oldKat)
+            oldKat=kat
+            myOut["qqq-"+kat]= new Array(); 
+            # alert(kat)
+            
+            
+            # ... hier sliderTemplate einfügen
+            $tasks.append(getSliderTemplate(kat, "slider_"+"TaskNew_"+kat, "TaskNew", "qqq-"+kat))
+        myOut["qqq-"+kat][myOut["qqq-"+kat].length]=row
+        
+        # lazyIni ... erst später bei bedarf anzeigen
+        $tasks.append(myTemplate.Template(_(row).extend(viewHelpers)));
+    # $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksNew
+    #if (myOut)
+        # alert(myOut["qqq-design"][0].titel)
+        # alert(myOut["qqq-design"][1].titel)
+        # alert(myOut["qqq-design"][2].titel)
+        # alert(myOut["qqq-design"][3].titel)
+    
     window.globGetPrefix=0
     $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksPriio
     
     window.globGetPostfix=1
-    $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksDone
+    i=0
+    for row in TasksDone
+        done_at=mid(row["done_at"],0,10)
+        if (done_at != oldDone_at)
+            i=i+1
+            oldDone_at=done_at
+            # alert(kat)
+            # die letzten 7oder 10 tage einzeln, dann Monatsweise
+            if (i<15) then $tasks.append(getSliderTemplate(done_at))
+            $tasks.append(getSliderTemplate(done_at))
+        $tasks.append(myTemplate.Template(_(row).extend(viewHelpers)));
+    #$tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksDone
     window.globGetPostfix=0
     
     $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksTrash
