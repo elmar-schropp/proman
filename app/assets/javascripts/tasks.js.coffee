@@ -25,12 +25,45 @@ window.test1 = ()->
 
 
 
+window.restartMe = ()->
+    $('#myModal').modal('hide')
+    setTimeout('window.location.href = "http://proman.wikilab.de/tasks"',333)
+
+
+
 window.toggleDebug = ()->
-   alert("toggleDebug")
+    $('#myModal').modal('hide')
+    $('#myModalHelp').modal('show')
+    # setTimeout('window.location.href = "http://proman.wikilab.de/tasks"',111)
+    # alert("toggleDebug")
+
+
+window.toggleSubToolbars = ()->
+    hideToolbars=parseInt($.cookie("TBH"))
+    if (hideToolbars==1)
+        $("#main-toolbar").removeClass "hidden"
+        $("#dyna-toolbar-container").removeClass "hidden"
+        $.cookie("TBH", 0,  { path: '/' })
+    else
+        $("#main-toolbar").addClass "hidden"
+        $("#dyna-toolbar-container").addClass "hidden"
+        $.cookie("TBH", 1,  { path: '/' })
+    # alert(parseInt($.cookie("TBH")))
 
 
 
-
+window.iniSubToolbars = ()->
+    hideToolbars=parseInt($.cookie("TBH"))
+    # alert(hideToolbars)
+    if (hideToolbars==1)
+        $("#main-toolbar").addClass "hidden"
+        $("#dyna-toolbar-container").addClass "hidden"
+    else
+        $("#main-toolbar").removeClass "hidden"
+        $("#dyna-toolbar-container").removeClass "hidden"
+        
+        
+        
 
 window.close_selected = (taskId)->
     # alert( taskId)
@@ -75,12 +108,15 @@ window.editor_onkeydown=(event) ->
 editor_show = ->
     #alert "show editor"
     # alert(taskId)
+    $("#editor-main-div").removeClass "hidden"
     $("#editor").show();
     $("#tb-editor-edit").removeClass "hidden"
     $("#tb-editor-onNew").addClass "hidden"
+
     if (isTouchDevice)
         $("#main-toolbar").addClass "hide-on-editor"
         $("#dyna-toolbar-container").addClass "hide-on-editor"
+        $("#toolbar2").addClass "hidden"
         $(".touch-only").hide();
         $tasks.hide();
 
@@ -91,10 +127,21 @@ editor_hide = ->
     $("#dyna-toolbar-container").removeClass "hide-on-editor"
     $tasks.show();
     if (isTouchDevice)
+        $("#toolbar2").removeClass "hidden"
         $(".touch-only").show();
     displayTasks()    
     # alert "HIDE editor"
 
+editor_cancel = ->
+    # alert "cancel editor"
+    $("#editor").hide();
+    $("#main-toolbar").removeClass "hide-on-editor"
+    $("#dyna-toolbar-container").removeClass "hide-on-editor"
+    $tasks.show();
+    if (isTouchDevice)
+        $("#toolbar2").removeClass "hidden"
+        $(".touch-only").show();
+    # displayTasks()    
 
 
 window.editNew = ()->
@@ -284,7 +331,7 @@ initTasks = ->
         # $('#editor').hide();
         editor_hide()
         $('#editor .cancelbutton').show().click ->
-            editor_hide()
+            editor_cancel()
         $('body').addClass("is-touch");
     
     curProject=myProjektId 
@@ -295,7 +342,7 @@ initTasks = ->
     # alert($.cookie('viewMode'))
     # $.cookie("CurPro", 11);
     # alert($.cookie('viewMode'))
-
+    iniSubToolbars()
     
     
     $('#editor').keydown (event) ->
@@ -315,8 +362,13 @@ window.setTaskTemplate = (templateId) ->
 
 window.toggleToolbars = (tollbarItem) ->
     # alert  (tollbarItem)
-    $("#main-toolbar .main-element").removeClass "btn-primary"
-    $("#main-element-"+tollbarItem).addClass "btn-primary"
+    
+    # $("#main-toolbar .main-element").removeClass "btn-primary"
+    # $("#main-element-"+tollbarItem).addClass "btn-primary"
+    
+    $("#main-toolbar .main-element").removeClass "tasklist-hl--99"
+    $("#main-element-"+tollbarItem).addClass "tasklist-hl--99"
+
     $(".dyna-toolbar").addClass "hidden"
     $("#dyna-toolbar-"+tollbarItem).removeClass "hidden"
     # alert(tollbarItem)
@@ -326,8 +378,10 @@ window.toggleToolbars = (tollbarItem) ->
 window.setTaskProjektFilter = (projektId) ->
     # alert  (projektId)
     myProjektId = projektId
-    $("#dyna-toolbar-bookmark .btn").removeClass "btn-primary"
-    $("#tb-bookmark-"+projektId).addClass "btn-primary"
+    # $("#dyna-toolbar-bookmark .btn").removeClass "btn-primary"
+    # $("#tb-bookmark-"+projektId).addClass "btn-primary"
+    $("#dyna-toolbar-bookmark .btn").removeClass "tasklist-hl--99"
+    $("#tb-bookmark-"+projektId).addClass "tasklist-hl--99"
     # alert(myProjektId)
     $.cookie("CurPro", myProjektId,  { path: '/' })
     
@@ -578,14 +632,29 @@ dynamicSortMultiple = `function() {
 
 window.onSliderClick = (el_id, data_id1, data_id2) ->
     # alert("11111")
-    # alert(el_id)
+    alert("-->"+el_id+"<--")
     # alert("222")
-    # alert($("#'+elid+'"[0].id))
-    # alert("333")
+
+    alert($('#'+el_id)[0].id)
+    alert($("#"))
+    alert("333")
+    alert(data_id1)
+    alert(data_id2)
+    
+    sDATA=myOut=window.myTemp
+    
+    alert(sDATA[data_id1][data_id2][0].titel)
+    alert(sDATA[data_id1][data_id2][1].titel)
     # alert("444444444")
+
     tpl=getSliderTemplate("titel","elid","xxx", "yyyy")
+    $(tpl).insertAfter($('#'+el_id))
+    # $(tpl).insertAfter($("#"+el_id))
+    
+    
+    
+    
     # $(tpl).insertAfter($("#slider_TaskNew_android"))
-    $(tpl).insertAfter($("#"+el_id))
     # alert("55555555555")
     # alert("OK") 
 
@@ -656,9 +725,11 @@ window.displayTasks = ->
     window.globGetPrefix=1
     window.myTemp = new Object()
     myOut=window.myTemp["TaskNew"] = new Object()
+    i=0
     for row in TasksNew
         kat=row["wichtig"]
         if (kat != oldKat)
+            i=i+1
             oldKat=kat
             myOut["qqq-"+kat]= new Array(); 
             # alert(kat)
@@ -669,7 +740,8 @@ window.displayTasks = ->
         myOut["qqq-"+kat][myOut["qqq-"+kat].length]=row
         
         # lazyIni ... erst später bei bedarf anzeigen
-        $tasks.append(myTemplate.Template(_(row).extend(viewHelpers)));
+        if (i<5) then $tasks.append(myTemplate.Template(_(row).extend(viewHelpers)));
+    
     # $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksNew
     #if (myOut)
         # alert(myOut["qqq-design"][0].titel)
@@ -689,9 +761,9 @@ window.displayTasks = ->
             oldDone_at=done_at
             # alert(kat)
             # die letzten 7oder 10 tage einzeln, dann Monatsweise
-            if (i<15) then $tasks.append(getSliderTemplate(done_at))
-            $tasks.append(getSliderTemplate(done_at))
-        $tasks.append(myTemplate.Template(_(row).extend(viewHelpers)));
+            if (i<7) then $tasks.append(getSliderTemplate(done_at))
+            # $tasks.append(getSliderTemplate(done_at))
+        if (i<3) then $tasks.append(myTemplate.Template(_(row).extend(viewHelpers)));
     #$tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksDone
     window.globGetPostfix=0
     

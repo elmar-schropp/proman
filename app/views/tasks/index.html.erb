@@ -63,9 +63,9 @@
   .hidden  {display:none; }
   .toolbars hr { margin-top:5px;  margin-bottom:5px;  }
   
-  #myClock {font-size:24px; font-weight: bold; color: #555555; text-shadow: 0px 1px 1px #dddddd; }
-  #myDate {font-size:14px; font-weight: bold; color: #888888; text-shadow: 0px 1px 1px #dddddd; }
-  #projekttitel {font-size:22px; font-weight: bold; color: #444444; text-shadow: 0px 1px 1px #dddddd; }
+  #myClock {font-size:16px; font-weight: normal; color: #aaaaaa; text-shadow: 0px 1px 1px #dddddd; }
+  #myDate {font-size:14px; font-weight: bold; color: #bbbbbb; text-shadow: 0px 1px 1px #dddddd; }
+  #projekttitel {font-size:22px; font-weight: normal; color: #bbbbbb; text-shadow: 0px 1px 1px #dddddd; }
 
   #tasklist .ueberschrift  {
     font-size:20px;
@@ -79,10 +79,19 @@
 </style>
 
  
+ 
+ 
+ 
+<!--  TOOLBAR-1(mit menü)  ############################  navbar-inverse icon-white btn-primary //!-->
 
-<div id="main-toolbar" class="navbar navbar navbar-inverse"
-         style="white-space:nowrap; margin-top:65px; margin-top:55px; ">
-  <div class="navbar-inner" style="white-space:nowrap; padding-left:0px; padding-right:0px; " >
+
+<div class="spacer" style="margin-top:65px;  margin-top:38px; "></div>
+
+
+<div id="main-toolbar" class="navbar hidden"
+         style="white-space:nowrap;  width:110%; margin-bottom:0px; border-bottom:0px; ">
+  <div class="navbar-inner" style="background:#bbbbbb; white-space:nowrap;
+         padding-left:0px; padding-right:0px; " >
     <ul class="nav" style="white-space:nowrap; ">
        <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menü
@@ -111,7 +120,8 @@
         </ul>
       </li>
 
-      <li id="main-element-bookmark" class="main-element btn-primary"><a href="#"
+      <li id="main-element-bookmark" class="main-element ">
+        <a href="#"
            onClick="toggleToolbars('bookmark'); return false;"  >
            <i class="icon-white icon-flag"></i>
            </a></li>
@@ -155,16 +165,55 @@
 </div>
 
 
+      
+<!--  TOOLBAR-2  ############################    //!-->
+       
+<div id="toolbar2" class="tasklist-hl--xxx5 btn-inverse"
+       style= "white-space:nowrap; overflow:hidden;
+       z-index:111; padding:8px; padding-bottom:10px; height:39px; height:20px; 
+       position:fixed
+       ; top:0px; left:0px; width:100%; ">
+   <a class="btn btn-warning btn-small " onclick="editNew()" style="margin-top: -8px;" >
+      <i class="icon-white icon-plus"> </i>&nbsp;neu</a>
+   &nbsp;&nbsp;        
+   <img id="busy-indicator" class="visibility-hidden" src="http://www.sanbaldo.com/wordpress/wp-content/remembermilk_orange.gif"
+        style="margin-top: -8px;">
+ 
+   <span id="projekttitel" onclick="toggleSubToolbars()">Projekt-Manager</span>
+
+<!--
+<i class="icon-white  icon-arrow-up" style="margin-top:-4px; "></i>
+
+//!-->  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;
+  <span id="myClock" onclick="$('#myModal').modal('show')" >19:01</span>
+  
+<!--    
+  <br>
+   <a href="<%= tasks_path %>" target="_self" >
+          <i class="icon-white icon-refresh"></i>&nbsp;reload
+          </a>
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+   <a  href="#myModal"  data-toggle="modal">
+         <i class="icon-white icon-wrench"></i>&nbsp;Optionen
+        </a>
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+   <a  href="#" onclick="toggleDebug(); return false;"  >
+         <i class="icon-white  icon-hand-right"></i>&nbsp;debug
+       </a>
+ //!-->   
+  </div>
 
 
 
+<!--  Bookmarks  ############################    //!-->
 
-<div id="dyna-toolbar-container" class="toolbars" style="width:100%;" >
+<div id="dyna-toolbar-container" class="toolbars hidden" style="width:105%; background:#bbbbbb;" >
 <div id="dyna-toolbar-bookmark" class="dyna-toolbar "
-        style="white-space:nowrap; padding:0px; margin-top:-20px;background:transparent; ">
+        style="white-space:nowrap; padding:0px; margin-top:-20px;margin-top:0px;background:transparent; ">
   <div style="background:transparent; padding:10px;">
     <b> Bookmarks&nbsp;&nbsp;&nbsp;</b>
-    <span id="myDate">01.01.2013</span>
+    <span id="myDate"  class="hidden" >01.01.2013</span>
 
     &nbsp;&nbsp;&nbsp; 
     <a href="<%= tasks_path %>" target="_self" >
@@ -175,12 +224,14 @@
     <a  href="#myModal"  data-toggle="modal">
           <i class="icon-white icon-wrench"></i>&nbsp;Optionen
           </a>
-
-
-
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+   <a  href="#" onclick="toggleDebug(); return false;"  >
+         <i class="icon-hand-right"></i>&nbsp;debug
+       </a>
    </div>
  
-    <div style=" padding:10px;" >
+ 
+    <div style=" padding:10px; " >
     <button class="btn "  id="tb-bookmark-2" onclick="setTaskProjektFilter(2, this)" > proMan</button>
     <button class="btn "  id="tb-bookmark-9" onclick="setTaskProjektFilter(9, this)" >pm-doku</button>
     <button class="btn "  id="tb-bookmark-7" onclick="setTaskProjektFilter(7, this)" >pinboard</button>
@@ -198,39 +249,6 @@
   </div>
     <br>
       
-      
-      
-   <div class="tasklist-hl--5"
-        style= "padding:8px; padding-bottom:10px; height:39px; position:fixed; top:0px; left:0px; width:100%; ">
-    <a class="btn btn-warning btn-small " onclick="editNew()" style="margin-top: -12px;" >
-       <i class="icon-white icon-plus"> </i>&nbsp;neu</a>
-        
-    &nbsp;&nbsp;&nbsp;
-
-    <span id="projekttitel">Projekt-Manager</span>
-    &nbsp;
-    <img id="busy-indicator" class="visibility-hidden" src="http://www.sanbaldo.com/wordpress/wp-content/remembermilk_orange.gif"
-         style="margin-top: -12px;">
-    &nbsp;
-    <span id="myClock">19:01</span>
-    <br>
-
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-    <a href="<%= tasks_path %>" target="_self" >
-           <i class="icon-white icon-refresh"></i>&nbsp;reload
-           </a>
-
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-    <a  href="#myModal"  data-toggle="modal">
-          <i class="icon-white icon-wrench"></i>&nbsp;Optionen
-         </a>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-    <a  href="#" onclick="toggleDebug(); return false;"  >
-          <i class="icon-white  icon-hand-right"></i>&nbsp;debug
-        </a>
-  </div>
-   
    
 </div>
 
@@ -288,7 +306,15 @@
   <input class="btn" type="button"  onclick="setTaskProjektFilter(4) " value="Neueste zuerst">
   <input class="btn" type="button" value="Aelteste zuerst">
   <br>
-  <div style="background: #aaaaaa; height:250px; margin:11px;"> ...platz für die tag-wolke
+  <div style="background: #aaaaaa; height:250px; margin:11px;">
+    <br>...platz für die tag-wolke
+    <br>...oder die trefferliste bei der suche
+    <br>...umschaltung tagwolke/trefferliste überlegen
+    <br>...
+    <br>...
+    <br>...
+    <br>...
+    <br>...
     
   </div>
   <br>
@@ -301,7 +327,7 @@
  
   
 <!-- <h1>Listing tasks</h1>     //!-->
-<div class="row" style="margin-top:-10px; ">
+<div class="row" style="margin-top:-10px; margin-top:0px; ">
   <div id="tasklist" class="span6">
     <table class="tasks">
     </table>
@@ -321,7 +347,30 @@
       <h3 id="myModalLabel">Optionen </h3>
       </div>
       <div class="modal-body" style="max-height:200px; " >
-      
+    
+    
+    <div style="background:transparent; padding:10px;">
+    <b> Entwickler-Tools: &nbsp;&nbsp;&nbsp;</b>
+    <span id="myDate"  class="" >01.01.2013</span>
+
+    &nbsp;&nbsp;&nbsp; 
+    <a href="#" onclick="restartMe(); return false;"  >
+           <i class="icon-white icon-refresh"></i>&nbsp;reload
+           </a>
+
+    &nbsp;&nbsp;&nbsp; 
+    <a  href="#myModal"  data-toggle="modal">
+          <i class="icon-white icon-wrench"></i>&nbsp;Optionen
+          </a>
+    
+ 
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+   <a  href="#" onclick="toggleDebug(); return false;"  >
+         <i class="icon-hand-right"></i>&nbsp;debug
+       </a>
+
+   </div>
+  
     <div class="btn-group" data-toggle="buttons-radio">
      <button type="button" class="btn btn-primary">mini</button>
       <button type="button" class="btn btn-primary">midi</button>
@@ -389,7 +438,7 @@
    
 
     
-  <div class="span6 hidden-phone" style=""  >
+  <div id="editor-main-div" class="span6 hidden-phone hidden" style=""  >
       <div class="well" id="editor" style="max-width:360px" >
 
     <div id="tb-editor-edit" class="tasklist-hl--5" style= "padding:8px; padding-bottom:4px;">
