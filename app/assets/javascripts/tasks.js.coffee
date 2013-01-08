@@ -630,47 +630,47 @@ dynamicSortMultiple = `function() {
 }`
 
 
-window.onSliderClick = (el_id, data_id1, data_id2) ->
-    # alert("11111")
-    alert("-->"+el_id+"<--")
+window.onSliderClick = (elId, dataIndex) ->
+    alert(dataIndex)
+    #alert("-->"+elId+"<--")
     # alert("222")
 
-    alert($('#'+el_id)[0].id)
-    alert($("#"))
-    alert("333")
-    alert(data_id1)
-    alert(data_id2)
+    mySlider=$('#'+elId)[0]
+    # alert(mySlider.id)
+    # alert("333")
     
-    sDATA=myOut=window.myTemp
+    # alert(dataIndex)
+    sDATA=window.myOut["data-"+dataIndex]
     
-    alert(sDATA[data_id1][data_id2][0].titel)
-    alert(sDATA[data_id1][data_id2][1].titel)
-    # alert("444444444")
+    # alert(sDATA.length)
+    tpl=""
+    for row in sDATA
+        # alert(row["titel"])
+        tpl=tpl+ "[QQQQQQQ]" + myTemplate.Template(_(row).extend(viewHelpers))
+        # alert(tpl)
 
-    tpl=getSliderTemplate("titel","elid","xxx", "yyyy")
-    $(tpl).insertAfter($('#'+el_id))
-    # $(tpl).insertAfter($("#"+el_id))
+    $(tpl).insertAfter(mySlider)
+    # $('#'+elId+' .task').click = window.onTaskClick
+    addClickEvent()
+    addDblClickEvent()
+    # alert("OK")
     
-    
-    
-    
-    # $(tpl).insertAfter($("#slider_TaskNew_android"))
-    # alert("55555555555")
-    # alert("OK") 
-
-
+    # $('#'+elId).append myTemplate.Template(_(row).extend(viewHelpers)) for row in sDATA
+    return
 
 
-window.getSliderTemplate = (titel, el_id, id1, id2, anz) ->
+
+
+window.getSliderTemplate = (titel, elId, dataId, DATUM, ANZAHL) ->
     template='
-     <tr id="'+el_id+'" onclick="onSliderClick(|||'+el_id+'|||, |||'+id1+'|||, |||'+id2+'|||)" class="miditask task" data-taskid="xxx">
+     <tr id="'+elId+'" onclick="onSliderClick(|||'+elId+'|||, |||'+dataId+'|||)" class="miditask xxx---task" data-taskid="xxx">
      <td colspan="8" >
      <div class="head tasklist-hl--99" style="font-size:18px; "
         >
        <span style="font-size:10px; ">&nbsp;&nbsp;&nbsp;DATUM</span>
        <span class="badge badge-inverse is-status-- pull-right " > STATUS</span>
        <span class="badge  pull-right is-star--5 " > <i class=" icon-white icon-star"></i> </span>
-       <span style="font-size:10px; float:right; ">postfix &nbsp;&nbsp; </span>
+       <span style="font-size:10px; float:right; ">ANZAHL &nbsp;&nbsp; </span>
        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+titel+'
      </div>
      </td>
@@ -679,97 +679,21 @@ window.getSliderTemplate = (titel, el_id, id1, id2, anz) ->
     # alert(temp)
     return temp
 
+# #################
+window.onTaskClick = (e) ->
+    alert("onTaskClick")
+
+    
+window.addDblClickEvent = () ->
+    $("table.tasks .task").dblclick (e) ->
+        window.location = "/tasks/" + $(this).attr("data-taskid") + "/edit"
 
 
 
-window.displayTasks = ->
+
     
-    $tasks.html ""
-    # alert("display löschen")
-    tTrash= new Array();
-    tDone = new Array();
-    tNew  = new Array();
-    tPrio = new Array();
-    for row in myTasks
-        if  (row["done_at"] ==  null)
-            row["done_at"] = ""
-            
-        if (row["trash"]    > "") 
-            tTrash[tTrash.length]=row
-            continue;
-        if (row["done"]         ) 
-            tDone[tDone.length]=row
-            continue;
-        if (row["priority"] > 0) 
-            tPrio[tPrio.length]=row
-            continue;
-        tNew[tNew.length]=row
-        
-    TasksNew    = tNew.sort  (dynamicSortMultiple("wichtig", "done", "created_at", "priority" ))
-    TasksPriio  = tPrio.sort (dynamicSortMultiple("trash",   "done", "done_at",    "priority" ))
-    TasksDone   = tDone.sort (dynamicSortMultiple("trash",   "done", "done_at",    "priority" ))
-    TasksTrash  = tTrash.sort(dynamicSortMultiple("trash",   "done", "done_at",    "priority" ))
-    
-    # sortedTasks = myTasks.sort(dynamicSortMultiple("priority" ))
-    # sortedTasks = myTasks.sort(dynamicSortMultiple("autor2", "created_at" ))
-    # sortedTasks = myTasks.sort(dynamicSortMultiple("done", "priority" ))
-    # sortedTasks = myTasks.sort(dynamicSortMultiple("done", "created_at" ))
-    # sortedTasks = myTasks.sort(dynamicSortMultiple("trash", "done", "done_at", "priority" ))
-    # sortedTasks = OUT.sort(dynamicSortMultiple("trash", "done", "done_at", "priority" ))
-    # sortedTasks = myTasks.sort(dynamicSortMultiple("done", "priority" ))
-    # sortedTasks = myTasks.sort(dynamicSortMultiple("done_at" ))
-    # sortedTasks = myTasks.sort(dynamicSort("created_at"))
-    # $tasks.append("<br><br>")
-    $tasks.append myTemplate.Header
-    
-    window.globGetPrefix=1
-    window.myTemp = new Object()
-    myOut=window.myTemp["TaskNew"] = new Object()
-    i=0
-    for row in TasksNew
-        kat=row["wichtig"]
-        if (kat != oldKat)
-            i=i+1
-            oldKat=kat
-            myOut["qqq-"+kat]= new Array(); 
-            # alert(kat)
-            
-            
-            # ... hier sliderTemplate einfügen
-            $tasks.append(getSliderTemplate(kat, "slider_"+"TaskNew_"+kat, "TaskNew", "qqq-"+kat))
-        myOut["qqq-"+kat][myOut["qqq-"+kat].length]=row
-        
-        # lazyIni ... erst später bei bedarf anzeigen
-        if (i<5) then $tasks.append(myTemplate.Template(_(row).extend(viewHelpers)));
-    
-    # $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksNew
-    #if (myOut)
-        # alert(myOut["qqq-design"][0].titel)
-        # alert(myOut["qqq-design"][1].titel)
-        # alert(myOut["qqq-design"][2].titel)
-        # alert(myOut["qqq-design"][3].titel)
-    
-    window.globGetPrefix=0
-    $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksPriio
-    
-    window.globGetPostfix=1
-    i=0
-    for row in TasksDone
-        done_at=mid(row["done_at"],0,10)
-        if (done_at != oldDone_at)
-            i=i+1
-            oldDone_at=done_at
-            # alert(kat)
-            # die letzten 7oder 10 tage einzeln, dann Monatsweise
-            if (i<7) then $tasks.append(getSliderTemplate(done_at))
-            # $tasks.append(getSliderTemplate(done_at))
-        if (i<3) then $tasks.append(myTemplate.Template(_(row).extend(viewHelpers)));
-    #$tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksDone
-    window.globGetPostfix=0
-    
-    $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksTrash
-    
-    $("table.tasks .task").click (e)->
+window.addClickEvent = () ->
+    $("table.tasks .task").click (e) ->
         taskId = $(this).attr "data-taskid"
         isSelected= $(this).hasClass "selected"
         $("p.alert").css("display", "none")
@@ -813,9 +737,133 @@ window.displayTasks = ->
             $("#inputAutor2").val data.autor2   
             $("#inputAssigned_to").val data.assigned_to   
         , "json")
+
+
+# #########################
+
+window.displayTasks = ->
+    
+    # alert("displayTasks-1")
+    $tasks.html ""
+    
+    # alert("displayTasks-2")
+    # alert("display löschen")
+    tTrash= new Array();
+    tDone = new Array();
+    tPrio = new Array();
+    tKat  = new Array();
+    tNew  = new Array();
+    counter=10000
+    for row in myTasks
+        counter=counter+1
+        row["sliderClassId"] = counter   # ...erweitert es
+        if  (row["done_at"] ==  null)
+            row["done_at"] = ""
+        if (row["trash"]    > "") 
+            tTrash[tTrash.length]=row
+            continue;
+        if (row["done"]         ) 
+            tDone[tDone.length]=row
+            continue;
+        if (row["priority"] > 0) 
+            tPrio[tPrio.length]=row
+            continue;
+        if (row["wichtig"] != "") 
+            tKat[tKat.length]=row
+            continue;
+        tNew[tNew.length]=row
+    
+    # alert(counter)
+    
+    TasksNew    = tNew.sort  (dynamicSortMultiple("wichtig", "done", "created_at", "priority" ))
+    TasksKat    = tKat.sort  (dynamicSortMultiple("wichtig", "done", "created_at", "priority" ))
+    TasksPrio   = tPrio.sort (dynamicSortMultiple("trash",   "done", "done_at",    "priority" ))
+    TasksDone   = tDone.sort (dynamicSortMultiple("trash",   "done", "done_at",    "priority" ))
+    TasksTrash  = tTrash.sort(dynamicSortMultiple("trash",   "done", "done_at",    "priority" ))
+    
+    # sortedTasks = myTasks.sort(dynamicSortMultiple("priority" ))
+    # sortedTasks = myTasks.sort(dynamicSortMultiple("autor2", "created_at" ))
+    # sortedTasks = myTasks.sort(dynamicSortMultiple("done", "priority" ))
+    # sortedTasks = myTasks.sort(dynamicSortMultiple("done", "created_at" ))
+    # sortedTasks = myTasks.sort(dynamicSortMultiple("trash", "done", "done_at", "priority" ))
+    # sortedTasks = OUT.sort(dynamicSortMultiple("trash", "done", "done_at", "priority" ))
+    # sortedTasks = myTasks.sort(dynamicSortMultiple("done", "priority" ))
+    # sortedTasks = myTasks.sort(dynamicSortMultiple("done_at" ))
+    # sortedTasks = myTasks.sort(dynamicSort("created_at"))
+    # $tasks.append("<br><br>")
+    
+    $tasks.append myTemplate.Header
+    
+    window.globGetPrefix=1
+    $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksNew
+    
+    itemCounter=0
+    dataId=0
+    window.myOut = new Object()
+    # myOut=window.myTemp["TaskNew"] = new Object()
+    i=0
+    
+    # alert( TasksKat.length)
+    for row in TasksKat
+        itemCounter=itemCounter+1
+        kat=row["wichtig"]
+        if (kat != oldKat)
+            # alert(kat)
+            i=i+1
+            oldKat=kat
+            dataId=dataId+1
+            myOut["data-"+dataId]= new Array();
+            eindat=row["created_at"]
+            # alert(kat)
+            # ... hier sliderTemplate einfügen
+            # $tasks.append(getSliderTemplate(kat, "slider_"+"TaskNew_"+kat, "TaskNew", "qqq-"+kat))
+            # $tasks.append(getSliderTemplate(titel, elId, sliderClassId , DATUM, ANZAHL
+            $tasks.append(getSliderTemplate(dataId+" || "+kat, "slider-"+dataId, dataId, eindat, "ANZAHL"))
+
+       
+        row["sliderClassId"]="slider-"+dataId
+        # myOut["qqq-"+kat][myOut["qqq-"+kat].length]=row
+        myOut["data-"+dataId][myOut["data-"+dataId].length]=row
         
-    .dblclick (e) ->
-        window.location = "/tasks/" + $(this).attr("data-taskid") + "/edit"
+        # lazyIni ... erst später bei bedarf anzeigen
+        
+        # ...Woher weiß ich, welche slider offen sein sollen
+        # ... dataId kann sich jederzeit ändern
+        # ... titel wäre stabiler, außer bei titeländerung
+        # if (i<5) then
+        $tasks.append(myTemplate.Template(_(row).extend(viewHelpers)));
+    
+    # $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksNew
+    #if (myOut)
+        # alert(myOut["qqq-design"][0].titel)
+        # alert(myOut["qqq-design"][1].titel)
+        # alert(myOut["qqq-design"][2].titel)
+        # alert(myOut["qqq-design"][3].titel)
+    
+    window.globGetPrefix=0
+    $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksPrio
+    
+    window.globGetPostfix=1
+    i=0
+    for row in TasksDone
+        done_at=mid(row["done_at"],0,10)
+        if (done_at != oldDone_at)
+            i=i+1
+            oldDone_at=done_at
+            # alert(kat)
+            # die letzten 7oder 10 tage einzeln, dann Monatsweise
+            if (i<7) then $tasks.append(getSliderTemplate(done_at))
+            # $tasks.append(getSliderTemplate(done_at))
+        # ...if (i<6) then
+        $tasks.append(myTemplate.Template(_(row).extend(viewHelpers)));
+    #$tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksDone
+    window.globGetPostfix=0
+    
+    $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksTrash
+    
+    addClickEvent()  # es: abgekoppelt 
+    addDblClickEvent()
+ 
     hideIndikator()
 
 
@@ -923,9 +971,9 @@ midi : {
     Template : _.template('
 
 
-  <tr class="miditask task" data-taskid="<%= id %>">
+  <tr class="miditask task <%= sliderClassId %>" data-taskid="<%= id %>" >
      <td colspan="8" >
-    <div class="head tasklist-hl--<%= highlight %> " >
+    <div class="head tasklist-hl--<%= highlight %> "  >
        <%= isKommentar(kommentar) %><span class="badge <%= priority_label(priority) %>"><%= priority %></span>
        <span style="font-size:10px; "><%= getPrefix(created_at) %></span>
        <span class="badge badge-info is-autor2--<%= isAutor2(autor2) %>"><%= autor2 %></span>

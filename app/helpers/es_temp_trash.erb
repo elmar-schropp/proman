@@ -1,4 +1,64 @@
-xxx
+    $("table.tasks .task").click (e) ->
+    # $("table.tasks .task").click = window.onTaskClick
+        taskId = $(this).attr "data-taskid"
+        isSelected= $(this).hasClass "selected"
+        $("p.alert").css("display", "none")
+        # if !e.ctrlKey
+            # $(".tasks .task.selected").removeClass "selected"
+        
+        window.editorOnNew = false
+        if isTouchDevice
+            if isSelected
+                if not (e.target.tagName == "A") then editor_show()
+             else
+                $(".tasks .task.selected").removeClass "selected"
+                $(this).addClass "selected"
+                # alert(taskId)
+        else
+            $(".tasks .task.selected").removeClass "selected"
+            $(this).addClass "selected"
+            editor_show()
+        
+        # alert(taskId)
+        
+        # window.location.hash=""
+        # insertUrlParam("task",taskId)
+        
+        # alert("done")
+
+        taskId = $(this).attr "data-taskid"
+        toolbar_show(taskId)
+        
+        
+        $.get("/tasks/" + taskId + ".json", (data) ->
+            $("#inputTitle").val data.titel
+            $("#inputComment").val data.kommentar
+            $("#inputTags").val data.tag
+            $("#inputPriority").val data.priority
+            $("#inputTasktype").val data.tasktype  
+            $("#inputStatus").val data.status
+            $("#inputWichtig").val data.wichtig   
+            $("#inputProjekt_id").val data.projekt_id   
+            $("#inputAutor").val data.autor   
+            $("#inputAutor2").val data.autor2   
+            $("#inputAssigned_to").val data.assigned_to   
+        , "json")
+
+
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+   $("table.tasks .task").dblclick (e) ->
+       window.location = "/tasks/" + $(this).attr("data-taskid") + "/edit"
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+
+
+
+
+
+
+
+
 
 ...teile der alten toolbar:
        <li class="dropdown">
