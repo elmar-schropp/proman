@@ -38,6 +38,28 @@ window.toggleDebug = ()->
     # alert("toggleDebug")
 
 
+window.toggleToolbars = (tollbarItem) ->
+    # alert  (tollbarItem)
+    if (window.globLastToolbarItem==tollbarItem)
+        $("#dyna-toolbar-"+tollbarItem).toggleClass "hidden"
+        if  $("#dyna-toolbar-"+tollbarItem).hasClass "hidden"
+          $("#main-element-"+tollbarItem).removeClass "tasklist-hl--99"
+        else
+          $("#main-element-"+tollbarItem).addClass "tasklist-hl--99"
+        return
+    
+    window.globLastToolbarItem = tollbarItem
+    # $("#main-toolbar .main-element").removeClass "btn-primary"
+    # $("#main-element-"+tollbarItem).addClass "btn-primary"
+    
+    $("#main-toolbar .main-element").removeClass "tasklist-hl--99"
+    $("#main-element-"+tollbarItem).addClass "tasklist-hl--99"
+
+    $(".dyna-toolbar").addClass "hidden"
+    $("#dyna-toolbar-"+tollbarItem).removeClass "hidden"
+    # alert(tollbarItem)
+
+
 window.toggleSubToolbars = ()->
     hideToolbars=parseInt($.cookie("TBH"))
     if (hideToolbars==1)
@@ -360,20 +382,6 @@ window.setTaskTemplate = (templateId) ->
     displayTasks()
 
 
-window.toggleToolbars = (tollbarItem) ->
-    # alert  (tollbarItem)
-    
-    # $("#main-toolbar .main-element").removeClass "btn-primary"
-    # $("#main-element-"+tollbarItem).addClass "btn-primary"
-    
-    $("#main-toolbar .main-element").removeClass "tasklist-hl--99"
-    $("#main-element-"+tollbarItem).addClass "tasklist-hl--99"
-
-    $(".dyna-toolbar").addClass "hidden"
-    $("#dyna-toolbar-"+tollbarItem).removeClass "hidden"
-    # alert(tollbarItem)
-
-
 
 window.setTaskProjektFilter = (projektId) ->
     # alert  (projektId)
@@ -631,9 +639,12 @@ dynamicSortMultiple = `function() {
 
 
 window.onSliderClick = (elId, dataIndex) ->
-    alert(dataIndex)
+    #  alert(dataIndex)
     #alert("-->"+elId+"<--")
     # alert("222")
+    $(".slider-"+dataIndex).toggleClass("hidden")
+    return
+    
 
     mySlider=$('#'+elId)[0]
     # alert(mySlider.id)
@@ -818,10 +829,9 @@ window.displayTasks = ->
             # ... hier sliderTemplate einfügen
             # $tasks.append(getSliderTemplate(kat, "slider_"+"TaskNew_"+kat, "TaskNew", "qqq-"+kat))
             # $tasks.append(getSliderTemplate(titel, elId, sliderClassId , DATUM, ANZAHL
-            $tasks.append(getSliderTemplate(dataId+" || "+kat, "slider-"+dataId, dataId, eindat, "ANZAHL"))
+            $tasks.append(getSliderTemplate(kat, "slider-"+dataId, dataId, eindat, "ANZAHL"))
 
-       
-        row["sliderClassId"]="slider-"+dataId
+        row["sliderClassId"]="slider-"+dataId+" hidden"
         # myOut["qqq-"+kat][myOut["qqq-"+kat].length]=row
         myOut["data-"+dataId][myOut["data-"+dataId].length]=row
         
@@ -996,7 +1006,7 @@ midi : {
  </tr>
   
 
-  <tr class="details" style="color:#888888; background-color:#ffffff;
+  <tr class="details <%= sliderClassId %>" style="color:#888888; background-color:#ffffff;
         border-top: 1px solid #999999; border-bottom: 1px solid #999999; " >
     <td><%= status %></td>
     <td><%= projekt_id %></td>
@@ -1007,7 +1017,7 @@ midi : {
     <td> --- </td>
     <td><%= done_at %></td>
   </tr>
-  <tr class=""  style="border-bottom: 0px solid #eeeeee;" >
+  <tr class="<%= sliderClassId %>"  style="border-bottom: 0px solid #eeeeee;" >
        <td colspan="8" >
             <div id="direktedit<%= id %>" ></div>
        </td> 
