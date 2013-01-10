@@ -201,6 +201,32 @@ window.reloadTaskList = ()->
     # $(id).replaceWith("...ich werde mal der aktualisierte Inhalt ")
     
 
+window.toggle_statusToDo= (taskId)->
+    alert(taskId)
+    return
+    for i of allTasks[myProjektId]
+        if  parseInt(allTasks[myProjektId][i].id) ==  parseInt(taskId)
+            status=allTasks[myProjektId][i]["status"]
+            if (status)
+                status=""
+            else
+                status = ">" + status
+            allTasks[myProjektId][i]["status"]=status
+            $.ajax {
+                url: "/tasks/" + taskId + ".json"
+                data: {
+                    status: status
+                }
+                success: (data) ->
+                    alert("gespeichert: "+allTasks[myProjektId][i]["titel"])
+                    alert("gespeichert: "+allTasks[myProjektId][i]["status"])
+                    displayTasks()
+                dataType: "json"
+                type: "PUT"
+            }
+
+
+
 window.toggle_ok = (taskId)->
     # alert(taskId)
     for i of allTasks[myProjektId]
@@ -642,7 +668,14 @@ window.onSliderClick = (elId, dataIndex) ->
     #  alert(dataIndex)
     #alert("-->"+elId+"<--")
     # alert("222")
+    
+    # !!! umschaltbar machen per option
+    $(".sliderIten").addClass("hidden")
+    if (window.globLastSliderToggleId==elId)
+        window.globLastSliderToggleId=""
+        return
     $(".slider-"+dataIndex).toggleClass("hidden")
+    window.globLastSliderToggleId=elId
     return
     
 
@@ -674,7 +707,7 @@ window.onSliderClick = (elId, dataIndex) ->
 
 window.getSliderTemplate = (titel, elId, dataId, DATUM, ANZAHL) ->
     template='
-     <tr id="'+elId+'" onclick="onSliderClick(|||'+elId+'|||, |||'+dataId+'|||)" class="miditask xxx---task" data-taskid="xxx">
+     <tr id="'+elId+'" onclick="onSliderClick(|||'+elId+'|||, |||'+dataId+'|||)" class="miditask xxx---task slider" data-taskid="xxx">
      <td colspan="8" >
      <div class="head tasklist-hl--99" style="font-size:18px; "
         >
@@ -766,31 +799,47 @@ window.displayTasks = ->
     tNew  = new Array();
     counter=10000
     for row in myTasks
+        skip=false
         counter=counter+1
         row["sliderClassId"] = counter   # ...erweitert es
         if  (row["done_at"] ==  null)
             row["done_at"] = ""
+        if  (row["priority"] ==  null)
+            row["priority"] = " "           # ???
+            
+        if  (row["status"] ==  null)
+            row["status"] = ""
         if (row["trash"]    > "") 
             tTrash[tTrash.length]=row
             continue;
         if (row["done"]         ) 
             tDone[tDone.length]=row
             continue;
-        if (row["priority"] > 0) 
-            tPrio[tPrio.length]=row
-            continue;
+        if (row["status"] != "")
+            temp1=mid(row["status"],0,1)
+            if (temp1 == ">")
+                # alert(row["status"])
+                tNew[tNew.length]=row
+                skip=true
+                # ACHTUNG: kann eine Doublette geben...
         if (row["wichtig"] != "") 
             tKat[tKat.length]=row
             continue;
+        if (row["priority"] > 0) 
+            tPrio[tPrio.length]=row
+            continue;
+        if (skip == true) then continue;
         tNew[tNew.length]=row
     
     # alert(counter)
     
-    TasksNew    = tNew.sort  (dynamicSortMultiple("wichtig", "done", "created_at", "priority" ))
-    TasksKat    = tKat.sort  (dynamicSortMultiple("wichtig", "done", "created_at", "priority" ))
-    TasksPrio   = tPrio.sort (dynamicSortMultiple("trash",   "done", "done_at",    "priority" ))
-    TasksDone   = tDone.sort (dynamicSortMultiple("trash",   "done", "done_at",    "priority" ))
-    TasksTrash  = tTrash.sort(dynamicSortMultiple("trash",   "done", "done_at",    "priority" ))
+    # TasksNew    = tNew.sort  (dynamicSortMultiple("wichtig", "status","created_at", "priority" ))
+    # TasksNew    = tNew.sort  (dynamicSortMultiple("wichtig", "done",  "priority" ))
+    TasksNew    = tNew.sort  (dynamicSortMultiple("done",     "status", "created_at"  ))
+    TasksKat    = tKat.sort  (dynamicSortMultiple("wichtig",  "done",   "created_at", "priority" ))
+    TasksPrio   = tPrio.sort (dynamicSortMultiple("trash",    "done",   "done_at",    "priority" ))
+    TasksDone   = tDone.sort (dynamicSortMultiple("trash",    "done",   "done_at",    "priority" ))
+    TasksTrash  = tTrash.sort(dynamicSortMultiple("trash",    "done",   "done_at",    "priority" ))
     
     # sortedTasks = myTasks.sort(dynamicSortMultiple("priority" ))
     # sortedTasks = myTasks.sort(dynamicSortMultiple("autor2", "created_at" ))
@@ -831,7 +880,7 @@ window.displayTasks = ->
             # $tasks.append(getSliderTemplate(titel, elId, sliderClassId , DATUM, ANZAHL
             $tasks.append(getSliderTemplate(kat, "slider-"+dataId, dataId, eindat, "ANZAHL"))
 
-        row["sliderClassId"]="slider-"+dataId+" hidden"
+        row["sliderClassId"]="slider-"+dataId+" hidden sliderIten"
         # myOut["qqq-"+kat][myOut["qqq-"+kat].length]=row
         myOut["data-"+dataId][myOut["data-"+dataId].length]=row
         
@@ -984,17 +1033,19 @@ midi : {
   <tr class="miditask task <%= sliderClassId %>" data-taskid="<%= id %>" >
      <td colspan="8" >
     <div class="head tasklist-hl--<%= highlight %> "  >
-       <%= isKommentar(kommentar) %><span class="badge <%= priority_label(priority) %>"><%= priority %></span>
+      <%= isKommentar(kommentar) %>
        <span style="font-size:10px; "><%= getPrefix(created_at) %></span>
-       <span class="badge badge-info is-autor2--<%= isAutor2(autor2) %>"><%= autor2 %></span>
- 
-      <span class="badge badge-inverse is-status--<%= status %> pull-right " > <%= status %></span>
+      <span class="badge badge-info is-autor2--<%= isAutor2(autor2) %>"><%= autor2 %></span>
+      <span class="badge badge-inverse is-status--<%= status %>" > <%= status %></span>
+
       <span class="badge badge-inverse is-trash--<%= trash %> pull-right " ><i class=" icon-white icon-trash"></i></span>
+ 
       <span class="badge badge-success  pull-right is-done--<%= done %>" title="<%= done_at %>">
             <i class=" icon-white icon-ok"></i></span>
-      <span class="badge is-wichtig--<%= wichtig %> pull-right " ><%= wichtig %></span>
-      <span class="badge  pull-right is-star--<%= star %> " > <i class=" icon-white icon-star"></i> </span>
       <span style="font-size:10px; float:right; "><%= getPostfix(done_at) %></span>
+      <span class="badge <%= priority_label(priority) %> pull-right "><%= priority %></span>
+      <span class="badge  pull-right is-wichtig--<%= wichtig %>" ><%= wichtig %></span>
+      <span class="badge  pull-right is-star--<%= star %> " > <i class=" icon-white icon-star"></i> </span>
        
       &nbsp;<%= titel %>
       
@@ -1106,6 +1157,8 @@ window.getEditBar = (myTaskId) ->
         <button class="btn " onclick="close_selected('+myTaskId+')" >X</button>
         <button class="btn btn-success " onclick="toggle_ok('+myTaskId+')">
             <i class=" icon-white icon-ok ">         </i> O K </button>
+         <a class="btn btn btn-inverse" href="#" onclick="toggle_statusToDo('+myTaskId+')" >
+            --></a>
         <button class="btn btn-inverse"  onclick="toggle_star('+myTaskId+')">
              <i class=" icon-white icon-star">        </i> </button>
         <button class="btn btn-inverse" onclick="toolbar_toggle01('+myTaskId+')">
@@ -1114,8 +1167,6 @@ window.getEditBar = (myTaskId) ->
             <i class="icon-white icon-pencil"> </i>  edit </a>
          <button class="btn btn-inverse" onclick="toggle_trash('+myTaskId+')">
              <i class=" icon-white icon-trash "> </i>  </button>
-         <a class="btn btn-warning " href="http://proman.wikilab.de/tasks/new" target="_self" ">
-            <i class="icon-white icon-plus"> </i></a>
     </div>
     <div id="in-place-edit-bar-1"  class="toolbar-plus '+show01+'"
               style="min-width:370px;  white-space:nowrap; padding:5px; ">

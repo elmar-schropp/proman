@@ -8,7 +8,7 @@
   margin-bottom: -15px;
 }
 
-#editor { position:fixed;top:85px; }
+#editor { position:fixed;top:85px; top:-10px; z-index:1112; }
 .hide-on-editor { display: none; }
 
 .touch-only { display: none; }
@@ -21,6 +21,7 @@
 		width: auto!important;
 	}
 	#editor { position:inherit;  }
+	#editor {position:absolute; top:10px; left:10px; z-index:1112; }
 	.navbar .nav-collapse {display:none}
 	.navbar.touch-only { 
 		.navbar-inner { padding: 0; }
