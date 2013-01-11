@@ -117,6 +117,9 @@ $esBackgroundHighlight:     adjust-hue($esBackground, 40%) !default;
   background-image: linear-gradient(to bottom, #aaaaaa, #888888);
 }
 
+
+
+
 .tasklist-hl--99,  .miditask .head.tasklist-hl--99 {
   color:#fff; text-shadow: 0px 1px 1px #000;
   background-image: -moz-linear-gradient(top, #89afc2, #397491);
@@ -124,5 +127,14 @@ $esBackgroundHighlight:     adjust-hue($esBackground, 40%) !default;
   background-image: -webkit-linear-gradient(top, #89afc2, #397491);
   background-image: -o-linear-gradient(top, #89afc2, #397491);
   background-image: linear-gradient(to bottom, #89afc2, #397491);
+}
+
+.tasklist-hl--95,  .miditask .head.tasklist-hl--95 {
+  color:#fff; text-shadow: 0px 1px 1px #000;
+  background-image: -moz-linear-gradient(top, #30722a, #225c1c);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#30722a), to(#225c1c));
+  background-image: -webkit-linear-gradient(top, #30722a, #225c1c);
+  background-image: -o-linear-gradient(top, #30722a, #225c1c);
+  background-image: linear-gradient(to bottom, #30722a, #225c1c);
 }
 

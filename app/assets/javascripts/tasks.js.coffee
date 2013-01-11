@@ -123,9 +123,28 @@ window.refreshDateTime = ()->
 setInterval("refreshDateTime()",1000)
 
 
-window.editor_onkeydown=(event) ->
+window.editor_onkeydown=(e) ->
     # alert ("xxx: editor_onkeydown"+event.target)
+    # alert(e.key)
+    # $("#inputComment").val(e.keyCode.toString())
+    if (e.ctrlKey)
+        # alert("control")
+        if(e.keyCode==13)
+            alert("editor_onkeydown: editorOnSave")
+            editorOnSave(e)
 
+window.body_onkeydown=(e) ->
+    return
+    # alert ("xxx: editor_onkeydown"+event.target)
+    # alert(e.key)
+    # $("#inputComment").val(e.keyCode.toString())
+    
+    if (e.ctrlKey)
+        alert("Body: control")
+        # if(e.keyCode==78)
+            # alert("treffer")
+            # editorOnSave(e)
+    #return false
 
 editor_show = ->
     #alert "show editor"
@@ -393,11 +412,14 @@ initTasks = ->
     iniSubToolbars()
     
     
-    $('#editor').keydown (event) ->
+    $('#editor-main-div').keydown (event) ->
         editor_onkeydown(event)
         # alert('Handler for .keydown() called.'  )
         # alert('Handler for .keydown() called.' + event.target )
 
+    $('body').keydown (event) ->
+        body_onkeydown(event)
+ 
 
 $(window).on 'load', -> setTimeout initTasks, 1000
 
@@ -433,8 +455,88 @@ window.toolbar_toggle01 =(taskId) ->
     $.cookie("toolbarIndex", newIndex,  { path: '/' })
     toolbar_show(taskId)
 
+window.editorOnSave =(e) ->
+    alert("editorOnSave")
+    return
 
-
+    # alert(e)
+    # alert("editor onSaveClick "+window.editorOnNew)
+    if (window.editorOnNew != true)
+        if ! taskId  then return
+    
+   if $("#inputProjekt_id").val() == ""
+        # ... vielleicht ein defaultProjekt definieren?
+        alert("kein Projekt zugewiesen") ;  return
+    
+    $("#inputComment").css("backgroundColor", "#8cd36d")
+    taskData= {
+        titel      : $("#inputTitle").val()
+        kommentar  : $("#inputComment").val()
+        tag        : $("#inputTags").val()
+        priority   : $("#inputPriority").val()
+        tasktype   : $("#inputTasktype").val()
+        status     : $("#inputStatus").val()
+        wichtig    : $("#inputWichtig").val()
+        projekt_id : $("#inputProjekt_id").val()
+        autor      : $("#inputAutor").val()
+        autor2     : $("#inputAutor2").val()
+        assigned_to: $("#inputAssigned_to").val()
+    }
+    if (window.editorOnNew == true)
+        # alert(window.editorOnNew)
+        # alert("kein id")
+        $.ajax {
+            url:  "/tasks" + ".json"
+            data: {
+                task: taskData
+            }
+            success: (data) ->
+                $("#inputComment").css("backgroundColor", "#ffffff")
+                projekt_id=data["projekt_id"]
+                # alert(projekt_id)
+                allTasks[projekt_id][allTasks[projekt_id].length]=data
+                setTaskProjektFilter(projekt_id)
+                # alert("fertig")
+                editor_hide()
+                return
+            dataType: "json"
+            type: "POST"
+        }
+    else
+        # alert(window.editorOnNew)
+        # alert("id: "+taskId)
+        $.ajax {
+            url: "/tasks/" + taskId + ".json"
+            data: {
+                task: taskData
+            }
+            success: (data) ->
+                for i of allTasks[myProjektId]
+                    if  parseInt(allTasks[myProjektId][i].id) ==  parseInt(taskId)
+                        #extend...
+                        # allTasks[myProjektId][i]=taskData
+                        allTasks[myProjektId][i]["titel"]=taskData["titel"]
+                        allTasks[myProjektId][i]["kommentar"]=taskData["kommentar"]
+                        allTasks[myProjektId][i]["priority"]=taskData["priority"]
+                        allTasks[myProjektId][i]["status"]=taskData["status"]
+                        allTasks[myProjektId][i]["autor2"]=taskData["autor2"]
+                        allTasks[myProjektId][i]["done_at"]=taskData["done_at"]
+                        allTasks[myProjektId][i]["wichtig"]=taskData["wichtig"]
+                        
+                refreshTaskItem taskId 
+                # loadTasks
+                displayTasks()
+                
+                $("#inputComment").css("backgroundColor", "#ffffff")
+                if (isTouchDevice)
+                    editor_hide()
+                    # $("#editor").hide(); $tasks.show();
+                    $('body').addClass("is-touch");
+                    # alert("OK")
+            dataType: "json"
+            type: "PUT"
+        }
+        
 
 $ ->
     $("#editor .nextbutton").click ->
@@ -512,87 +614,15 @@ $ ->
             type: "POST"
         }
     
+
+
+# #####################################################
     
     
-    
-    $("#editor .save").click ->
-        # alert("editor onSaveClick "+window.editorOnNew)
-        if (window.editorOnNew != true)
-            if ! taskId  then return
-        if $("#inputProjekt_id").val() == ""
-            # ... vielleicht ein defaultProjekt definieren?
-            alert("kein Projekt zugewiesen") ;  return
-        $("#inputComment").css("backgroundColor", "#8cd36d")
-        taskData= {
-            titel      : $("#inputTitle").val()
-            kommentar  : $("#inputComment").val()
-            tag        : $("#inputTags").val()
-            priority   : $("#inputPriority").val()
-            tasktype   : $("#inputTasktype").val()
-            status     : $("#inputStatus").val()
-            wichtig    : $("#inputWichtig").val()
-            projekt_id : $("#inputProjekt_id").val()
-            autor      : $("#inputAutor").val()
-            autor2     : $("#inputAutor2").val()
-            assigned_to: $("#inputAssigned_to").val()
-        }
-        if (window.editorOnNew == true)
-            # alert(window.editorOnNew)
-            # alert("kein id")
-            $.ajax {
-                url:  "/tasks" + ".json"
-                data: {
-                    task: taskData
-                }
-                success: (data) ->
-                    $("#inputComment").css("backgroundColor", "#ffffff")
-                    projekt_id=data["projekt_id"]
-                    # alert(projekt_id)
-                    allTasks[projekt_id][allTasks[projekt_id].length]=data
-                    setTaskProjektFilter(projekt_id)
-                    # alert("fertig")
-                    editor_hide()
-                    return
-                dataType: "json"
-                type: "POST"
-            }
-        else
-            # alert(window.editorOnNew)
-            # alert("id: "+taskId)
-            $.ajax {
-                url: "/tasks/" + taskId + ".json"
-                data: {
-                    task: taskData
-                }
-                success: (data) ->
-                    for i of allTasks[myProjektId]
-                        if  parseInt(allTasks[myProjektId][i].id) ==  parseInt(taskId)
-                            #extend...
-                            # allTasks[myProjektId][i]=taskData
-                            allTasks[myProjektId][i]["titel"]=taskData["titel"]
-                            allTasks[myProjektId][i]["kommentar"]=taskData["kommentar"]
-                            allTasks[myProjektId][i]["priority"]=taskData["priority"]
-                            allTasks[myProjektId][i]["status"]=taskData["status"]
-                            allTasks[myProjektId][i]["autor2"]=taskData["autor2"]
-                            allTasks[myProjektId][i]["done_at"]=taskData["done_at"]
-                            allTasks[myProjektId][i]["wichtig"]=taskData["wichtig"]
-                            
-                    refreshTaskItem taskId 
-                    # loadTasks
-                    displayTasks()
-                    
-                    $("#inputComment").css("backgroundColor", "#ffffff")
-                    if (isTouchDevice)
-                        editor_hide()
-                        # $("#editor").hide(); $tasks.show();
-                        $('body').addClass("is-touch");
-                        # alert("OK")
-                dataType: "json"
-                type: "PUT"
-            }
-        
-        
-        
+    $("#editor .save").click  ->
+        editorOnSave(event)
+
+ 
     $tasks = $("table.tasks")
     if $tasks.size() > 0
         loadTasks
@@ -667,19 +697,21 @@ dynamicSortMultiple = `function() {
 window.onSliderClick = (elId, dataIndex) ->
     #  alert(dataIndex)
     #alert("-->"+elId+"<--")
-    # alert("222")
+    
+    mySlider=$('#'+elId)[0]
+    # FUNZT alert($(mySlider).hasClass("no-ini"))
     
     # !!! umschaltbar machen per option
     $(".sliderIten").addClass("hidden")
     if (window.globLastSliderToggleId==elId)
         window.globLastSliderToggleId=""
         return
+    
     $(".slider-"+dataIndex).toggleClass("hidden")
     window.globLastSliderToggleId=elId
     return
     
 
-    mySlider=$('#'+elId)[0]
     # alert(mySlider.id)
     # alert("333")
     
@@ -705,11 +737,11 @@ window.onSliderClick = (elId, dataIndex) ->
 
 
 
-window.getSliderTemplate = (titel, elId, dataId, DATUM, ANZAHL) ->
+window.getSliderTemplate = (titel, elId, dataId, classData, headerStyleClass, DATUM, ANZAHL) ->
     template='
-     <tr id="'+elId+'" onclick="onSliderClick(|||'+elId+'|||, |||'+dataId+'|||)" class="miditask xxx---task slider" data-taskid="xxx">
+     <tr id="'+elId+'" onclick="onSliderClick(|||'+elId+'|||, |||'+dataId+'|||)" class="miditask xxx---task slider '+classData+'" data-taskid="xxx">
      <td colspan="8" >
-     <div class="head tasklist-hl--99" style="font-size:18px; "
+     <div class="head '+headerStyleClass+' " style="font-size:20px; "
         >
        <span style="font-size:10px; ">&nbsp;&nbsp;&nbsp;DATUM</span>
        <span class="badge badge-inverse is-status-- pull-right " > STATUS</span>
@@ -872,17 +904,16 @@ window.displayTasks = ->
             i=i+1
             oldKat=kat
             dataId=dataId+1
+            
             myOut["data-"+dataId]= new Array();
             eindat=row["created_at"]
             # alert(kat)
             # ... hier sliderTemplate einfügen
             # $tasks.append(getSliderTemplate(kat, "slider_"+"TaskNew_"+kat, "TaskNew", "qqq-"+kat))
             # $tasks.append(getSliderTemplate(titel, elId, sliderClassId , DATUM, ANZAHL
-            $tasks.append(getSliderTemplate(kat, "slider-"+dataId, dataId, eindat, "ANZAHL"))
-
-        row["sliderClassId"]="slider-"+dataId+" hidden sliderIten"
-        # myOut["qqq-"+kat][myOut["qqq-"+kat].length]=row
+            $tasks.append(getSliderTemplate(kat, "slider-"+dataId, dataId, "no-ini", "tasklist-hl--99", eindat, "ANZAHL"))
         myOut["data-"+dataId][myOut["data-"+dataId].length]=row
+        row["sliderClassId"]="slider-"+dataId+" hidden sliderIten"
         
         # lazyIni ... erst später bei bedarf anzeigen
         
@@ -900,25 +931,51 @@ window.displayTasks = ->
         # alert(myOut["qqq-design"][3].titel)
     
     window.globGetPrefix=0
-    $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksPrio
     
+    # DONE
+    itemCounter=0
+    i=0
     window.globGetPostfix=1
     i=0
     for row in TasksDone
+        itemCounter=itemCounter+1
         done_at=mid(row["done_at"],0,10)
         if (done_at != oldDone_at)
             i=i+1
+            dataId=dataId+1
             oldDone_at=done_at
             # alert(kat)
+            myOut["data-"+dataId]= new Array();
+
+            # $tasks.append(getSliderTemplate(kat, "slider_"+"TaskNew_"+kat, "TaskNew", "qqq-"+kat))
+            # $tasks.append(getSliderTemplate(titel, elId, sliderClassId , DATUM, ANZAHL
+            if (i<14) then $tasks.append(getSliderTemplate(done_at, "slider-"+dataId, dataId, "", "tasklist-hl--95", done_at, "ANZAHL"))
+
             # die letzten 7oder 10 tage einzeln, dann Monatsweise
-            if (i<7) then $tasks.append(getSliderTemplate(done_at))
+            # if (i<7) then $tasks.append(getSliderTemplate(done_at))
             # $tasks.append(getSliderTemplate(done_at))
-        # ...if (i<6) then
-        $tasks.append(myTemplate.Template(_(row).extend(viewHelpers)));
+        
+        # if (i<6) then $tasks.append(myTemplate.Template(_(row).extend(viewHelpers)));
+        if (i < 2)
+            row["sliderClassId"]="slider-"+dataId+" sliderIten"
+        else
+            row["sliderClassId"]="slider-"+dataId+" hidden sliderIten"
+        # myOut["qqq-"+kat][myOut["qqq-"+kat].length]=row
+        myOut["data-"+dataId][myOut["data-"+dataId].length]=row
+        
+        # lazyIni ... erst später bei bedarf anzeigen
+        if (i<14) then $tasks.append(myTemplate.Template(_(row).extend(viewHelpers)));
+
+
+    
     #$tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksDone
     window.globGetPostfix=0
+
+    $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksPrio
     
-    $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksTrash
+    
+    # TRASH ... lazy init ??
+    # VOÜBERGEHEND STILL GELEGT $tasks.append myTemplate.Template(_(row).extend(viewHelpers)) for row in TasksTrash
     
     addClickEvent()  # es: abgekoppelt 
     addDblClickEvent()
